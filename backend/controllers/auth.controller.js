@@ -63,11 +63,11 @@ const callback_github = async (req , res ,next)=>{
            const refresh_token = await generate_refresh_token({id:checkIsAuth._id})
 
            if (!access_token.success) {
-           return res.status(500).json({success:false , error:access_token.error})
+           return res.status(500).json({success:false , error:access_token.error || "Access token error"})
            }
 
            if (!refresh_token.success) {
-          return  res.status(500).json({success:false , error:refresh_token.error})
+          return  res.status(500).json({success:false , error:refresh_token.error || "refresh token error"})
            }
 
          return  res.status(200).json({success:true , refresh_token:refresh_token.token , access_token:access_token.token})
