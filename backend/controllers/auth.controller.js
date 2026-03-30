@@ -84,7 +84,7 @@ const newUser = await User.create({
 })
 
 const refresh_token = await  generate_refresh_token({id:newUser._id})
-const access_token = await generate_access_token({id:newUser._id})
+const access_token =  generate_access_token({id:newUser._id})
 
         console.log(githubUser);
         

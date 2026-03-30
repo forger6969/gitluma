@@ -8,7 +8,11 @@ const User = require("../models/user.model")
 const generate_access_token = (payload)=>{
 
 const token = jwt.sign(payload , process.env.JWT_SECRET, {expiresIn:"6h"})
-return token 
+return   {
+success:true ,
+error:null,
+token:token
+        } 
 
 }
 
