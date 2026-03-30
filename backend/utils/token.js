@@ -56,7 +56,7 @@ token:null
     }
 
     const refresh_token = jwt.sign(payload , process.env.JWT_REFRESH_SECRET , {expiresIn:"7d"})
-    const hashed_refresh_token = bcrypt.hash(refresh_token , 10)
+    const hashed_refresh_token = await bcrypt.hash(refresh_token , 10)
     user.refresh_tokens.push({tokenHash:hashed_refresh_token})
     await user.save()
   } catch (err) {
@@ -64,7 +64,7 @@ token:null
 success:false ,
 error:err.message
 ,
-token:null
+token:refresh_token
         }
   }
     

@@ -89,7 +89,7 @@ const access_token = await generate_access_token({id:newUser._id})
         res.json({refresh_token:refresh_token.token,access_token:access_token.token})
 
     } catch (err) {
-        
+        next(err)
     }
 
 }
