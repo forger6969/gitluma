@@ -15,7 +15,7 @@ console.log(req.route);
   sameSite: "lax"   
 });
 
-          const redirectUri = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent('http://localhost:3000/api/auth/github/callback')}&scope=repo%20read:user%20user:email&state=${state}`;
+          const redirectUri = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent('https://gitluma.onrender.com/api/auth/github/callback')}&scope=repo%20read:user%20user:email&state=${state}`;
 res.redirect(redirectUri);
     } catch (error) {
         next(error)
