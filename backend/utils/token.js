@@ -63,12 +63,19 @@ token:null
     const hashed_refresh_token = await bcrypt.hash(refresh_token , 10)
     user.refresh_tokens.push({tokenHash:hashed_refresh_token})
     await user.save()
+
+    return {
+success:true ,
+error:null,
+token:refresh_token
+        }
+
   } catch (err) {
         return {
 success:true ,
 error:err.message
 ,
-token:refresh_token
+token:null
         }
   }
     
