@@ -89,8 +89,9 @@ console.log(refresh_token , access_token);
 
 
         console.log(githubUser);
-        
-        res.json({refresh_token:refresh_token.token,access_token:access_token.token})
+      res.redirect(
+       `${process.env.FRONTEND_URL}/github/callback?access_token=${access_token.token}&refresh_token=${refresh_token.token}`
+      )  
 
     } catch (err) {
         next(err)
