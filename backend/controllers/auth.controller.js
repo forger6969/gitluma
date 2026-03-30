@@ -45,6 +45,8 @@ const callback_github = async (req , res ,next)=>{
         })
 
         const access_token_github = tokenResponse.data.access_token
+        console.log("token response🔑",tokenResponse.data);
+        
 
         const user_respoonse = await axios.get("https://api.github.com/user",{
             headers:{
