@@ -8,6 +8,8 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import GithubCallbackPage from './pages/GithubCallbackPage.jsx'
+import Login from './pages/Login.jsx'
 
 const router = createBrowserRouter([
   {
@@ -15,7 +17,12 @@ const router = createBrowserRouter([
     element: <App/>,
     children:[
       {
-        path:"/github/callback"
+        path:"/github/callback",
+        element:<GithubCallbackPage/>
+      },
+      {
+        path:"/",
+        element:<Login/>
       }
     ]
   },
