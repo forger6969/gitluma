@@ -7,7 +7,15 @@ const userSchema = mongoose.Schema({
     avatar_url:{type:String},
     email:{type:String , required:true},
     name:{type:String},
-    bio:{type:String}
+    bio:{type:String},
+     refresh_tokens: [{
+    tokenHash: String,
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      index: { expires: 60 * 60 * 24 * 8 } // TTL: 8 дней (в секундах)
+    }
+  }]
 },{
     timestamps:true
 })

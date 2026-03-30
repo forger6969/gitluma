@@ -8,3 +8,6 @@ const taskSchema = mongoose.Schema({
     task_describe:{type:String , default:null},
     task_deadline:{type:String,default:null}
 })
+
+const Task = mongoose.model("Task",taskSchema)
+module.exports = Task

@@ -1,6 +1,6 @@
 require("dotenv").config()
 const { default: mongoose } = require("mongoose")
-const app = require("./app")
+const app = require("./app");
 
 mongoose.connect(process.env.MONGODB_URI).then(()=>{
 
