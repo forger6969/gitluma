@@ -50,7 +50,7 @@ const callback_github = async (req , res ,next)=>{
 
         const user_respoonse = await axios.get("https://api.github.com/user",{
             headers:{
-                Authorization:`Bearer ${access_token_github}`
+                Authorization:`Bearer ${tokenResponse.data.access_token}`
             }
         })
 
