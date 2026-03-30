@@ -1,26 +1,24 @@
 const { default: axios } = require("axios");
 const crypto = require("crypto")
 
-const auth_github = async (req , res,next)=>{
-    try {
-        
-console.log(req.route);
+const auth_github = async (req, res, next) => {
+  try {
+    const state = crypto.randomBytes(16).toString("hex");
 
-        const state = crypto.randomBytes(16).toString("hex")
+    res.cookie("oauth_state", state, {
+      httpOnly: true,
+      secure: false, // true для HTTPS
+      maxAge: 5 * 60 * 1000,
+      sameSite: "lax"
+    });
 
-        res.cookie("oauth_state", state, {
-  httpOnly: true, 
-  secure: false,   
-  maxAge: 5 * 60 * 1000, 
-  sameSite: "lax"   
-});
-
-          const redirectUri = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent('https://gitluma.onrender.com/api/auth/github/callback')}&scope=repo%20read:user%20user:email&state=${state}`;
-res.redirect(redirectUri);
-    } catch (error) {
-        next(error)
-    }
-}
+    const redirectUri = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent('https://gitluma.onrender.com/api/auth/github/callback')}&scope=repo%20read:user%20user:email&state=${state}`;
+    
+    return res.redirect(redirectUri); // обязательно return, чтобы функция завершилась
+  } catch (error) {
+    next(error);
+  }
+};
 
 const callback_github = async (req , res ,next)=>{
 
@@ -28,7 +26,7 @@ const callback_github = async (req , res ,next)=>{
         
         const code = req.query.code
         const githubState = req.query.state
-        const cookieState = req.cookie.oauth_state
+        const cookieState = req.cookies.oauth_state
         console.log(code,githubState,cookieState);
         
 
