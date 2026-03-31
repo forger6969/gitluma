@@ -45,7 +45,8 @@ repo_fullname:repo.full_name,
 repo_owner:user.github_id,
 repo_owner_user:user._id,
 default_branch:repo.data.default_branch,
-webhook_id:webhook.data.id
+webhook_id:webhook.data.id,
+webhook_secret:secret
   })
 
   console.log(project);
