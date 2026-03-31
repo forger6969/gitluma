@@ -1,3 +1,13 @@
+const crypto = require("crypto");
+const axios = require("axios");
+
+const verifySignature = (req, secret) => {
+  const signature = req.headers["x-hub-signature-256"];
+  const hmac = crypto.createHmac("sha256", secret);
+  const digest = "sha256=" + hmac.update(JSON.stringify(req.body)).digest("hex");
+  return signature === digest;
+};
+
 const Project = require("../models/projects.model");
 
 const githubWebhook = async (req, res, next) => {
@@ -40,5 +50,4 @@ const githubWebhook = async (req, res, next) => {
 
 module.exports = {
   githubWebhook
-  
 };
