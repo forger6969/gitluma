@@ -58,6 +58,7 @@ if (event === "push") {
   );
 }
 
+
     res.status(200).json({ success: true });
   } catch (err) {
     console.error(err);
