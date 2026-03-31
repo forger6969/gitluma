@@ -1,25 +1,32 @@
 const crypto = require("crypto");
 const axios = require("axios");
-
-const verifySignature = (req, secret) => {
-  const signature = req.headers["x-hub-signature-256"];
-  const hmac = crypto.createHmac("sha256", secret);
-  const digest = "sha256=" + hmac.update(JSON.stringify(req.body)).digest("hex");
-  return signature === digest;
-};
-
 const Project = require("../models/projects.model");
 
-const githubWebhook = async (req, res, next) => {
+// функция проверки подписи GitHub
+function verifySignature(req, secret) {
+  const signature = req.headers["x-hub-signature-256"];
+  if (!signature) return false;
+  const hmac = crypto.createHmac("sha256", secret);
+  // GitHub подписывает "raw body", поэтому нужно убедиться, что express не парсит JSON до проверки
+  const digest = "sha256=" + hmac.update(JSON.stringify(req.body)).digest("hex");
+  return signature === digest;
+}
+
+// вебхук для GitHub
+async function githubWebhook(req, res, next) {
   try {
     const payload = req.body;
     const event = req.headers["x-github-event"];
 
-    // Получаем проект по репозиторию
+    if (!payload || !payload.repository) {
+      return res.status(400).json({ message: "Invalid payload" });
+    }
+
+    // ищем проект по репо fullname
     const project = await Project.findOne({ repo_fullname: payload.repository.full_name });
     if (!project) return res.status(404).json({ message: "Project not found" });
 
-    // Проверяем подпись
+    // проверяем подпись
     if (!verifySignature(req, project.webhook_secret)) {
       return res.status(401).json({ message: "Invalid signature" });
     }
@@ -27,9 +34,12 @@ const githubWebhook = async (req, res, next) => {
     console.log("GitHub event:", event);
     console.log("Payload:", payload);
 
-    // Push -> отправка в Telegram
+    // обработка push события
     if (event === "push") {
-      const commits = payload.commits.map(c => `• ${c.author.name}: ${c.message}`).join("\n");
+      const commits = payload.commits
+        .map(c => `• ${c.author.name}: ${c.message}`)
+        .join("\n");
+
       const text = `📦 Push в репозиторий *${payload.repository.full_name}*\n${commits}`;
 
       await axios.post(
@@ -44,9 +54,10 @@ const githubWebhook = async (req, res, next) => {
 
     res.status(200).json({ success: true });
   } catch (err) {
+    console.error(err);
     next(err);
   }
-};
+}
 
 module.exports = {
   githubWebhook
