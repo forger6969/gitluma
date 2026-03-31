@@ -1,39 +1,31 @@
-const crypto = require("crypto");
-const axios = require("axios");
-
-const verifySignature = (req, secret) => {
-  const signature = req.headers["x-hub-signature-256"];
-  const hmac = crypto.createHmac("sha256", secret);
-  const digest = "sha256=" + hmac.update(JSON.stringify(req.body)).digest("hex");
-  return signature === digest;
-};
+const Project = require("../models/projects.model");
 
 const githubWebhook = async (req, res, next) => {
   try {
-    const projectSecret = req.headers["x-project-secret"]; // например, можно передавать секрет проекта в заголовке или хранить в БД по repo id
-    if (!verifySignature(req, projectSecret)) {
+    const payload = req.body;
+    const event = req.headers["x-github-event"];
+
+    // Получаем проект по репозиторию
+    const project = await Project.findOne({ repo_fullname: payload.repository.full_name });
+    if (!project) return res.status(404).json({ message: "Project not found" });
+
+    // Проверяем подпись
+    if (!verifySignature(req, project.webhook_secret)) {
       return res.status(401).json({ message: "Invalid signature" });
     }
-
-    const event = req.headers["x-github-event"];
-    const payload = req.body;
 
     console.log("GitHub event:", event);
     console.log("Payload:", payload);
 
-    // если это push, отправляем сообщение в Telegram
+    // Push -> отправка в Telegram
     if (event === "push") {
-        
-      const commits = payload.commits.map(
-        (c) => `• ${c.author.name}: ${c.message}`
-      ).join("\n");
-
+      const commits = payload.commits.map(c => `• ${c.author.name}: ${c.message}`).join("\n");
       const text = `📦 Push в репозиторий *${payload.repository.full_name}*\n${commits}`;
 
       await axios.post(
         `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
         {
-          chat_id: process.env.TELEGRAM_CHAT_ID, // укажи ID чата или пользователя
+          chat_id: process.env.TELEGRAM_CHAT_ID,
           text,
           parse_mode: "Markdown"
         }
