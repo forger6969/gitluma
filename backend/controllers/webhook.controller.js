@@ -12,6 +12,10 @@ function verifySignature(req, secret) {
   return signature === digest;
 }
 
+function escapeMarkdown(text) {
+  return text.replace(/([_*[\]()~`>#+-=|{}.!])/g, "\\$1");
+}
+
 // вебхук для GitHub
 async function githubWebhook(req, res, next) {
   try {
@@ -35,22 +39,24 @@ async function githubWebhook(req, res, next) {
     console.log("Payload:", payload);
 
     // обработка push события
-    if (event === "push") {
-      const commits = payload.commits
-        .map(c => `• ${c.author.name}: ${c.message}`)
-        .join("\n");
+if (event === "push") {
+  const commits = payload.commits.map(
+    c => `• ${escapeMarkdown(c.author.name)}: ${escapeMarkdown(c.message)}`
+  ).join("\n");
 
-      const text = `📦 Push в репозиторий *${payload.repository.full_name}*\n${commits}`;
+  const repoName = escapeMarkdown(payload.repository.full_name);
 
-      await axios.post(
-        `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
-        {
-          chat_id: process.env.TELEGRAM_CHAT_ID,
-          text,
-          parse_mode: "Markdown"
-        }
-      );
+  const text = `📦 Push в репозиторий *${repoName}*\n${commits}`;
+
+  await axios.post(
+    `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+    {
+      chat_id: process.env.TELEGRAM_CHAT_ID,
+      text,
+      parse_mode: "MarkdownV2"
     }
+  );
+}
 
     res.status(200).json({ success: true });
   } catch (err) {
