@@ -8,7 +8,7 @@ try {
     const {id} = req.user
     console.log(id);
     
-
+    
     const user = await User.findById(id)
 
     if (!user) {
@@ -24,9 +24,13 @@ try {
         params:{
             sort:"updated",
             direction:"desc",
-            per_page:100
+            per_page:100,
+              affiliation: "owner,collaborator,organization_member"
         }
     })
+
+    console.log(request.data);
+    
 
     res.json({success:true , repos:request.data})
 
@@ -35,6 +39,7 @@ try {
 }
 
 }
+
 
 
 module.exports = {
