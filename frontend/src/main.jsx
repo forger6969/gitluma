@@ -10,6 +10,8 @@ import {
 } from "react-router-dom";
 import GithubCallbackPage from './pages/GithubCallbackPage.jsx'
 import Login from './pages/Login.jsx'
+import DashboardOutlet from './pages/DashboardOutlet.jsx'
+import Home from './pages/Home.jsx'
 
 const router = createBrowserRouter([
   {
@@ -23,9 +25,22 @@ const router = createBrowserRouter([
       {
         path:"/",
         element:<Login/>
+      },
+      {}
+    ],
+
+    
+  },
+  {
+    path:"/dashboard",
+    element:<DashboardOutlet/>,
+    children:[
+      {
+        index:true,
+        element:<Home/>
       }
     ]
-  },
+  }
 ]);
 
 createRoot(document.getElementById('root')).render(

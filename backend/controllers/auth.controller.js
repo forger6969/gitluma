@@ -9,14 +9,14 @@ const auth_github = async (req, res, next) => {
 
     res.cookie("oauth_state", state, {
       httpOnly: true,
-      secure: false, // true для HTTPS
+      secure: false,
       maxAge: 5 * 60 * 1000,
       sameSite: "lax"
     });
 
-    const redirectUri = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent('https://gitluma.onrender.com/api/auth/github/callback')}&scope=repo%20read:user%20user:email&state=${state}`;
+    const redirectUri = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${process.env.BACKEND_URL}/api/auth/github/callback`)}&scope=repo%20read:user%20user:email&state=${state}`;
     
-    return res.redirect(redirectUri); // обязательно return, чтобы функция завершилась
+    return res.redirect(redirectUri);
   } catch (error) {
     next(error);
   }
@@ -61,6 +61,8 @@ const callback_github = async (req , res ,next)=>{
         if (checkIsAuth) {
            const access_token = await generate_access_token({id:checkIsAuth._id})
            const refresh_token = await generate_refresh_token({id:checkIsAuth._id})
+           checkIsAuth.github_token = access_token_github
+           await checkIsAuth.save()
 
            if (!access_token.success) {
            return res.status(500).json({success:false , error:access_token.error || "Access token error"})
@@ -70,7 +72,10 @@ const callback_github = async (req , res ,next)=>{
           return  res.status(500).json({success:false , error:refresh_token.error || "refresh token error"})
            }
 
-         return  res.status(200).json({success:true , refresh_token:refresh_token.token , access_token:access_token.token})
+       return res.redirect(
+       `${process.env.FRONTEND_URL}/github/callback?access_token=${access_token.token}&refresh_token=${refresh_token.token}`
+
+      ) 
         }
 
 const newUser = await User.create({
@@ -91,7 +96,7 @@ console.log(refresh_token , access_token);
         console.log(githubUser);
       res.redirect(
        `${process.env.FRONTEND_URL}/github/callback?access_token=${access_token.token}&refresh_token=${refresh_token.token}`
-       
+
       )  
 
     } catch (err) {
