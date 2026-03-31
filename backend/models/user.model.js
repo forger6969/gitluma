@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema({
     createdAt: {
       type: Date,
       default: Date.now,
-      index: { expires: 60 * 60 * 24 * 8 } // TTL: 8 дней (в секундах)
+      index: { expires: 60 * 60 * 24 * 8 }
     }
   }]
 },{
