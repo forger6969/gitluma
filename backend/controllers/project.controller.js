@@ -26,7 +26,6 @@ const createProject = async (req , res , next)=>{
             }
         )
 
-        
         const secret = crypto.randomBytes(20).toString("hex")
 
         const webhook = await axios.post(`https://api.github.com/repos/${fullname}/hooks`, {
