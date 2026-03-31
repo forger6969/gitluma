@@ -23,6 +23,7 @@ const githubWebhook = async (req, res, next) => {
 
     // если это push, отправляем сообщение в Telegram
     if (event === "push") {
+        
       const commits = payload.commits.map(
         (c) => `• ${c.author.name}: ${c.message}`
       ).join("\n");
