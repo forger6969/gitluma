@@ -39,9 +39,9 @@ const createProject = async (req , res , next)=>{
   })
 
   const project = await Project.create({
-repo_id:repo.id,
-repo_name:repo.name,
-repo_fullname:repo.full_name,
+repo_id:repo.data.id,
+repo_name:repo.data.name,
+repo_fullname:repo.data.full_name,
 repo_owner:user.github_id,
 repo_owner_user:user._id,
 default_branch:repo.data.default_branch,
