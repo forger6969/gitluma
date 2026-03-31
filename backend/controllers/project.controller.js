@@ -13,7 +13,7 @@ const createProject = async (req , res , next)=>{
 
         const projectCheck = await Project.findOne({repo_fullname:fullname})
 
-        if (!projectCheck) {
+        if (projectCheck) {
             return res.status(400).json({success:false , message:"Проект с етим репозиторием уже создан"})
         }
 
