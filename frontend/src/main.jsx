@@ -12,6 +12,7 @@ import GithubCallbackPage from './pages/GithubCallbackPage.jsx'
 import Login from './pages/Login.jsx'
 import DashboardOutlet from './pages/DashboardOutlet.jsx'
 import Home from './pages/Home.jsx'
+import Landing from './pages/landing.jsx'
 
 const router = createBrowserRouter([
   {
@@ -26,7 +27,10 @@ const router = createBrowserRouter([
         path:"/",
         element:<Login/>
       },
-      {}
+      {
+        path:"/landing",
+        element:<Landing/>
+      },
     ],
 
     
