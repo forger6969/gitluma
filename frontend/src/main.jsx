@@ -12,6 +12,8 @@ import GithubCallbackPage from './pages/GithubCallbackPage.jsx'
 import Login from './pages/Login.jsx'
 import DashboardOutlet from './pages/DashboardOutlet.jsx'
 import Home from './pages/Home.jsx'
+import WorkSpace from './pages/WorkSpace.jsx'
+import Profile from './pages/Profile.jsx'
 
 const router = createBrowserRouter([
   {
@@ -26,7 +28,14 @@ const router = createBrowserRouter([
         path:"/",
         element:<Login/>
       },
-      {}
+      {
+        path: "/workSpace",
+        element: <WorkSpace/>
+      },
+      {
+        path: "/profile",
+        element: <Profile/>
+      }
     ],
 
     
