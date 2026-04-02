@@ -52,7 +52,13 @@ repo_owner:user.github_id,
 repo_owner_user:user._id,
 default_branch:repo.data.default_branch,
 webhook_id:webhook.data.id,
-webhook_secret:secret
+webhook_secret:secret,
+members:[
+    {
+        role:"owner",
+        user:user._id
+    }
+]
   })
 
   console.log(project);

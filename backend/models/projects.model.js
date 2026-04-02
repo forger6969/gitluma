@@ -15,6 +15,12 @@ commits:[
     {
         type:Schema.Types.ObjectId , ref:"Commit"
     }
+],
+members:[
+    {
+        user:{type:Schema.Types.ObjectId , ref:"User"},
+        role:{type:String , enum:["member","owner"]}
+    }
 ]
 })
 
