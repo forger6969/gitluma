@@ -112,7 +112,7 @@ const refreshToken = async (req , res)=>{
     
     const {refresh_token} = req.body
 
-    const access_token = await  refresh_access_token(refresh_token)
+    const access_token = await  refresh_access_token(refresh_token , req ,res)
 
 res.json({success:true , access_token})    
 
