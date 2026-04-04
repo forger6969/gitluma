@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 const crypto = require("crypto");
 const User = require("../models/user.model");
-const { generate_access_token, generate_refresh_token } = require("../utils/token");
+const { generate_access_token, generate_refresh_token, refresh_access_token } = require("../utils/token");
 
 const auth_github = async (req, res, next) => {
   try {
@@ -105,6 +105,22 @@ console.log(refresh_token , access_token);
 
 }
 
+
+const refreshToken = async (req , res)=>{
+
+  try {
+    
+    const {refresh_token} = req.body
+
+    const access_token = await  refresh_access_token(refresh_token)
+
+res.json({success:true , access_token})    
+
+  } catch (err) {
+    
+  }
+
+}
 
 module.exports = {
     auth_github,

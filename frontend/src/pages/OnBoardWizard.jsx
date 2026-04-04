@@ -552,7 +552,7 @@ export default function OnBoardWizard() {
               </span>
             </div>
 
-            {/* Navigation */}
+          
             <div className="flex items-center justify-between">
               <button
                 onClick={handleBack}
