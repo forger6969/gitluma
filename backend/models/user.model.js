@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
 const userSchema = mongoose.Schema({
-    username:{type:String , requried:true},
+    username:{type:String , required:true},
     github_id:{type:Number , required:true},
     github_token:{type:String , required:true},
     avatar_url:{type:String},

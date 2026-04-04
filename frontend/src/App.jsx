@@ -5,13 +5,13 @@ import { Outlet } from "react-router-dom";
 
 const App = () => {
   const dispatch = useDispatch();
-
   useEffect(() => {
-    if (localStorage.getItem("access_token")) {
+    const token = localStorage.getItem("access_token");
+    if (token) {
       dispatch(fetchMe());
+      
     }
   }, []);
-
   return <Outlet />;
 };
 

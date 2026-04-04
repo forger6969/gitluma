@@ -7,13 +7,13 @@ const { globalLimiter } = require("./utils/rate-limiter")
 
 const app = express()
 
-
 app.use(cors())
 app.use(express.json())
 app.use(cookieParser())
 app.use(globalLimiter)
 
 connectRoutes(app)
+
 app.use(errorHandler)
 
 module.exports = app
