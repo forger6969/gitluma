@@ -81,7 +81,7 @@ token:null
     
 }
 
-const refresh_access_token = async (token)=>{
+const refresh_access_token = async (token , req , res) => {
 
     try {
 
@@ -109,11 +109,11 @@ token:null
         }
 
         if (!tokenIsValid) {
-              return { success: false, error: "Token is not valid", token: null };
+              return res.status(401).json({ success: false, error: "Token is not valid", token: null });
         }
 
         const new_access_token = jwt.sign({id:user._id},process.env.JWT_SECRET , {expiresIn:"6h"})
-          return { success: true, error: null, token: new_access_token };
+          return res.status(401).json({ success: true, error: null, token: new_access_token });
     } catch (error) {
         
     }

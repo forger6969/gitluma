@@ -124,5 +124,6 @@ res.json({success:true , access_token})
 
 module.exports = {
     auth_github,
-    callback_github
+    callback_github,
+    refreshToken
 }
