@@ -8,10 +8,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Login from './pages/Login.jsx';
 import Home from './pages/Home.jsx';
-import PrivateRoute from "./PrivateRoute.jsx";
-import PublicRoute from './PublicRoute.jsx';
 import GithubCallbackPage from './pages/GithubCallbackPage.jsx';
 import DashboardOutlet from './pages/DashboardOutlet.jsx';
+import PublicRoute from './Guards/PublicRoute.jsx';
+import PrivateRoute from './Guards/PrivateRoute.jsx';
 
 const router = createBrowserRouter([
   {

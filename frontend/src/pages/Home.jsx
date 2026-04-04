@@ -53,7 +53,7 @@ const Home = () => {
       </motion.div>
 
       {/* Репозитории */}
-      <div className="bg-gray-800 p-6 rounded-xl shadow-lg">
+      <div className="bg-gray-800 p-6 rounded-xl  shadow-lg">
         <h2 className="text-xl font-semibold mb-4">Ваши репозитории</h2>
 
         {repos.loading ? (
@@ -96,9 +96,11 @@ const Home = () => {
 
 // Компонент спиннера для загрузки
 const LoadingDark = ({ message }) => (
-  <div className="flex flex-col items-center justify-center py-20 space-y-4">
-    <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-    <p className="text-gray-300">{message}</p>
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center space-y-4">
+      <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      <p className="text-gray-300">{message}</p>
+    </div>
   </div>
 )
 
