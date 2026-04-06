@@ -12,6 +12,7 @@ import GithubCallbackPage from './pages/GithubCallbackPage.jsx';
 import DashboardOutlet from './pages/DashboardOutlet.jsx';
 import PublicRoute from './Guards/PublicRoute.jsx';
 import PrivateRoute from './Guards/PrivateRoute.jsx';
+import Projekt from './pages/Projekt.jsx';
 
 const router = createBrowserRouter([
   {
@@ -41,9 +42,13 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        index: true,
+        path: "/dashboard",
         element: <Home />,
       },
+      {
+        path: "/dashboard/projects",
+        element: <Projekt />,
+      }
     ],
   },
 ]);

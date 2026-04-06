@@ -4,11 +4,12 @@ import Header from "../Components/Header";
 
 const DashboardOutlet = () => {
   const token = localStorage.getItem("access_token");
+  
 
   if (!token) return <Navigate to="/" />;
 
   return (
-    <div className="flex">
+    <div className="flex bg-bg-gray-950 max-w-full max-h-full">
       <div className="max-h-screen ">
         <Sidebar />
       </div>

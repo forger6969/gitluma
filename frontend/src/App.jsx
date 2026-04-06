@@ -9,10 +9,14 @@ const App = () => {
     const token = localStorage.getItem("access_token");
     if (token) {
       dispatch(fetchMe());
-      
+
     }
   }, []);
-  return <Outlet />;
+  return (
+    <div className="bg-bg-gray-950">
+      <Outlet />
+    </div>
+  )
 };
 
 export default App;

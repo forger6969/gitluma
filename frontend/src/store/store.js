@@ -7,6 +7,7 @@ export const store = configureStore({
     reducer: {
         auth: authReducer,
         user: userSlice,
-        repos: reposSlice
+        repos: reposSlice,
+        loaded: false,
     }
 })

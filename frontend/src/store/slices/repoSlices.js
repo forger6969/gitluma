@@ -45,7 +45,7 @@ state.loading = false
 
         state.loading = false 
         state.repos = action.payload
-
+        state.loaded = true
     })
 
 }
