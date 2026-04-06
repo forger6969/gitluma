@@ -113,9 +113,10 @@ token:null
         }
 
         const new_access_token = jwt.sign({id:user._id},process.env.JWT_SECRET , {expiresIn:"6h"})
-          return res.status(401).json({ success: true, error: null, token: new_access_token });
+          return res.json({ success: true, error: null, token: new_access_token });
     } catch (error) {
-        
+                     return res.status(401).json({ success: false, error: error.message, token: null });
+
     }
 
 }

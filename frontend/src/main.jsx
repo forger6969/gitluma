@@ -1,17 +1,20 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './App.jsx';
-import { Provider } from 'react-redux';
-import { store } from './store/store.js';
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
-import Login from './pages/Login.jsx';
-import Home from './pages/Home.jsx';
-import PrivateRoute from "./PrivateRoute.jsx";
-import PublicRoute from './PublicRoute.jsx';
-import GithubCallbackPage from './pages/GithubCallbackPage.jsx';
-import DashboardOutlet from './pages/DashboardOutlet.jsx';
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+import { Provider } from 'react-redux'
+import { store } from './store/store.js'
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import GithubCallbackPage from './pages/GithubCallbackPage.jsx'
+import Login from './pages/Login.jsx'
+import DashboardOutlet from './pages/DashboardOutlet.jsx'
+import Home from './pages/Home.jsx'
+import Landing from './pages/Landing.jsx'
+import PublicRoute from './PublicRoute.jsx'
+import PrivateRoute from './PrivateRoute.jsx'
 
 const router = createBrowserRouter([
   {
@@ -29,6 +32,10 @@ const router = createBrowserRouter([
             <Login />
           </PublicRoute>
         ),
+      },
+      {
+        path:"/landing",
+        element:<Landing/>
       },
     ],
   },

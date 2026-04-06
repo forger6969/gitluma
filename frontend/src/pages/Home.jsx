@@ -22,7 +22,7 @@ const Home = () => {
   }
 
   if (loading) return <LoadingDark message="Загрузка профиля..." />
-  if (error) return <div className="text-red-400 p-10 text-center">{error}</div>
+  if (error) return <div className="text-red-400 p-10 text-center">hato</div>
   if (!user) return null
 
   return (
@@ -98,7 +98,7 @@ const Home = () => {
 const LoadingDark = ({ message }) => (
   <div className="flex flex-col items-center justify-center py-20 space-y-4">
     <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-    <p className="text-gray-300">{message}</p>
+    <p className="text-gray-300">{}</p>
   </div>
 )
 
