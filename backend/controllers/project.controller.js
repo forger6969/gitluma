@@ -78,7 +78,7 @@ const getProjectById = async (req , res , next)=>{
         
         const {id} = req.params
 
-        const project = await Project.findById(id).populate()
+        const project = await Project.findById(id).populate("commits")
 
         if (!project) {
             return res.status(404).json({success:false , message:"project not found"})
