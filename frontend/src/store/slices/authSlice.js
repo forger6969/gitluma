@@ -42,6 +42,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         state.isAuth = true;
+        state.loaded = true   
       })
       .addCase(fetchMe.rejected, (state) => {
         state.loading = false;
