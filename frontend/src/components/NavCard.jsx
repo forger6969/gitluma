@@ -1,5 +1,5 @@
 import React from 'react'
-import check from '../assets/Container.png'
+import check from '../assets/check.png'
 
 const NavCard = () => {
   return (

@@ -11,7 +11,6 @@ const Login = () => {
       
       <div className="bg-[#161b22] p-8 rounded-2xl shadow-xl flex flex-col items-center gap-6 w-[320px]">
         
-        {/* Title */}
         <h1 className="text-white text-2xl font-semibold">
           Welcome 👋
         </h1>

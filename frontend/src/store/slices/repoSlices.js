@@ -12,13 +12,15 @@ export const reposFetch = createAsyncThunk(
         return repos
 
     } catch (err) {
-        thunkAPI.rejectWithValue(err.response?.data || err.message)
+        return thunkAPI.rejectWithValue(err.response?.data || err.message)
     }
     }
 )
 
+
+
 const initialState = {
-    repos:null,
+    repos: [],
     loading:false , 
     error:null
 }
@@ -45,7 +47,7 @@ state.loading = false
 
         state.loading = false 
         state.repos = action.payload
-
+        state.loaded = true
     })
 
 }
