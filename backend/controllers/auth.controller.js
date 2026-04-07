@@ -74,9 +74,8 @@ const callback_github = async (req , res ,next)=>{
 
        return res.redirect(
        `${process.env.FRONTEND_URL}/github/callback?access_token=${access_token.token}&refresh_token=${refresh_token.token}`
-
       ) 
-        }
+    }
 
 const newUser = await User.create({
     github_id:githubUser.id,
