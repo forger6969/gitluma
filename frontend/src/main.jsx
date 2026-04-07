@@ -15,6 +15,9 @@ import PrivateRoute from './Guards/PrivateRoute.jsx';
 import Projekt from './pages/Projekt.jsx';
 import Landing from './pages/Landing.jsx';
 import CreateNewproject from './pages/CreateNewproject.jsx';
+import WorkSpace from './pages/WorkSpace.jsx'
+import Profile from './pages/Profile.jsx'
+
 
 const router = createBrowserRouter([
   {
@@ -41,6 +44,14 @@ const router = createBrowserRouter([
         path: "createnewproject",
         element: <CreateNewproject />
       },
+      {
+        path: "/workSpace",
+        element: <WorkSpace/>
+      },
+      {
+        path: "/profile",
+        element: <Profile/>
+      }
     ],
   },
   {

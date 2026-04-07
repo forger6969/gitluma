@@ -1,4 +1,5 @@
 @import "tailwindcss";
+<<<<<<< HEAD
 @plugin "daisyui";
 
 /* Scrollbar */
@@ -19,3 +20,6 @@
     background: rgba(99, 102, 241, 0.4);
     /* indigo glow */
 }
+=======
+@plugin "daisyui";
+>>>>>>> f1f11a91c186dfe9abc4b4ead86b2c3bcfeb552f
