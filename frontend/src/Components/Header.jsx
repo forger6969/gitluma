@@ -1,6 +1,9 @@
 import { Bell } from "lucide-react";
+import api from "../api/api";
 
 export default function Header() {
+
+
   return (
     <div className="w-full bg-[#080b11] px-6 py-3 flex items-center border-b-2 border-b-gray-800 justify-between  shadow-md">
       <div className="flex items-center gap-3 bg-[#111827] px-4 py-2 rounded-md w-[500px]">

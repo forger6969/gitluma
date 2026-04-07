@@ -13,7 +13,8 @@ import DashboardOutlet from './pages/DashboardOutlet.jsx';
 import PublicRoute from './Guards/PublicRoute.jsx';
 import PrivateRoute from './Guards/PrivateRoute.jsx';
 import Projekt from './pages/Projekt.jsx';
-import Landing from './pages/Landing.jsx'
+import Landing from './pages/Landing.jsx';
+import CreateNewproject from './pages/CreateNewproject.jsx';
 
 const router = createBrowserRouter([
   {
@@ -21,7 +22,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/github/callback",
+        path: "github/callback",
         element: <GithubCallbackPage />
       },
       {
@@ -33,8 +34,12 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path:"/landing",
-        element:<Landing/>
+        path: "landing",
+        element: <Landing />
+      },
+      {
+        path: "createnewproject",
+        element: <CreateNewproject />
       },
     ],
   },
@@ -47,18 +52,18 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "/dashboard",
+        index: true,
         element: <Home />,
       },
       {
-        path: "/dashboard/projects",
+        path: "projects",
         element: <Projekt />,
       }
     ],
   },
 ]);
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
       <RouterProvider router={router} />
