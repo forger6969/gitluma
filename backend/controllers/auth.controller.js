@@ -91,12 +91,9 @@ const newUser = await User.create({
 const refresh_token = await  generate_refresh_token({id:newUser._id})
 const access_token =  generate_access_token({id:newUser._id})
 console.log(refresh_token , access_token);
-
-
         console.log(githubUser);
       res.redirect(
        `${process.env.FRONTEND_URL}/github/callback?access_token=${access_token.token}&refresh_token=${refresh_token.token}`
-
       )  
 
     } catch (err) {

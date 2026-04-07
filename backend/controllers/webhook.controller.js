@@ -1,13 +1,13 @@
 const crypto = require("crypto");
 const axios = require("axios");
 const Project = require("../models/projects.model");
-
+const Commit = require("../models/commit.model");
+const User = require("../models/user.model")
 // функция проверки подписи GitHub
 function verifySignature(req, secret) {
   const signature = req.headers["x-hub-signature-256"];
   if (!signature) return false;
   const hmac = crypto.createHmac("sha256", secret);
-  // GitHub подписывает "raw body", поэтому нужно убедиться, что express не парсит JSON до проверки
   const digest = "sha256=" + hmac.update(JSON.stringify(req.body)).digest("hex");
   return signature === digest;
 }
@@ -16,7 +16,6 @@ function escapeMarkdown(text) {
   return text.replace(/([_*[\]()~`>#+-=|{}.!])/g, "\\$1");
 }
 
-// вебхук для GitHub
 async function githubWebhook(req, res, next) {
   try {
     const payload = req.body;
@@ -26,11 +25,9 @@ async function githubWebhook(req, res, next) {
       return res.status(400).json({ message: "Invalid payload" });
     }
 
-    // ищем проект по репо fullname
     const project = await Project.findOne({ repo_fullname: payload.repository.full_name });
     if (!project) return res.status(404).json({ message: "Project not found" });
 
-    // проверяем подпись
     if (!verifySignature(req, project.webhook_secret)) {
       return res.status(401).json({ message: "Invalid signature" });
     }
@@ -38,24 +35,29 @@ async function githubWebhook(req, res, next) {
     console.log("GitHub event:", event);
     console.log("Payload:", payload);
 
-    // обработка push события
 if (event === "push") {
-  const commits = payload.commits.map(
-    c => `• ${escapeMarkdown(c.author.name)}: ${escapeMarkdown(c.message)}`
-  ).join("\n");
+ 
+  const user = await User.findOne({github_id:payload.sender.id})
+  for (const c of payload.commits){
 
-  const repoName = escapeMarkdown(payload.repository.full_name);
 
-  const text = `📦 Push в репозиторий *${repoName}*\n${commits}`;
+   const commit = await Commit.create({
+      commit_id:c.id,
+      author_username:c.author.username || c.author.name,
+      author_github_id:payload.sender.id,
+      commit_author:user?._id || null,
+      commit_message:c.message,
+      project:project._id,
+      repo_id:payload.repository.id,
+      repo_fullname:payload.repository.full_name,
+      commit_date:c.timestamp
+    })
 
-  await axios.post(
-    `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
-    {
-      chat_id: process.env.TELEGRAM_CHAT_ID,
-      text,
-      parse_mode: "MarkdownV2"
-    }
-  );
+    project.commits.push(commit._id)
+    await project.save()
+
+  }
+
 }
 
 

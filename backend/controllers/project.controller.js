@@ -33,7 +33,7 @@ const createProject = async (req, res, next) => {
             active: true,
             events: ["push"],
             config: {
-                url: `${process.env.BACKEND_URL}/api/webhook/github`,
+                url: `/api/webhook/github`,
                 content_type: "json",
                 secret
             }
@@ -72,6 +72,27 @@ const createProject = async (req, res, next) => {
 
 }
 
+const getProjectById = async (req , res , next)=>{
+
+    try {
+        
+        const {id} = req.params
+
+        const project = await Project.findById(id)
+
+        if (!project) {
+            return res.status(404).json({success:false , message:"project not found"})
+        }
+
+        res.json({success:true , project})
+
+    } catch (err) {
+        
+    }
+
+}
+
 module.exports = {
-    createProject
+    createProject,
+    getProjectById
 }
