@@ -12,6 +12,7 @@ import GithubCallbackPage from './pages/GithubCallbackPage.jsx'
 import Login from './pages/Login.jsx'
 import DashboardOutlet from './pages/DashboardOutlet.jsx'
 import Home from './pages/Home.jsx'
+import ActFeed from './pages/ActFeed.jsx'
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path:"/",
         element:<Login/>
+      },
+      {
+        path:"/actfeed",
+        element:<ActFeed/>
       },
       {}
     ],
