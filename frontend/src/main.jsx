@@ -13,18 +13,6 @@ import Login from './pages/Login.jsx'
 import DashboardOutlet from './pages/DashboardOutlet.jsx'
 import Home from './pages/Home.jsx'
 import ActFeed from './pages/ActFeed.jsx'
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './App.jsx';
-import { Provider } from 'react-redux';
-import { store } from './store/store.js';
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
-import Login from './pages/Login.jsx';
-import Home from './pages/Home.jsx';
-import GithubCallbackPage from './pages/GithubCallbackPage.jsx';
-import DashboardOutlet from './pages/DashboardOutlet.jsx';
 import PublicRoute from './Guards/PublicRoute.jsx';
 import PrivateRoute from './Guards/PrivateRoute.jsx';
 import Projekt from './pages/Projekt.jsx';
@@ -50,10 +38,6 @@ const router = createBrowserRouter([
             <Login />
           </PublicRoute>
         ),
-      },
-      {
-        path:"/actfeed",
-        element:<ActFeed/>
       },
       {
         path: "landing",
@@ -84,6 +68,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path:"/actfeed",
+        element:<ActFeed/>
       },
       {
         path: "projects",
