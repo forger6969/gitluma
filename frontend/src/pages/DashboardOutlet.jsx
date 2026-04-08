@@ -27,7 +27,6 @@ useEffect(()=>{
   useSocketEvents(socketReady);
 
   if (!token) return <Navigate to="/" />;
-
   return (
     <div className="flex bg-bg-gray-950 max-w-full max-h-full">
       <div className="max-h-screen ">
