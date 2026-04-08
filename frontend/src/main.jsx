@@ -47,6 +47,10 @@ const router = createBrowserRouter([
         path: "createnewproject",
         element: <CreateNewproject />
       },
+       {
+        path:"actfeed",
+        element:<ActFeed/>
+      },
       {
         path: "/workSpace",
         element: <WorkSpace/>
@@ -69,10 +73,7 @@ const router = createBrowserRouter([
         index: true,
         element: <Home />,
       },
-      {
-        path:"actfeed",
-        element:<ActFeed/>
-      },
+     
       {
         path: "projects",
         element: <Projekt />,
