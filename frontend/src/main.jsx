@@ -12,8 +12,8 @@ import GithubCallbackPage from './pages/GithubCallbackPage.jsx'
 import Login from './pages/Login.jsx'
 import DashboardOutlet from './pages/DashboardOutlet.jsx'
 import Home from './pages/Home.jsx'
-import Landing from './pages/landing.jsx'
-
+import Landing from './pages/Landing.jsx'
+import "./locales/i18n.js"; 
 const router = createBrowserRouter([
   {
     path: "/",

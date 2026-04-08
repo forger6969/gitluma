@@ -11,7 +11,7 @@ const Login = () => {
       
       <div className="bg-[#161b22] p-8 rounded-2xl shadow-xl flex flex-col items-center gap-6 w-[320px]">
         
-        {/* Title */}
+       
         <h1 className="text-white text-2xl font-semibold">
           Welcome 👋
         </h1>
@@ -20,12 +20,11 @@ const Login = () => {
           Войди через GitHub, чтобы продолжить
         </p>
 
-        {/* Button */}
         <button
           onClick={loginWithGithub}
           className="w-full flex items-center justify-center gap-3 bg-white text-black font-medium py-3 rounded-xl hover:bg-gray-200 transition-all duration-200 active:scale-95"
         >
-          {/* GitHub Icon */}
+        
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
