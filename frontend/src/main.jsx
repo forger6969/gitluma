@@ -41,10 +41,6 @@ const router = createBrowserRouter([
         element: <Landing />
       },
       {
-        path: "createnewproject",
-        element: <CreateNewproject />
-      },
-      {
         path: "/workSpace",
         element: <WorkSpace/>
       },
@@ -69,7 +65,11 @@ const router = createBrowserRouter([
       {
         path: "projects",
         element: <Projekt />,
-      }
+      },
+       {
+      path: "create",
+      element: <CreateNewproject />, 
+    }
     ],
   },
 ]);
