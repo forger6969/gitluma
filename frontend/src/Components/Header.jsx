@@ -1,8 +1,11 @@
 import { Bell } from "lucide-react";
 import api from "../api/api";
+import NotificationsModal from "./NotificationsModal";
+import { useSelector } from "react-redux";
 
 export default function Header() {
 
+  const notifications = useSelector((state)=> state.notifications.notifications)
 
   return (
     <div className="w-full bg-[#080b11] px-6 py-3 flex items-center border-b-2 border-b-gray-800 justify-between  shadow-md">
@@ -29,7 +32,8 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-5">
-        <Bell className="text-gray-400 w-5 h-5 cursor-pointer" />
+        <Bell  className="text-gray-400 w-5 h-5 cursor-pointer" />
+        <NotificationsModal notifications={notifications}/>
 
         <div className="flex items-center gap-3">
           <div className="text-right">
