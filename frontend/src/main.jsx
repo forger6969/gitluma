@@ -70,7 +70,7 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path:"/actfeed",
+        path:"actfeed",
         element:<ActFeed/>
       },
       {

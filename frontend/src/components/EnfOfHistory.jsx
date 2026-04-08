@@ -1,5 +1,5 @@
 import React from 'react'
-import history from '../assets/history.png'
+import history from '../assets/Container.png'
 
 const EnfOfHistory = () => {
   return (
