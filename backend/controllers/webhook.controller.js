@@ -2,7 +2,8 @@ const crypto = require("crypto");
 const axios = require("axios");
 const Project = require("../models/projects.model");
 const Commit = require("../models/commit.model");
-const User = require("../models/user.model")
+const User = require("../models/user.model");
+const { sendNotifyByID } = require("../socket");
 // функция проверки подписи GitHub
 function verifySignature(req, secret) {
   const signature = req.headers["x-hub-signature-256"];
@@ -38,6 +39,7 @@ async function githubWebhook(req, res, next) {
 if (event === "push") {
  
   const user = await User.findOne({github_id:payload.sender.id})
+  sendNotifyByID(user._id , {message:"text test"})
   for (const c of payload.commits){
 
 
