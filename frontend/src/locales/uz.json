@@ -1,0 +1,47 @@
+{
+    "platform": "Platforma",
+    "documentation": "Hujjatlar",
+    "changelog": "O‘zgarishlar",
+  
+    "hero_title": "Vazifalarni",
+    "commits": "commitlar orqali boshqaring",
+    "hero_desc": "Commitga vazifa ID sini qo‘shing — qolganini biz bajaramiz. Terminaldan dashboardga to‘g‘ridan-to‘g‘ri sinxronlang.",
+    "view_docs": "Hujjatlarni ko‘rish",
+  
+    "how_it_works": "Qanday ishlaydi",
+    "how_desc": "Terminalda ishlaydigan jamoalar uchun zamonaviy ish jarayoni",
+  
+    "phase1": "Vazifa yaratish",
+    "phase1_desc": "Dashboardda maqsadingizni belgilang. Har bir vazifa noyob ID oladi.",
+  
+    "phase2": "ID bilan commit",
+    "phase2_desc": "Commit xabarini vazifa ID bilan boshlang. Hammasi avtomatik sinxronlanadi.",
+  
+    "phase3": "Team Lead tekshiradi",
+    "phase3_desc": "Barcha commitlar va PRlar bitta joyda ko‘rib chiqiladi.",
+  
+    "ide": "Integratsiyalashgan IDE tajribasi",
+    "ide_desc": "Dasturchilar uchun, dasturchilar tomonidan yaratilgan.",
+  
+    "analytics": "Commit tahlillari",
+    "analytics_desc": "Git tarixingiz orqali tezlik va samaradorlikni kuzating.",
+  
+    "cta": "Commitlaringizni soddalashtirishga tayyormisiz?",
+    "start": "Bepul boshlash",
+  
+    "footer_desc": "Texnik jamoalar uchun loyiha boshqaruvini avtomatlashtirish.",
+  
+    "features": "Imkoniyatlar",
+    "integrations": "Integratsiyalar",
+    "pricing": "Narxlar",
+    "cli": "CLI vositasi",
+  
+    "company": "Kompaniya",
+    "about": "Biz haqimizda",
+    "careers": "Ish o‘rinlari",
+    "contact": "Aloqa",
+    "privacy": "Maxfiylik",
+  
+    "status": "TIZIM HOLATI",
+    "operational": "Barcha tizimlar ishlamoqda"
+  }

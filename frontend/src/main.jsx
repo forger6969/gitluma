@@ -17,6 +17,7 @@ import Landing from './pages/Landing.jsx';
 import CreateNewproject from './pages/CreateNewproject.jsx';
 import WorkSpace from './pages/WorkSpace.jsx'
 import Profile from './pages/Profile.jsx'
+import './locales/i18n.js'
 
 
 const router = createBrowserRouter([
