@@ -1,0 +1,45 @@
+{
+    "platform": "Platform",
+    "documentation": "Documentation",
+    "changelog": "Changelog",
+    
+    "hero_title": "Manage tasks",
+    "commits": "commits",
+    "hero_desc": "Just add a task ID to your commit — we'll handle the rest. Sync your workflow directly from your terminal to the dashboard.",
+    "view_docs": "View Documentation",
+    
+    "how_it_works": "How it works",
+    "how_desc": "The modern workflow for teams who live in the terminal and dream in clean UI.",
+    
+    "phase1": "Create task",
+    "phase1_desc": "Define your objective in the Kinetic dashboard. Every task gets a unique technical ID instantly, synced across your team's workspace.",
+    "phase2": "Commit with ID",
+    "phase2_desc": "Work locally. When you commit, prefix your message with the task ID. Our GitHub integration listens for changes and updates the state automatically.",
+    "phase3": "Team Lead reviews",
+    "phase3_desc": "The commit history, PR status, and code changes are aggregated into a single view for the Team Lead to approve, merging code and tasks in one flow.",
+    
+    "ide": "Integrated IDE Experience",
+    "ide_desc": "Built for developers, by developers.",
+    
+    "analytics": "Commit Analytics",
+    "analytics_desc": "Track velocity and throughput...",
+    
+    "cta": "Ready to streamline your commits?",
+    "start": "Get Started Free",
+    
+    "footer_desc": "Automating project management for technical teams. Built on the edge of Git and productivity.",
+    
+    "features": "Features",
+    "integrations": "Integrations",
+    "pricing": "Pricing",
+    "cli": "CLI Tool",
+    
+    "company": "Company",
+    "about": "About",
+    "careers": "Careers",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    
+    "status": "SYSTEM STATUS",
+    "operational": "All Systems Operational"
+  }

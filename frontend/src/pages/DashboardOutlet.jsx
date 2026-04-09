@@ -1,28 +1,38 @@
 import { Navigate, Outlet } from "react-router-dom";
 import Sidebar from "../Components/Sidebar";
 import Header from "../Components/Header";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { connectSocket } from "../socket/socket";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useSocketEvents } from "../hooks/useSocketEvents";
+import { getNotifications } from "../store/slices/notificationSlice";
 
 const DashboardOutlet = () => {
   const token = localStorage.getItem("access_token");
+  const user = useSelector((state) => state.user.user);
+  const notifications = useSelector((state)=> state.notifications.notifications)
+  const [socketReady, setSocketReady] = useState(false);
+  const dispatch = useDispatch()
   
+  useEffect(() => {
+    const userId = user?.user?._id || user?._id;
+    if (!userId) return;
+
+    connectSocket(userId);
+    setSocketReady(true);
+  }, [user]);
+
+useEffect(()=>{
+  console.log(notifications);
+},[notifications])  
+
+useEffect(()=>{
+dispatch(getNotifications())
+},[])
+
+  useSocketEvents(socketReady);
 
   if (!token) return <Navigate to="/" />;
-  const user = useSelector((state) => state.user.user)
-useSocketEvents()
-
-  useEffect(()=>{
-
-    if (!user || user === undefined) {
-      return 
-    }
-
-connectSocket(user._id)
-  },[user])
-
   return (
     <div className="flex bg-bg-gray-950 max-w-full max-h-full">
       <div className="max-h-screen ">
@@ -33,9 +43,7 @@ connectSocket(user._id)
         <Outlet />
       </div>
     </div>
-
-  )
-
+  );
 };
 
-export default DashboardOutlet
+export default DashboardOutlet;

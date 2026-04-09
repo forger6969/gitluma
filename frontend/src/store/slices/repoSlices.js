@@ -1,19 +1,19 @@
-import { createAsyncThunk , createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../api/api";
 
 export const reposFetch = createAsyncThunk(
     "repos/reposFetch",
-    async (_ , thunkAPI)=>{
+    async(_, thunkAPI) => {
 
-    try {
+        try {
             const req = await api.get("/api/github/repos/actives")
-        const repos = req.data.repos
+            const repos = req.data.repos
 
-        return repos
+            return repos
 
-    } catch (err) {
-        return thuconnectSocketnkAPI.rejectWithValue(err.response?.data || err.message)
-    }
+        } catch (err) {
+            return thunkAPI.rejectWithValue(err.response?.data || err.message)
+        }
     }
 )
 
@@ -21,36 +21,36 @@ export const reposFetch = createAsyncThunk(
 
 const initialState = {
     repos: [],
-    loading:false , 
-    error:null
+    loading: false,
+    error: null
 }
 
 const repoSlice = createSlice({
-    name:"repos",
-initialState,
-reducers:{},
-extraReducers:(builder)=>{
+    name: "repos",
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
 
-    builder
-    .addCase(reposFetch.rejected , (state , action)=>{
+        builder
+            .addCase(reposFetch.rejected, (state, action) => {
 
-state.error = action.payload
-state.loading = false         
+                state.error = action.payload
+                state.loading = false
 
-    })
-    .addCase(reposFetch.pending, (state)=>{
+            })
+            .addCase(reposFetch.pending, (state) => {
 
-        state.loading = true
-    })
+                state.loading = true
+            })
 
-    .addCase(reposFetch.fulfilled , (state , action)=>{
+        .addCase(reposFetch.fulfilled, (state, action) => {
 
-        state.loading = false 
-        state.repos = action.payload
-        state.loaded = true
-    })
+            state.loading = false
+            state.repos = action.payload
+            state.loaded = true
+        })
 
-}
+    }
 })
 
 export default repoSlice.reducer

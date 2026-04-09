@@ -1,27 +1,26 @@
-import { useSelector , useDispatch } from "react-redux";
-import { getSocket } from "../socket/socket";
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getSocket } from "../socket/socket";
+import { addNotification } from "../store/slices/notificationSlice";
 
-export const useSocketEvents = ()=>{
+export const useSocketEvents = (socketReady) => {
+  const user = useSelector((state) => state.user.user);
+const dispatch = useDispatch()
 
-    const socket = getSocket()
-    const user = useSelector((state) => state.user.user)
+  useEffect(() => {
+    const socket = getSocket();
+    const userId = user?.user?._id || user?._id;
+    if (!socket || !userId) return;
 
-  
-    
-    console.log(user);
-    
+    const handleNotification = (data) => {
+      console.log("Notification:", data);
+      dispatch(addNotification(data))
+    };
 
-    useEffect(()=>{
+    socket.on("notification", handleNotification);
 
-          if (!socket) {
-        return
-    }
-
-     socket.on("notification", (data)=>{
-console.log(data);
-     })
-
-    },[])
-
-}
+    return () => {
+      socket.off("notification", handleNotification);
+    };
+  }, [user, socketReady]);
+};
