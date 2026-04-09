@@ -186,7 +186,6 @@ import api from "../api/api";
 
 const CreateNewproject = () => {
   const dispatch = useDispatch();
-
   const { repos = [], loading, error } = useSelector(
     (state) => state.repos || {}
   );
@@ -202,176 +201,111 @@ const CreateNewproject = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       setSubmitting(true);
 
       await api.post("/api/project/create", {
         name: projectName,
         description,
-        repo: selectedRepo,
+        fullname: selectedRepo,
       });
 
       setProjectName("");
       setDescription("");
       setSelectedRepo("");
 
-      alert("Project yaratildi 🚀");
-
+      alert("Project created 🚀");
     } catch (err) {
-      alert("Xatolik ❌");
+      console.error(err);
+      alert("Error ❌");
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0b1220] relative overflow-hidden text-white">
-      
-      {/* BACKGROUND GLOW */}
-      <div className="absolute w-[500px] h-[500px] bg-indigo-500/20 blur-[120px] top-[-100px] left-[-100px]" />
-      <div className="absolute w-[400px] h-[400px] bg-purple-500/20 blur-[120px] bottom-[-100px] right-[-100px]" />
+    <div className="min-h-screen bg-gradient-to-br from-[#1b2330] via-[#121b29] to-[#0c141e] text-white flex justify-center py-14 px-6">
+      <form onSubmit={handleSubmit} className="w-full max-w-5xl space-y-8">
 
-      <form onSubmit={handleSubmit} className="relative z-10 max-w-6xl mx-auto px-4 py-12">
-
-        <p className="text-xs text-gray-500 tracking-widest mb-6">
-          DIRECTORY / PROJECTS /{" "}
-          <span className="text-gray-300">INITIALIZE PROJECT</span>
-        </p>
-
-        <h1 className="text-4xl font-semibold mb-3">
-          Architect New Workspace
-        </h1>
-
-        <p className="text-gray-400 mb-10 max-w-2xl">
-          Define the core parameters and stack for your next project.
-        </p>
-
-        <div className="grid md:grid-cols-[1.2fr_1fr] gap-6">
-
-          {/* LEFT */}
-          <div className="space-y-6">
-
-            {/* CARD */}
-            <div className="relative bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 overflow-hidden
-              hover:shadow-[0_0_40px_rgba(99,102,241,0.25)]
-              hover:scale-[1.02] transition-all duration-300">
-
-              <h2 className="mb-5 text-lg font-semibold">
-                ⚙️ Project Identity
-              </h2>
-
-              <input
-                type="text"
-                placeholder="Project name..."
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                className="w-full mb-4 bg-[#0b1220]/80 border border-gray-700 rounded-xl px-4 py-3
-                focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500
-                transition-all"
-              />
-
-              <textarea
-                rows="4"
-                placeholder="Description..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full bg-[#0b1220]/80 border border-gray-700 rounded-xl px-4 py-3
-                focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500
-                transition-all"
-              />
-            </div>
-
-            {/* TECH */}
-            <div className="relative bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-6
-              hover:shadow-[0_0_40px_rgba(139,92,246,0.25)]
-              hover:scale-[1.02] transition-all duration-300">
-
-              <h2 className="mb-4 text-lg font-semibold">
-                🧩 Tech Stack
-              </h2>
-
-              <input
-                placeholder="Search tech..."
-                className="w-full mb-4 bg-[#0b1220]/80 border border-gray-700 rounded-xl px-4 py-3
-                focus:ring-2 focus:ring-indigo-500/40"
-              />
-
-              <div className="flex flex-wrap gap-2">
-                {["React", "TypeScript", "PostgreSQL", "Tailwind"].map((t) => (
-                  <span key={t}
-                    className="px-3 py-1 rounded-lg text-sm border border-gray-700
-                    hover:border-indigo-500 hover:bg-indigo-500/20
-                    hover:scale-105 transition cursor-pointer">
-                    {t} ✕
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT */}
-          <div className="space-y-6">
-
-            {/* REPO */}
-            <div className="relative bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-6
-              hover:shadow-[0_0_40px_rgba(99,102,241,0.25)]
-              hover:scale-[1.02] transition-all duration-300">
-
-              <h2 className="mb-4 text-lg font-semibold">
-                {"</>"} Integration
-              </h2>
-
-              <select
-                value={selectedRepo}
-                onChange={(e) => setSelectedRepo(e.target.value)}
-                className="w-full bg-[#0b1220]/80 border border-gray-700 rounded-xl px-4 py-3
-                focus:ring-2 focus:ring-indigo-500/40"
-              >
-                <option value="">Select repository...</option>
-
-                {loading && <option disabled>⏳ Fetching...</option>}
-                {error && <option disabled>⚠️ Error loading</option>}
-
-                {!loading &&
-                  !error &&
-                  repos.map((repo) => (
-                    <option key={repo.id} value={repo.name}>
-                      {repo.name}
-                    </option>
-                  ))}
-              </select>
-            </div>
-
-            {/* TEAM */}
-            <div className="relative bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-6
-              hover:shadow-[0_0_40px_rgba(139,92,246,0.25)]
-              hover:scale-[1.02] transition-all duration-300">
-
-              <h2 className="mb-4 text-lg font-semibold">
-                👥 Team
-              </h2>
-
-              <div className="space-y-3">
-                {[
-                  { name: "Erik Draven", role: "Owner" },
-                  { name: "Sarah Jenkins", role: "Tech Lead" },
-                ].map((u) => (
-                  <div key={u.name}
-                    className="flex justify-between p-3 rounded-xl bg-[#0b1220]
-                    border border-gray-800 hover:border-indigo-500
-                    hover:bg-indigo-500/10 transition cursor-pointer">
-                    <span>{u.name}</span>
-                    <span className="text-xs text-gray-400">{u.role}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-          </div>
+        {/* Header */}
+        <div>
+          <h1 className="text-4xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
+            Architect New Workspace
+          </h1>
+          <p className="text-gray-400 mt-2 text-sm">
+            Define the core parameters and stack for your next monolith.
+          </p>
         </div>
 
-        {/* FOOTER */}
-        <div className="mt-10 flex justify-between items-center border-t border-white/10 pt-6">
+        <div className="grid md:grid-cols-2 gap-6">
+
+          {/* LEFT: Project Info */}
+          <div className="bg-[#111827]/70 backdrop-blur-xl p-6 rounded-2xl border border-gray-800 hover:border-indigo-500/40 transition duration-300 space-y-5 shadow-xl">
+            <h2 className="text-xs text-gray-400 tracking-widest">
+              PROJECT IDENTITY
+            </h2>
+
+            <input
+              type="text"
+              placeholder="e.g. Project Catalyst"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              className="w-full p-3 rounded-lg bg-[#0c141e] border border-gray-700 
+              focus:outline-none focus:ring-2 focus:ring-indigo-500 
+              focus:border-indigo-500 transition-all duration-200
+              hover:border-gray-500"
+            />
+
+            <textarea
+              rows="4"
+              placeholder="Briefly describe the objective..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full p-3 rounded-lg bg-[#0c141e] border border-gray-700 
+              focus:outline-none focus:ring-2 focus:ring-indigo-500 
+              focus:border-indigo-500 transition-all duration-200
+              hover:border-gray-500 resize-none"
+            />
+          </div>
+
+          {/* RIGHT: Repository Integration */}
+          <div className="bg-[#111827]/70 backdrop-blur-xl p-6 rounded-2xl border border-gray-800 hover:border-purple-500/40 transition duration-300 space-y-5 shadow-xl">
+            <h2 className="text-xs text-gray-400 tracking-widest">
+              INTEGRATION
+            </h2>
+
+            <select
+              value={selectedRepo}
+              onChange={(e) => setSelectedRepo(e.target.value)}
+              className="w-full p-3 rounded-lg bg-[#0c141e] border border-gray-700 
+              focus:outline-none focus:ring-2 focus:ring-purple-500 
+              focus:border-purple-500 transition-all duration-200
+              hover:border-gray-500 cursor-pointer"
+            >
+              <option value="">Select a repository...</option>
+
+              {loading && <option disabled>Loading...</option>}
+              {error && <option disabled>Error loading</option>}
+
+              {!loading &&
+                !error &&
+                repos.map((repo) => (
+                  <option key={repo.id} value={repo.full_name}>
+                    {repo.full_name}
+                  </option>
+                ))}
+            </select>
+
+            <p className="text-xs text-gray-500 leading-relaxed">
+              Connecting a repository allows live sync with your codebase.
+            </p>
+          </div>
+
+        </div>
+
+        {/* ACTIONS */}
+        <div className="flex justify-between items-center pt-4">
 
           <button
             type="button"
@@ -380,7 +314,7 @@ const CreateNewproject = () => {
               setDescription("");
               setSelectedRepo("");
             }}
-            className="text-gray-400 hover:text-white transition"
+            className="text-gray-400 hover:text-white transition duration-200"
           >
             Reset
           </button>
@@ -388,14 +322,14 @@ const CreateNewproject = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="relative px-8 py-3 rounded-xl font-medium overflow-hidden
-            bg-gradient-to-r from-indigo-500 to-purple-600
-            hover:shadow-[0_0_30px_rgba(139,92,246,0.6)]
-            hover:scale-105 active:scale-95
-            transition-all duration-300"
+            className="px-7 py-2.5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 
+            hover:from-indigo-500 hover:to-purple-500 active:scale-95
+            transition-all duration-200 shadow-lg shadow-indigo-600/30
+            disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {submitting ? "Creating..." : "Initialize Project →"}
+            {submitting ? "Creating..." : "Create"}
           </button>
+
         </div>
 
       </form>
