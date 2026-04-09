@@ -1,13 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import api from "../../api/api"
 
-const getNotifications = createAsyncThunk(
+export const getNotifications = createAsyncThunk(
     'notification/get',
     async (_ , thunkAPI)=>{
 
         try {
            
             const req = await api.get("/api/notfication/my")
+            console.log("notifications:" , req.data);
+            
             return req.data
             
         } catch (err) {
