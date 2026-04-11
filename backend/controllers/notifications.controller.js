@@ -7,6 +7,8 @@ const getNotifications = async (req , res , next)=>{
         const {id} = req.user
 
         const notifications = await Notification.find({user:id})
+        console.log(notifications);
+        
 
         res.json({success:true , notifications })
 

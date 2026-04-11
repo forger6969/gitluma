@@ -41,5 +41,70 @@
     "privacy": "Privacy",
     
     "status": "SYSTEM STATUS",
-    "operational": "All Systems Operational"
+    "operational": "All Systems Operational",
+    
+      "pricing_title": "Pricing",
+      "pricing_desc": "Choose the plan that fits you",
+    
+      "free": "Free",
+      "pro": "Pro",
+      "team_plan": "Team",
+    
+      "free_1": "Basic commit tracking",
+      "free_2": "1 project",
+      "free_3": "Email support",
+    
+      "pro_1": "Unlimited projects",
+      "pro_2": "Team collaboration",
+      "pro_3": "Analytics",
+    
+      "team_1": "All Pro features",
+      "team_2": "Priority support",
+      "team_3": "Advanced analytics",
+    
+      "testimonials": "What users say",
+      "testimonial_1": "Gitluma changed how our team works.",
+      "testimonial_2": "Working with commits is now effortless.",
+      "testimonial_3": "Perfect tool for team collaboration.",
+      "developer": "Developer",
+    
+      "feature_1": "Smart commit parsing",
+      "feature_2": "Real-time sync",
+      "feature_3": "Team insights",
+      "feature_4": "CLI integration",
+      "feature_5": "GitHub automation",
+      "feature_6": "Notifications",
+      "feature_desc": "Powerful feature to improve your workflow",
+    
+      "faq": "Frequently Asked Questions",
+      "faq_q1": "How does Gitluma work?",
+      "faq_a1": "It manages tasks through commits.",
+      "faq_q2": "Is it free?",
+      "faq_a2": "Yes, a free plan is available.",
+      "faq_q3": "Does it support teams?",
+      "faq_a3": "Yes, team collaboration is supported.",
+      
+        "cta_title": "Ready to manage your commits?",
+        "cta_desc": "Simplify teamwork with Gitluma.",
+        "cta_button": "Get Started",
+      
+        "integrations_title": "Integrations",
+        "integrations_desc": "Works with your favorite tools",
+      
+        "security_title": "Security",
+        "security_desc": "Your data is सुरक्षित with us",
+      
+        "security_1_title": "End-to-end protection",
+        "security_1_desc": "All data is fully encrypted",
+      
+        "security_2_title": "OAuth login",
+        "security_2_desc": "Secure login via GitHub",
+      
+        "security_3_title": "Cloud storage",
+        "security_3_desc": "Stored on reliable servers"
+      
+    
+    
+  
+    
   }

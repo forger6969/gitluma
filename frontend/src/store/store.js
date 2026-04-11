@@ -9,7 +9,6 @@ export const store = configureStore({
         auth: authReducer,
         user: userSlice,
         repos: reposSlice,
-        loaded: false,
         notifications:notificationSlice
     }
 })

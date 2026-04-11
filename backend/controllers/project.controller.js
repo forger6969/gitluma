@@ -2,6 +2,7 @@ const User = require("../models/user.model")
 const crypto = require("crypto")
 const axios = require("axios")
 const Project = require("../models/projects.model")
+const path = require("path")
 
 const createProject = async (req, res, next) => {
     try {
@@ -78,9 +79,7 @@ const getProjectById = async (req , res , next)=>{
         
         const {id} = req.params
 
-        const project = await Project.findById(id).populate({
-            path:"commits"
-        })
+        const project = await Project.findById(id).populate("repo_owner_user").populate("commits").populate("members.user")
 
         if (!project) {
             return res.status(404).json({success:false , message:"project not found"})
