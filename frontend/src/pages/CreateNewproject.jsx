@@ -179,6 +179,9 @@
 // export default CreateNewproject;
 
 
+
+
+
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { reposFetch } from "../store/slices/repoSlices";
@@ -229,7 +232,7 @@ const handleSubmit = async (e) => {
     <div className="min-h-screen bg-gradient-to-br from-[#1b2330] via-[#121b29] to-[#0c141e] text-white flex justify-center py-14 px-6">
       <form onSubmit={handleSubmit} className="w-full max-w-5xl space-y-8">
 
-        {/* Header */}
+        
         <div>
           <h1 className="text-4xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
             Architect New Workspace
@@ -241,7 +244,6 @@ const handleSubmit = async (e) => {
 
         <div className="grid md:grid-cols-2 gap-6">
 
-          {/* LEFT: Project Info */}
           <div className="bg-[#111827]/70 backdrop-blur-xl p-6 rounded-2xl border border-gray-800 hover:border-indigo-500/40 transition duration-300 space-y-5 shadow-xl">
             <h2 className="text-xs text-gray-400 tracking-widest">
               PROJECT IDENTITY
@@ -270,7 +272,7 @@ const handleSubmit = async (e) => {
             />
           </div>
 
-          {/* RIGHT: Repository Integration */}
+        
           <div className="bg-[#111827]/70 backdrop-blur-xl p-6 rounded-2xl border border-gray-800 hover:border-purple-500/40 transition duration-300 space-y-5 shadow-xl">
             <h2 className="text-xs text-gray-400 tracking-widest">
               INTEGRATION
@@ -305,7 +307,7 @@ const handleSubmit = async (e) => {
 
         </div>
 
-        {/* ACTIONS */}
+        
         <div className="flex justify-between items-center pt-4">
 
           <button
