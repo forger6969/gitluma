@@ -24,6 +24,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <div>404 Not Found</div>,
     children: [
       {
         path: "github/callback",
@@ -43,35 +44,37 @@ const router = createBrowserRouter([
       },
       {
         path: "/workSpace",
-        element: <WorkSpace/>
+        element: <WorkSpace />
       },
       {
         path: "/profile",
-        element: <Profile/>
+        element: <Profile />
       }
     ],
   },
   {
     path: "/dashboard",
-    element: (
-      <PrivateRoute>
-        <DashboardOutlet />
-      </PrivateRoute>
-    ),
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: "projects",
-        element: <Projekt />,
-      },
-       {
+    errorElement: <h1>404 Not Found </h1>,
+  element: (
+    <PrivateRoute>
+      <DashboardOutlet />
+    </PrivateRoute>
+  ),
+
+  children: [
+    {
+      index: true,
+      element: <Home />,
+    },
+    {
+      path: "projects",
+      element: <Projekt />,
+    },
+    {
       path: "create",
-      element: <CreateNewproject />, 
+      element: <CreateNewproject />,
     }
-    ],
+  ],
   },
 ]);
 
