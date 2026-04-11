@@ -22,21 +22,21 @@ export default function Header() {
   const { user, loaded } = useSelector(s => s.user)
   const repos = useSelector(s => s.repos)
 
-  // useEffect((e) => {
-  //   unlockAudio()
-  // }, [])
-
+  useEffect((e) => {
+  }, [])
+  
   useEffect(() => {
     if (!loaded) dispatch(userFetch())
-    if (!repos.loaded) dispatch(reposFetch())
-    dispatch(getNotifications())
-  }, [loaded, repos.loaded, dispatch])
-
-  useEffect(() => {
-    const currentCount = notifications.length
-    if (currentCount > prevCountRef.current && prevCountRef.current !== 0) {
-      audioRef.current.currentTime = 0  // qayta bosidan chalsin
-      audioRef.current.play().catch(() => { })
+      if (!repos.loaded) dispatch(reposFetch())
+        dispatch(getNotifications())
+    }, [loaded, repos.loaded, dispatch])
+    
+    useEffect(() => {
+      unlockAudio()
+      const currentCount = notifications.length
+      if (currentCount > prevCountRef.current && prevCountRef.current !== 0) {
+        audioRef.current.currentTime = 0  // qayta bosidan chalsin
+        audioRef.current.play().catch(() => { })
     }
     prevCountRef.current = currentCount
   }, [notifications.length])
@@ -62,6 +62,8 @@ export default function Header() {
           <button
 
             onClick={() => {
+              unlockAudio()
+
               setShowNotifications(prev => !prev)
             }}
             className="relative p-2 rounded-full hover:bg-gray-800 transition-colors"
