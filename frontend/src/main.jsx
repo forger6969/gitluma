@@ -67,12 +67,12 @@ const router = createBrowserRouter([
       {
         path: "projects",
         element: <Projekt />,
-      },   
+      }
+   ,   
       {
       path: "create",
       element: <CreateNewproject />, 
     }
-
     ],
   },
 ]);

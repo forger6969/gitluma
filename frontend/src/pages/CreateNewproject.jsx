@@ -199,30 +199,31 @@ const CreateNewproject = () => {
     dispatch(reposFetch());
   }, [dispatch]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      setSubmitting(true);
+  if (!selectedRepo) {
+    alert("Repo tanlang");
+    return;
+  }
 
-      await api.post("/api/project/create", {
-        name: projectName,
-        description,
-        fullname: selectedRepo,
-      });
+  try {
+    setSubmitting(true);
 
-      setProjectName("");
-      setDescription("");
-      setSelectedRepo("");
+    await api.post("/api/project/create", {
+      fullname: selectedRepo,
+    });
 
-      alert("Project created 🚀");
-    } catch (err) {
-      console.error(err);
-      alert("Error ❌");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+    setSelectedRepo("");
+
+    alert("Project created 🚀");
+  } catch (err) {
+    console.error(err);
+    alert("Error ❌");
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1b2330] via-[#121b29] to-[#0c141e] text-white flex justify-center py-14 px-6">
