@@ -20,7 +20,6 @@ const timeAgo = (dateStr) => {
 export default function NotificationsModal({ notifications = [], loading, onClose }) {
   const ref = useRef()
 
-  // Outside click yopadi
   useEffect(() => {
     const handler = (e) => {
       if (ref.current && !ref.current.contains(e.target)) onClose()
@@ -39,12 +38,12 @@ export default function NotificationsModal({ notifications = [], loading, onClos
     >
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-700/50">
 
-          <button className="text-gray-400 hover:text-blue-400 text-xs flex items-center gap-1 transition-colors">
-            <CheckCheck className="w-3.5 h-3.5" /> Mark all read
-          </button>
-          <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">
-            <X className="w-4 h-4" />
-          </button>
+        <button className="text-gray-400 hover:text-blue-400 text-xs flex items-center gap-1 transition-colors">
+          <CheckCheck className="w-3.5 h-3.5" /> Mark all read
+        </button>
+        <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">
+          <X className="w-4 h-4" />
+        </button>
       </div>
 
       <div className="max-h-[420px] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-700">
@@ -105,19 +104,21 @@ export default function NotificationsModal({ notifications = [], loading, onClos
 
 function NotificationItem({ n, isUnread }) {
   return (
-    <div className={`flex gap-3 px-5 py-3.5 cursor-pointer transition-colors hover:bg-white/5 ${isUnread ? "bg-blue-500/5" : ""}`}>
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${isUnread ? "bg-blue-500/15" : "bg-gray-800"}`}>
-        {iconMap[n.type] || iconMap.default}
-      </div>
+    <div className={`flex items-center justify-between gap-3 px-5 py-3.5 cursor-pointer transition-colors hover:bg-white/5 ${isUnread ? "bg-blue-500/5" : ""}`}>
+      <div className="flex items-center gap-3">
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${isUnread ? "bg-blue-500/15" : "bg-gray-800"}`}>
+          {iconMap[n.type] || iconMap.default}
+        </div>
 
-      <div className="flex-1 min-w-0">
-        <p className={`text-sm leading-snug ${isUnread ? "text-white font-medium" : "text-gray-300"}`}>
-          {n.message || n.title || "New notification"}
-        </p>
-        {n.description && (
-          <p className="text-xs text-gray-500 mt-0.5 truncate">{n.description}</p>
-        )}
-        <p className="text-[11px] text-gray-600 mt-1">{timeAgo(n.createdAt)}</p>
+        <div className="flex items-center justify-center gap-3">
+          <p className={`text-sm leading-snug ${isUnread ? "text-white font-medium" : "text-gray-300"}`}>
+            {n}
+          </p>
+          {n.description && (
+            <p className="text-xs text-gray-500 mt-0.5 truncate">{n.description}</p>
+          )}
+          <p className="text-[11px] text-gray-600 mt-1">{timeAgo(n.createdAt)}</p>
+        </div>
       </div>
 
       {isUnread && (

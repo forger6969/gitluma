@@ -3,7 +3,7 @@ import LoginButton from "../Components/LoginButton";
 
 const Login = () => {
   const loginWithGithub = () => {
-    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/github`;
+    window.location.href = `${import.meta.env.VITE_API_URL}api/auth/github`;
     console.log(import.meta.env.VITE_API_URL);
     
   };  

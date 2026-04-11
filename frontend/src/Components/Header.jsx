@@ -1,24 +1,45 @@
 import { Bell } from "lucide-react";
 import NotificationsModal from "./NotificationsModal";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { userFetch } from "../store/slices/userSlice";
 import { reposFetch } from "../store/slices/repoSlices";
 import { getNotifications } from "../store/slices/notificationSlice";
 
+
 export default function Header() {
   const [showNotifications, setShowNotifications] = useState(false)
+  const prevCountRef = useRef(0)
+  const audioRef = useRef(new Audio("/notification.mp3"))
+  const unlockAudio = () => {
+    audioRef.current.play().catch(() => { })
+    audioRef.current.pause()
+    audioRef.current.currentTime = 0
+  }
 
   const { notifications, loading } = useSelector((state) => state.notifications)
   const dispatch = useDispatch()
   const { user, loaded } = useSelector(s => s.user)
   const repos = useSelector(s => s.repos)
 
+  // useEffect((e) => {
+  //   unlockAudio()
+  // }, [])
+
   useEffect(() => {
     if (!loaded) dispatch(userFetch())
     if (!repos.loaded) dispatch(reposFetch())
-    dispatch(getNotifications()) 
+    dispatch(getNotifications())
   }, [loaded, repos.loaded, dispatch])
+
+  useEffect(() => {
+    const currentCount = notifications.length
+    if (currentCount > prevCountRef.current && prevCountRef.current !== 0) {
+      audioRef.current.currentTime = 0  // qayta bosidan chalsin
+      audioRef.current.play().catch(() => { })
+    }
+    prevCountRef.current = currentCount
+  }, [notifications.length])
 
   if (!user) return null
   const u = user.user
@@ -39,7 +60,10 @@ export default function Header() {
       <div className="flex items-center gap-5">
         <div className="relative">
           <button
-            onClick={() => setShowNotifications(prev => !prev)}
+
+            onClick={() => {
+              setShowNotifications(prev => !prev)
+            }}
             className="relative p-2 rounded-full hover:bg-gray-800 transition-colors"
           >
             <Bell className="text-gray-400 w-5 h-5" />
@@ -49,6 +73,7 @@ export default function Header() {
           </button>
 
           {showNotifications && (
+
             <NotificationsModal
               notifications={notifications}
               loading={loading}
