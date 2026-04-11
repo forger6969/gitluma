@@ -24,6 +24,7 @@ import PageNotFound404 from './pages/404pagenotfound.jsx';
 import './locales/i18n.js'
 import ProjectMoreInf from './pages/ProjectMoreInf.jsx'
 import CreateNewproject from './pages/CreateNewproject.jsx';
+import ActFeed from './pages/ActFeed.jsx'
 
 
 const router = createBrowserRouter([
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "landing",
         element: <Landing />
+      },
+      {
+        path: "ActFeed",
+        element: <ActFeed/>
       },
       {
         path: "onboarding",
