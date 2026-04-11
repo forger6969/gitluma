@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSocketEvents } from "../hooks/useSocketEvents";
 import { getNotifications } from "../store/slices/notificationSlice";
 import api from "../api/api";
+import { getProjects } from "../store/slices/projectsSlice";
 
 const DashboardOutlet = () => {
   const token = localStorage.getItem("access_token");
@@ -30,6 +31,7 @@ useEffect(()=>{
 
 useEffect(()=>{
 dispatch(getNotifications())
+dispatch(getProjects())
 },[])
 
   useSocketEvents(socketReady);
