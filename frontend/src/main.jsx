@@ -21,6 +21,8 @@ import CreateNewproject from './pages/CreateNewproject.jsx';
 import WorkSpace from './pages/WorkSpace.jsx'
 import Profile from './pages/Profile.jsx'
 import './locales/i18n.js'
+import ProjectMoreInf from './pages/ProjectMoreInf.jsx'
+import CommitDetails from './pages/CommitDetails.jsx'
 
 
 const router = createBrowserRouter([
@@ -47,6 +49,14 @@ const router = createBrowserRouter([
       {
         path: "/workSpace",
         element: <WorkSpace/>
+      },
+      {
+        path: "moreInf/:id",
+        element: <ProjectMoreInf/>
+      },
+      {
+        path: "moreInf/:id",
+        element: <CommitDetails/>
       },
       {
         path: "/profile",
