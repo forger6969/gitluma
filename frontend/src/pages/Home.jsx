@@ -14,7 +14,6 @@ const langColors = {
 }
 const defaultLang = { text: 'text-blue-400', bg: 'bg-blue-400/10', dot: 'bg-blue-400' }
 
-/* ── Skeleton ── */
 const Skeleton = ({ className = '' }) => (
   <div className={`rounded-md animate-pulse bg-[#141b2d] ${className}`} />
 )
@@ -50,7 +49,6 @@ const SkeletonScreen = () => (
   </div>
 )
 
-/* ── Main ── */
 const Home = () => {
   const dispatch = useDispatch()
   const { user, loaded, loading, error } = useSelector(s => s.user)
@@ -60,6 +58,12 @@ const Home = () => {
     if (!loaded) dispatch(userFetch())
     if (!repos.loaded) dispatch(reposFetch())
   }, [loaded, repos.loaded, dispatch])
+
+  useEffect(() => {
+  if (!loaded) dispatch(userFetch())
+  if (!repos.loaded) dispatch(reposFetch())
+  // getNotifications YO'Q
+}, [loaded, repos.loaded, dispatch])
 
   if (loading && !user) return <SkeletonScreen />
   if (error) return (

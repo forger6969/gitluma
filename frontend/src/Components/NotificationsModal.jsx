@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react"
 import { Bell, Check, CheckCheck, Info, AlertTriangle, GitCommit, X } from "lucide-react"
+import { useDispatch } from "react-redux"
+import { markAllAsRead } from "../store/slices/notificationSlice"
 
 const iconMap = {
   info: <Info className="w-4 h-4 text-blue-400" />,
@@ -19,6 +21,7 @@ const timeAgo = (dateStr) => {
 
 export default function NotificationsModal({ notifications = [], loading, onClose }) {
   const ref = useRef()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const handler = (e) => {
@@ -38,7 +41,12 @@ export default function NotificationsModal({ notifications = [], loading, onClos
     >
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-700/50">
 
-        <button className="text-gray-400 hover:text-blue-400 text-xs flex items-center gap-1 transition-colors">
+
+
+        <button
+          onClick={() => dispatch(markAllAsRead())}
+          className="text-gray-400 hover:text-blue-400 text-xs flex items-center gap-1 transition-colors"
+        >
           <CheckCheck className="w-3.5 h-3.5" /> Mark all read
         </button>
         <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">

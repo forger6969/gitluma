@@ -30,9 +30,9 @@ useEffect(()=>{
 },[notifications])  
 
 useEffect(()=>{
-dispatch(getNotifications())
 dispatch(getProjects())
 },[])
+
 
   useSocketEvents(socketReady);
 
