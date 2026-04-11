@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import api from "../../api/api"
 
 export const getNotifications = createAsyncThunk(
-    'notification/get',
+    'notifications/get',
     async (_ , thunkAPI)=>{
 
         try {

@@ -11,7 +11,15 @@ const createProject = async (req, res, next) => {
 
         const user = await User.findById(id)
 
-        const projectCheck = await Project.findOne({ repo_fullname: fullname })
+        if (!user) {
+            return res.status(401).json({success:false , message:"User not found"})
+        }
+        console.log(user);
+        
+
+        const projectCheck = await Project.findOne({ repo_fullname: fullname }).populate()
+        console.log(projectCheck);
+        
 
         if (projectCheck) {
             return res.status(400).json({ success: false, message: "Проект с етим репозиторием уже создан" })
@@ -33,7 +41,7 @@ const createProject = async (req, res, next) => {
             active: true,
             events: ["push"],
             config: {
-                url: `/api/webhook/github`,
+                url: `${process.env.BACKEND_URL}/api/webhook/github`,
                 content_type: "json",
                 secret
             }
@@ -94,7 +102,26 @@ const getProjectById = async (req , res , next)=>{
 
 }
 
+
+const getMyProjects = async (req , res  , next)=>{
+
+try {
+    
+ const {id} = req.user
+
+ const projects = await Project.find({repo_owner_user:id})
+
+ res.json({success:true , projects})
+
+} catch (err) {
+    next(err)
+}
+
+}
+
+
 module.exports = {
     createProject,
-    getProjectById
+    getProjectById,
+    getMyProjects
 }
