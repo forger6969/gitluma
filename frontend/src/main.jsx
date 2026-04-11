@@ -12,7 +12,6 @@ import GithubCallbackPage from './pages/GithubCallbackPage.jsx'
 import Login from './pages/Login.jsx'
 import DashboardOutlet from './pages/DashboardOutlet.jsx'
 import Home from './pages/Home.jsx'
-import ActFeed from './pages/ActFeed.jsx'
 import PublicRoute from './Guards/PublicRoute.jsx';
 import PrivateRoute from './Guards/PrivateRoute.jsx';
 import Projekt from './pages/Projekt.jsx';
@@ -22,7 +21,6 @@ import WorkSpace from './pages/WorkSpace.jsx'
 import Profile from './pages/Profile.jsx'
 import './locales/i18n.js'
 import ProjectMoreInf from './pages/ProjectMoreInf.jsx'
-import CommitDetails from './pages/CommitDetails.jsx'
 
 
 const router = createBrowserRouter([
@@ -53,10 +51,6 @@ const router = createBrowserRouter([
       {
         path: "moreInf/:id",
         element: <ProjectMoreInf/>
-      },
-      {
-        path: "moreInf/:id",
-        element: <CommitDetails/>
       },
       {
         path: "/profile",

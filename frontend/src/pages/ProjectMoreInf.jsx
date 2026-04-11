@@ -1,71 +1,172 @@
-import React, { useEffect, useState } from 'react'
-import api from '../api/api'
-import { Link, useParams } from 'react-router-dom'
-import check from '../assets/check.png'
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import api from "../api/api";
 
-const ProjectMoreInf = () => {
-  const [projectInfo, setProjectInfo] = useState(null)
-  const {id} = useParams()
+const ProjectDetails = () => {
+  const { id } = useParams();
 
+  const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  let func = async () => {
-
+  const fetchProject = async () => {
     try {
-     let info = await api.get(`/api/project/${id}`)
-setProjectInfo(info.data.project.commits)
-console.log(info.data);
-
-
+      const res = await api.get(`/api/project/${id}`);
+      console.log(res.data);
+      
+      setProject(res.data.project);
     } catch (err) {
-      console.log(err)
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-  }
-    console.log(projectInfo);
+  };
 
   useEffect(() => {
-    func()
-  }, [])
+    fetchProject();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0f172a] text-white">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!project) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0f172a] text-red-400">
+        Project not found
+      </div>
+    );
+  }
 
   return (
-    <div className='w-[95%] max-w-full mx-auto'>
-      <h1 className='text-[#DFE2EB] text-[36px] font-[800] my-[20px]'>
-        Recent Commits
-      </h1>
+    <div className="bg-[#0f172a] min-h-screen text-white p-6">
+      <div className="max-w-6xl mx-auto space-y-6">
 
-      <div className='flex flex-col my-[20px] gap-5'>
-        {projectInfo && projectInfo.map((item) => (
-          <div key={item._id}>
-            <div className='w-full bg-[#181C22] flex gap-[50px] items-center border border-base-300 rounded-xl px-4 py-4 mb-4'>
-              
-              <div className='w-[50px] flex items-center justify-center rounded-[20%] bg-[#9E540033] h-[50px]'>
-                <img className='w-[25px]' src={check} alt="icon" />
-              </div>
+        {/* 🔹 Header */}
+        <div className="bg-[#1e293b] rounded-2xl p-6 shadow flex items-center gap-4">
+          <img
+            src={project.repo_owner_user?.avatar_url}
+            alt="avatar"
+            className="w-16 h-16 rounded-full border border-indigo-500"
+          />
+          <div>
+            <h1 className="text-2xl font-bold">{project.repo_name}</h1>
+            <p className="text-gray-400 text-sm">
+              {project.repo_full_name}
+            </p>
+          </div>
+        </div>
 
-              <div  className=' flex justify-between w-full items-center '>
-                <div>
-                  <h2 className='text-[16px] text-[#DFE2EB]'>
-                  Nickname: {item.author_username}
-                </h2>
-                <p className='text-[#474553] text-[14px]'>
-                  Date: {item.commit_date}
-                </p>
-                </div>
-                <div>
-                  <Link
-          to={`moreInf/:${item.id}`}
-          className='text-blue-400 underline text-sm'
-        >
-          View details
-        </Link>
-                </div>
-              </div>
+        {/* 🔹 Info */}
+        <div className="grid md:grid-cols-3 gap-4">
+          <Card title="Branch" value={project.default_branch} />
+          <Card title="Commits" value={project.commits?.length} />
+          <Card title="Visibility" value={project.visibility} />
+        </div>
 
+        {/* 🔹 Owner */}
+        <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
+          <h2 className="text-xl mb-4 font-semibold">Owner</h2>
+
+          <div className="flex items-center gap-4">
+            <img
+              src={project.repo_owner_user?.avatar_url}
+              alt=""
+              className="w-12 h-12 rounded-full"
+            />
+            <div>
+              <p className="font-medium">
+                {project.repo_owner_user?.username}
+              </p>
+              <p className="text-gray-400 text-sm">
+                {project.repo_owner_user?.email}
+              </p>
             </div>
           </div>
-        ))}
+        </div>
+
+        {/* 🔹 Commits */}
+        <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
+          <h2 className="text-xl font-semibold mb-4">
+            Commits ({project.commits?.length})
+          </h2>
+
+          <div className="space-y-3 max-h-[400px] overflow-y-auto">
+            {project.commits?.map((commit, index) => (
+              <div
+                key={index}
+                className="bg-[#0f172a] p-4 rounded-xl hover:bg-[#1e293b] transition"
+              >
+                <p className="text-sm font-medium">
+                  {commit.commit_message || "No message"}
+                </p>
+
+                <div className="flex justify-between text-xs text-gray-400 mt-2">
+                  <span>
+                    {new Date(commit.createdAt).toLocaleString()}
+                  </span>
+                  <span className="text-indigo-400">
+                    #{index + 1}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+            {/* 🔹 Members */}
+<div className="bg-[#1e293b] rounded-2xl p-6 shadow">
+  <h2 className="text-xl font-semibold mb-4">
+    Members ({project.members?.length})
+  </h2>
+
+  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+    {project.members?.map((member, index) => (
+      <div
+        key={index}
+        className="flex items-center gap-3 bg-[#0f172a] p-3 rounded-xl hover:bg-[#334155] transition"
+      >
+        <img
+          src={member.user?.avatar_url}
+          alt="avatar"
+          className="w-10 h-10 rounded-full"
+        />
+
+        <div className="flex-1">
+          <p className="text-sm font-medium">
+            {member.user?.username || "Unknown"}
+          </p>
+          <p className="text-xs text-gray-400">
+            {member.role}
+          </p>
+        </div>
+
+        {/* Role badge */}
+        <span
+          className={`text-xs px-2 py-1 rounded-full ${
+            member.role === "owner"
+              ? "bg-indigo-500/20 text-indigo-400"
+              : "bg-gray-500/20 text-gray-300"
+          }`}
+        >
+          {member.role}
+        </span>
+      </div>
+    ))}
+  </div>
+</div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProjectMoreInf
+const Card = ({ title, value }) => (
+  <div className="bg-[#1e293b] p-4 rounded-2xl shadow">
+    <p className="text-gray-400 text-sm">{title}</p>
+    <p className="text-lg font-semibold">{value || "N/A"}</p>
+  </div>
+);
+
+export default ProjectDetails;
