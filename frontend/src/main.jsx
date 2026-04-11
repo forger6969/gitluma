@@ -43,11 +43,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/workSpace",
-        element: <WorkSpace/>
+        element: <WorkSpace />
       },
       {
         path: "/profile",
-        element: <Profile/>
+        element: <Profile />
       }
     ],
   },
@@ -60,17 +60,13 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        index: true,
-        element: <Home />,
-      },
-      {
-        path: "projects",
-        element: <Projekt />,
-      },
-       {
-      path: "create",
-      element: <CreateNewproject />, 
-    }
+        path: "/dashboard",
+        children: [
+          { index: true, element: <Home /> },
+          { path: "projects", element: <Projekt /> },
+          { path: "profile", element: <Profile /> }
+        ]
+      }
     ],
   },
 ]);

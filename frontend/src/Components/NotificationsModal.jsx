@@ -37,28 +37,16 @@ export default function NotificationsModal({ notifications = [], loading, onClos
       ref={ref}
       className="absolute right-0 top-12 z-50 w-[380px] bg-[#0f1724] border border-gray-700/60 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden"
     >
-      {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-700/50">
-        <div className="flex items-center gap-2">
-          <Bell className="w-4 h-4 text-blue-400" />
-          <span className="text-white font-semibold text-sm">Notifications</span>
-          {unread.length > 0 && (
-            <span className="bg-blue-600 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
-              {unread.length}
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-3">
+
           <button className="text-gray-400 hover:text-blue-400 text-xs flex items-center gap-1 transition-colors">
             <CheckCheck className="w-3.5 h-3.5" /> Mark all read
           </button>
           <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">
             <X className="w-4 h-4" />
           </button>
-        </div>
       </div>
 
-      {/* Body */}
       <div className="max-h-[420px] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-700">
         {loading ? (
           <div className="flex flex-col gap-3 p-5">
@@ -81,7 +69,6 @@ export default function NotificationsModal({ notifications = [], loading, onClos
           </div>
         ) : (
           <>
-            {/* Unread */}
             {unread.length > 0 && (
               <div>
                 <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider px-5 pt-4 pb-2">
@@ -93,7 +80,6 @@ export default function NotificationsModal({ notifications = [], loading, onClos
               </div>
             )}
 
-            {/* Read */}
             {read.length > 0 && (
               <div>
                 <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider px-5 pt-4 pb-2">
@@ -108,7 +94,6 @@ export default function NotificationsModal({ notifications = [], loading, onClos
         )}
       </div>
 
-      {/* Footer */}
       <div className="border-t border-gray-700/50 px-5 py-3 text-center">
         <button className="text-blue-400 hover:text-blue-300 text-xs font-medium transition-colors">
           View all notifications →
@@ -121,12 +106,10 @@ export default function NotificationsModal({ notifications = [], loading, onClos
 function NotificationItem({ n, isUnread }) {
   return (
     <div className={`flex gap-3 px-5 py-3.5 cursor-pointer transition-colors hover:bg-white/5 ${isUnread ? "bg-blue-500/5" : ""}`}>
-      {/* Icon */}
       <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${isUnread ? "bg-blue-500/15" : "bg-gray-800"}`}>
         {iconMap[n.type] || iconMap.default}
       </div>
 
-      {/* Content */}
       <div className="flex-1 min-w-0">
         <p className={`text-sm leading-snug ${isUnread ? "text-white font-medium" : "text-gray-300"}`}>
           {n.message || n.title || "New notification"}
@@ -137,7 +120,6 @@ function NotificationItem({ n, isUnread }) {
         <p className="text-[11px] text-gray-600 mt-1">{timeAgo(n.createdAt)}</p>
       </div>
 
-      {/* Unread dot */}
       {isUnread && (
         <div className="w-2 h-2 bg-blue-500 rounded-full shrink-0 mt-2" />
       )}
