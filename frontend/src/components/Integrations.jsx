@@ -6,9 +6,6 @@ const Integrations = () => {
   const tools = [
     "GitHub",
     "GitLab",
-    "Bitbucket",
-    "Slack",
-    "Jira",
     "VS Code"
   ];
 

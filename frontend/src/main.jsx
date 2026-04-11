@@ -14,6 +14,7 @@ import DashboardOutlet from './pages/DashboardOutlet.jsx'
 import Home from './pages/Home.jsx'
 import Landing from './pages/Landing.jsx'
 import "./locales/i18n.js"; 
+import Info from './pages/Info.jsx'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
         path:"/landing",
         element:<Landing/>
       },
+      {
+        path:"/info",
+        element:<Info/>
+      }
     ],
 
     

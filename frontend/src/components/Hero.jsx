@@ -34,7 +34,7 @@ const Hero = () => {
           BETA 2.0 NOW LIVE
         </div>
 
-        <h1 className="text-5xl md:text-6xl font-bold max-w-3xl">
+        <h1  className="text-5xl md:text-6xl font-bold max-w-3xl">
           {t("hero_title")} <br />
           <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
             {t("commits")}

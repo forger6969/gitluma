@@ -101,8 +101,48 @@
         "security_2_desc": "Secure login via GitHub",
       
         "security_3_title": "Cloud storage",
-        "security_3_desc": "Stored on reliable servers"
-      
+        "security_3_desc": "Stored on reliable servers",
+        
+          "hero_title": "Start working with TeamFlow",
+          "hero_desc": "Powerful platform with GitHub integration",
+          "get_started": "Get Started",
+        
+          "features_title": "Features",
+          "features_desc": "Core platform capabilities",
+        
+          "feature_1_title": "GitHub Integration",
+          "feature_1_desc": "Track repos and PRs",
+        
+          "feature_2_title": "Real-time",
+          "feature_2_desc": "Live monitoring",
+        
+          "feature_3_title": "CI/CD",
+          "feature_3_desc": "Auto deployment",
+        
+          "security_title": "Security",
+          "security_desc": "Your data is fully protected",
+        
+          "security_1_title": "End-to-end protection",
+          "security_1_desc": "All data is encrypted",
+        
+          "security_2_title": "OAuth login",
+          "security_2_desc": "Secure login via GitHub",
+        
+          "security_3_title": "Cloud storage",
+          "security_3_desc": "Stored on reliable servers",
+        
+          "how_it_works": "How it works",
+        
+          "step_1": "Login via GitHub",
+          "step_2": "Connect repository",
+          "step_3": "Monitoring starts",
+          "step_4": "CI/CD runs",
+          "step_5": "View results",
+        
+          "cta_title": "Start now",
+          "cta_desc": "Manage your team efficiently",
+          "cta_button": "Start"
+        
     
     
   

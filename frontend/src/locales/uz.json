@@ -102,7 +102,47 @@
       "security_2_desc": "GitHub orqali xavfsiz kirish",
     
       "security_3_title": "Cloud storage",
-      "security_3_desc": "Ishonchli serverlarda saqlanadi"
+      "security_3_desc": "Ishonchli serverlarda saqlanadi",
     
-
+      
+        "hero_title": "TeamFlow bilan ishlashni boshlang",
+        "hero_desc": "GitHub integratsiyasi bilan kuchli platforma",
+        "get_started": "Boshlash",
+      
+        "features_title": "Funktsiyalar",
+        "features_desc": "Platformaning asosiy imkoniyatlari",
+      
+        "feature_1_title": "GitHub integratsiyasi",
+        "feature_1_desc": "Repo va PR monitoring",
+      
+        "feature_2_title": "Real vaqt",
+        "feature_2_desc": "Live kuzatuv",
+      
+        "feature_3_title": "CI/CD",
+        "feature_3_desc": "Avtomatik deploy",
+      
+        "security_title": "Xavfsizlik",
+        "security_desc": "Ma'lumotlaringiz to‘liq himoyalangan",
+      
+        "security_1_title": "End-to-end himoya",
+        "security_1_desc": "Barcha ma'lumotlar shifrlangan",
+      
+        "security_2_title": "OAuth login",
+        "security_2_desc": "GitHub orqali xavfsiz kirish",
+      
+        "security_3_title": "Cloud storage",
+        "security_3_desc": "Ishonchli serverlarda saqlanadi",
+      
+        "how_it_works": "Qanday ishlaydi",
+      
+        "step_1": "GitHub orqali kirish",
+        "step_2": "Repo ulash",
+        "step_3": "Monitoring boshlanadi",
+        "step_4": "CI/CD ishga tushadi",
+        "step_5": "Natijalarni ko‘rish",
+      
+        "cta_title": "Hozir boshlang",
+        "cta_desc": "Jamoangizni samarali boshqaring",
+        "cta_button": "Boshlash"
+      
   }

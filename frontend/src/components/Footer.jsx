@@ -9,7 +9,7 @@ const Footer = () => {
 
        
         <div>
-          <h2 className="text-white font-semibold text-lg mb-4">Kinetic</h2>
+          <h2 className="text-white font-semibold text-lg mb-4">GitLuma</h2>
           <p className="text-sm leading-relaxed">
             {t("footer_desc")}
           </p>
@@ -21,8 +21,7 @@ const Footer = () => {
           <ul className="space-y-2 text-sm">
             <li>{t("features")}</li>
             <li>{t("integrations")}</li>
-            <li>{t("pricing")}</li>
-            <li>{t("cli")}</li>
+            {/* <li>{t("cli")}</li> */}
           </ul>
         </div>
 
@@ -31,9 +30,7 @@ const Footer = () => {
           <h3 className="text-white mb-4">{t("company")}</h3>
           <ul className="space-y-2 text-sm">
             <li>{t("about")}</li>
-            <li>{t("careers")}</li>
             <li>{t("contact")}</li>
-            <li>{t("privacy")}</li>
           </ul>
         </div>
 

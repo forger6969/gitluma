@@ -4,7 +4,7 @@ const CTA = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="py-24 bg-gradient-to-r from-indigo-600 to-purple-600 text-center text-white">
+    <section className="py-24 bg-gradient-to-r from-indigo-700 to-purple-800 text-center text-white">
       <h2 className="text-3xl font-semibold mb-4">
         {t("cta_title")}
       </h2>
