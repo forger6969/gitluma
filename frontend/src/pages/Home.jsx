@@ -113,7 +113,7 @@ const Home = () => {
           </div>
 
           <div className="flex-1">
-            <p className="text-[#e2e8f0] text-base font-bold m-0">{u.name || u.login}</p>
+            <p className="text-[#e2e8f0] text-base font-bold m-0">{u.username || u.login}</p>
             <p className="text-[#3d5068] text-sm mt-1">{u.bio || 'No bio available'}</p>
           </div>
 
