@@ -3,7 +3,7 @@ import React from 'react'
 const LoginButton = ({ onClick }) => {
     return (
         <div
-            className="bg-[#161b27] rounded-[18px] px-7 pt-7 pb-[24px] w-full flex flex-col items-center shadow-lg"
+            className="bg-[#232a38] rounded-[18px] px-7 pt-7 pb-[24px] w-full flex flex-col items-center shadow-lg"
             style={{ maxWidth: 340 }}
         >
             {/* Button */}
@@ -12,7 +12,7 @@ const LoginButton = ({ onClick }) => {
                 {/* Blur glow */}
                 <div
                     style={{
-                        background: 'linear-gradient(90deg,#6c6be8,#a78bfa,#f472b6,#6c6be8)',
+                        background: 'linear-gradient(90deg,#E8654A,#f0926e,#E8654A,#E8654A)',
                         backgroundSize: '300% 100%',
                         animation: 'spinGradient 3s linear infinite',
                         filter: 'blur(12px)',
@@ -24,7 +24,7 @@ const LoginButton = ({ onClick }) => {
                 {/* Border */}
                 <div
                     style={{
-                        background: 'linear-gradient(90deg,#6c6be8,#a78bfa,#f472b6,#6c6be8)',
+                        background: 'linear-gradient(90deg,#E8654A,#f0926e,#E8654A,#E8654A)',
                         backgroundSize: '300% 100%',
                         animation: 'spinGradient 3s linear infinite',
                     }}
@@ -37,22 +37,22 @@ const LoginButton = ({ onClick }) => {
                     className="
                         relative z-10 w-full
                         flex items-center justify-center gap-[10px]
-                        bg-[#2986ff] hover:bg-[#3d93ff]
+                        bg-[#E8654A] hover:bg-[#d55a42]
                         active:scale-[0.97] hover:-translate-y-[1px]
                         text-white border-none rounded-[10px]
                         py-[13px] px-5 text-[15px] font-medium
                         transition-all duration-200 cursor-pointer
                     "
                     style={{
-                        boxShadow: '0 0 20px rgba(108,107,232,0.5)',
+                        boxShadow: '0 0 20px rgba(232,101,74,0.4)',
                     }}
                     onMouseEnter={e => {
                         e.currentTarget.style.boxShadow =
-                            '0 0 30px rgba(167,139,250,0.7), 0 0 60px rgba(108,107,232,0.3)';
+                            '0 0 30px rgba(232,101,74,0.6), 0 0 60px rgba(232,101,74,0.2)';
                     }}
                     onMouseLeave={e => {
                         e.currentTarget.style.boxShadow =
-                            '0 0 20px rgba(108,107,232,0.5)';
+                            '0 0 20px rgba(232,101,74,0.4)';
                     }}
                 >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -62,13 +62,13 @@ const LoginButton = ({ onClick }) => {
                 </button>
             </div>
 
-            <p className="text-[#9aa4b2] text-[13px] text-center leading-[1.6] mb-[16px]">
+            <p className="text-[#EEF1F7]/60 text-[13px] text-center leading-[1.6] mb-[16px]">
                 Sign in securely using your GitHub account.
             </p>
 
             <div className="flex items-center gap-2">
                 <div className="w-[7px] h-[7px] bg-[#22c55e] rounded-full flex-shrink-0" />
-                <span className="text-[#6b7280] text-[10.5px] tracking-[0.08em] uppercase">
+                <span className="text-[#EEF1F7]/40 text-[10.5px] tracking-[0.08em] uppercase">
                     Secure / OAuth
                 </span>
             </div>
