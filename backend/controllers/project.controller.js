@@ -11,7 +11,7 @@ const createProject = async (req, res, next) => {
 
         const user = await User.findById(id)
 
-        const projectCheck = await Project.findOne({ repo_fullname: fullname })
+        const projectCheck = await Project.findOne({ repo_fullname: fullname }).populate()
 
         if (projectCheck) {
             return res.status(400).json({ success: false, message: "Проект с етим репозиторием уже создан" })
