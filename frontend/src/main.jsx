@@ -17,6 +17,8 @@ import Landing from './pages/Landing.jsx';
 import CreateNewproject from './pages/CreateNewproject.jsx';
 import WorkSpace from './pages/WorkSpace.jsx'
 import Profile from './pages/Profile.jsx'
+import OnBoardWizard from './pages/OnBoardWizard.jsx';
+import PageNotFound404 from './pages/404pagenotfound.jsx';
 import './locales/i18n.js'
 
 
@@ -24,6 +26,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <PageNotFound404 />,
     children: [
       {
         path: "github/callback",
@@ -42,12 +45,20 @@ const router = createBrowserRouter([
         element: <Landing />
       },
       {
+        path: "onboarding",
+        element: <OnBoardWizard />
+      },
+      {
         path: "/workSpace",
         element: <WorkSpace/>
       },
       {
         path: "/profile",
         element: <Profile/>
+      },
+      {
+        path: "*",
+        element: <PageNotFound404 />
       }
     ],
   },
@@ -58,6 +69,7 @@ const router = createBrowserRouter([
         <DashboardOutlet />
       </PrivateRoute>
     ),
+    errorElement: <PageNotFound404 />,
     children: [
       {
         index: true,
