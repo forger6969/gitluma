@@ -65,6 +65,9 @@ if (event === "push") {
       commit_date:c.timestamp
     })
 
+    console.log(commit);
+    
+
     project.commits.push(commit._id)
     await project.save()
 

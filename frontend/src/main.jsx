@@ -66,27 +66,21 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    errorElement: <h1>404 Not Found </h1>,
-  element: (
-    <PrivateRoute>
-      <DashboardOutlet />
-    </PrivateRoute>
-  ),
-
-  children: [
-    {
-      index: true,
-      element: <Home />,
-    },
-    {
-      path: "projects",
-      element: <Projekt />,
-    },
-    {
-      path: "create",
-      element: <CreateNewproject />,
-    }
-  ],
+    element: (
+      <PrivateRoute>
+        <DashboardOutlet />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        path: "/dashboard",
+        children: [
+          { index: true, element: <Home /> },
+          { path: "projects", element: <Projekt /> },
+          { path: "profile", element: <Profile /> }
+        ]
+      }
+    ],
   },
 ]);
 
