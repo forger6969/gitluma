@@ -41,7 +41,7 @@ const createProject = async (req, res, next) => {
             active: true,
             events: ["push"],
             config: {
-                url: `${process.env.BACKEND_URL}/api/webhook/github`,
+                url: `${process.env.WEBHOOK_URL}/api/webhook/github`,
                 content_type: "json",
                 secret
             }
