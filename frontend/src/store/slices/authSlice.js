@@ -6,6 +6,7 @@ export const fetchMe = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await api.get("/api/user/me");
+      localStorage.setItem("id" , res.data.user._id)
       return res.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response?.data || err.message);
