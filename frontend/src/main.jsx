@@ -14,12 +14,13 @@ import PublicRoute from './Guards/PublicRoute.jsx';
 import PrivateRoute from './Guards/PrivateRoute.jsx';
 import Projekt from './pages/Projekt.jsx';
 import Landing from './pages/Landing.jsx';
-import CreateNewproject from './pages/CreateNewproject.jsx';
+
 import WorkSpace from './pages/WorkSpace.jsx'
 import Profile from './pages/Profile.jsx'
 import OnBoardWizard from './pages/OnBoardWizard.jsx';
 import PageNotFound404 from './pages/404pagenotfound.jsx';
 import './locales/i18n.js'
+import CreateNewproject from './pages/CreateNewproject.jsx';
 
 
 const router = createBrowserRouter([
@@ -60,6 +61,7 @@ const router = createBrowserRouter([
         path: "*",
         element: <PageNotFound404 />
       }
+     
     ],
   },
   {
@@ -78,8 +80,9 @@ const router = createBrowserRouter([
       {
         path: "projects",
         element: <Projekt />,
-      },
-       {
+      }
+   ,   
+      {
       path: "create",
       element: <CreateNewproject />, 
     }
