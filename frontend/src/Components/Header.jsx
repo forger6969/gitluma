@@ -7,6 +7,8 @@ import { userFetch } from "../store/slices/userSlice";
 import { reposFetch } from "../store/slices/repoSlices";
 import { getNotifications } from "../store/slices/notificationSlice";
 import { markAllAsRead } from "../store/slices/notificationSlice"
+import ProfileModal from "./ProfileModal"
+
 
 export default function Header() {
   const [showNotifications, setShowNotifications] = useState(false)
@@ -14,6 +16,7 @@ export default function Header() {
   const prevCountRef = useRef(0)
   const audioRef = useRef(null)
   const unlockedRef = useRef(false)
+  const [showProfileModal, setShowProfileModal] = useState(false)
 
   const { notifications, loading } = useSelector((state) => state.notifications)
   const dispatch = useDispatch()
@@ -53,7 +56,7 @@ export default function Header() {
   useEffect(() => {
     const currentCount = notifications.length
     if (currentCount > prevCountRef.current && prevCountRef.current !== 0) {
-      // Ovoz
+
       if (audioRef.current) {
         audioRef.current.currentTime = 0
         audioRef.current.play().catch(() => { })
@@ -111,9 +114,18 @@ export default function Header() {
             )}
           </div>
 
-          <div className="flex items-center gap-3">
-            <img src={u.avatar_url} alt="avatar" className="w-9 h-9 rounded-full ring-2 ring-gray-700" />
-            <p className="text-sm text-white font-medium">{u.username}</p>
+          <div className="relative">
+            <div
+              onClick={() => setShowProfileModal(prev => !prev)}
+              className="flex items-center gap-3 cursor-pointer"
+            >
+              <img src={u.avatar_url} className="w-9 h-9 rounded-full ring-2 ring-gray-700" />
+              <p className="text-sm text-white font-medium">{u.username}</p>
+            </div>
+
+            {showProfileModal && (
+              <ProfileModal onClose={() => setShowProfileModal(false)} />
+            )}
           </div>
         </div>
       </div>
