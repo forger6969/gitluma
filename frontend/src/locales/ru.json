@@ -102,7 +102,27 @@
       "security_2_desc": "Безопасный вход через GitHub",
     
       "security_3_title": "Облачное хранение",
-      "security_3_desc": "Надежные серверы"
+      "security_3_desc": "Надежные серверы",
+      "workspace": "Новый проект",
+  "setup": "Быстрая настройка проекта",
+  "project": "ПРОЕКТ",
+  "projectName": "Название проекта",
+  "description": "Описание...",
+  "repository": "РЕПОЗИТОРИЙ",
+  "selectRepo": "Выбрать репозиторий",
+  "changeRepo": "Изменить репозиторий",
+  "sync": "Синхронизация с GitHub",
+  "reset": "Сброс",
+  "create": "Создать",
+  "creating": "Создание...",
+  "search": "Поиск...",
+  "selectRepository": "Выберите репозиторий",
+  "loading": "Загрузка...",
+  "error": "Ошибка",
+  "noDescription": "Нет описания",
+  "projectCreated": "Проект создан 🚀",
+  "selectAlert": "Выберите репозиторий"
+
     
   
 

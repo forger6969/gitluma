@@ -102,7 +102,25 @@
       "security_2_desc": "GitHub orqali xavfsiz kirish",
     
       "security_3_title": "Cloud storage",
-      "security_3_desc": "Ishonchli serverlarda saqlanadi"
-    
+      "security_3_desc": "Ishonchli serverlarda saqlanadi",
+     "workspace": "Yangi loyiha",
+  "setup": "Loyihani tez sozlang",
+  "project": "LOYIHA",
+  "projectName": "Loyiha nomi",
+  "description": "Tavsif...",
+  "repository": "REPOZITORIYA",
+  "selectRepo": "Repo tanlash",
+  "changeRepo": "Repo o‘zgartirish",
+  "sync": "GitHub bilan bog‘lanadi",
+  "reset": "Tozalash",
+  "create": "Yaratish",
+  "creating": "Yaratilmoqda...",
+  "search": "Qidirish...",
+  "selectRepository": "Repo tanlang",
+  "loading": "Yuklanmoqda...",
+  "error": "Xatolik",
+  "noDescription": "Tavsif yo‘q",
+  "projectCreated": "Loyiha yaratildi 🚀",
+  "selectAlert": "Repo tanlang"
 
   }

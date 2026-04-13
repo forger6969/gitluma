@@ -101,7 +101,26 @@
         "security_2_desc": "Secure login via GitHub",
       
         "security_3_title": "Cloud storage",
-        "security_3_desc": "Stored on reliable servers"
+        "security_3_desc": "Stored on reliable servers",
+         "workspace": "New Workspace",
+  "setup": "Setup your project quickly",
+  "project": "PROJECT",
+  "projectName": "Project name",
+  "description": "Description...",
+  "repository": "REPOSITORY",
+  "selectRepo": "Select repo",
+  "changeRepo": "Change repository",
+  "sync": "Sync with GitHub repository",
+  "reset": "Reset",
+  "create": "Create",
+  "creating": "Creating...",
+  "search": "Search...",
+  "selectRepository": "Select Repository",
+  "loading": "Loading...",
+  "error": "Error",
+  "noDescription": "No description",
+  "projectCreated": "Project created 🚀",
+  "selectAlert": "Select a repository"
       
     
     
