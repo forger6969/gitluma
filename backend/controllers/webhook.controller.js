@@ -84,6 +84,7 @@ await project.save();
       repo_id:payload.repository.id,
       repo_fullname:payload.repository.full_name,
       commit_date:c.timestamp
+      
     })
 
     console.log(commit);
