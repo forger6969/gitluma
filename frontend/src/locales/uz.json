@@ -91,6 +91,9 @@
     
       "integrations_title": "Integratsiyalar",
       "integrations_desc": "Sevimli vositalaringiz bilan ishlaydi",
+      "github_title": "GitHub integratsiyasi",
+      "github_desc": "Repositoryni ulang va commitlarni tasklar bilan avtomatik sinxronlang.",
+      "connect_github": "GitHub ulash",
     
       "security_title": "Xavfsizlik",
       "security_desc": "Ma’lumotlaringiz biz bilan himoyalangan",

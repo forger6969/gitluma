@@ -91,6 +91,9 @@
     
       "integrations_title": "Интеграции",
       "integrations_desc": "Работает с вашими инструментами",
+      "github_title": "Интеграция с GitHub",
+      "github_desc": "Подключите репозиторий и автоматически синхронизируйте коммиты с задачами.",
+      "connect_github": "Подключить GitHub",
     
       "security_title": "Безопасность",
       "security_desc": "Ваши данные защищены",
