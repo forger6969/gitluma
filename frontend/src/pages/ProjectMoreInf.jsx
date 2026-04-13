@@ -16,6 +16,7 @@ const ProjectDetails = () => {
       setProject(res.data.project);
     } catch (err) {
       console.error(err);
+    setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -88,34 +89,34 @@ const ProjectDetails = () => {
           </div>
         </div>
 
-        {/* 🔹 Commits */}
-        <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
-          <h2 className="text-xl font-semibold mb-4">
-            Commits ({project.commits?.length})
-          </h2>
+       {/* 🔹 Commits */}
+<div className="bg-[#1e293b] rounded-2xl p-6 shadow">
+  <h2 className="text-xl font-semibold mb-4">
+    Commits ({project.commits?.length})
+  </h2>
 
-          <div className="space-y-3 max-h-[400px] overflow-y-auto">
-            {project.commits?.map((commit, index) => (
-              <div
-                key={index}
-                className="bg-[#0f172a] p-4 rounded-xl hover:bg-[#1e293b] transition"
-              >
-                <p className="text-sm font-medium">
-                  {commit.commit_message || "No message"}
-                </p>
+  <div className="space-y-3 max-h-[400px] overflow-y-auto">
+    {[...(project.commits || [])].reverse().map((commit, index) => (
+      <div
+        key={index}
+        className="bg-[#0f172a] p-4 rounded-xl hover:bg-[#1e293b] transition"
+      >
+        <p className="text-sm font-medium">
+          {commit.commit_message || "No message"}
+        </p>
 
-                <div className="flex justify-between text-xs text-gray-400 mt-2">
-                  <span>
-                    {new Date(commit.createdAt).toLocaleString()}
-                  </span>
-                  <span className="text-indigo-400">
-                    #{index + 1}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="flex justify-between text-xs text-gray-400 mt-2">
+          <span>
+            {new Date(commit.createdAt).toLocaleString()}
+          </span>
+          <span className="text-indigo-400">
+            #{index + 1}
+          </span>
         </div>
+      </div>
+    ))}
+  </div>
+</div>
             {/* 🔹 Members */}
 <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
   <h2 className="text-xl font-semibold mb-4">
