@@ -82,7 +82,7 @@ const Home = () => {
       >
         <div>
           <h1 className="text-[#e2e8f0] text-xl font-bold tracking-tight m-0">Workspace</h1>
-          <p className="text-[#3d5068] text-sm mt-1">{repos.repos.length} repositories</p>
+          <p className="text-[#3d5068] text-sm mt-1">{repos?.repos?.length} repositories</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
@@ -113,8 +113,8 @@ const Home = () => {
           </div>
 
           <div className="flex-1">
-            <p className="text-[#e2e8f0] text-base font-bold m-0">{u.name || u.login}</p>
-            <p className="text-[#3d5068] text-sm mt-1">{u.bio || 'No bio available'}</p>
+            <p className="text-[#e2e8f0] text-base font-bold m-0">{u?.username || u?.login}</p>
+            <p className="text-[#3d5068] text-sm mt-1">{u?.bio || 'No bio available'}</p>
           </div>
 
           <div className="flex gap-3 ml-auto">
@@ -143,20 +143,20 @@ const Home = () => {
             >
               <div className="flex justify-between items-start">
                 <p className="text-[#e2e8f0] text-sm font-bold m-0">{repo.name}</p>
-                {repo.language && (
+                {repo?.language && (
                   <span className={`flex items-center gap-1.5 text-[11px] font-semibold ${lc.text} ${lc.bg} px-2.5 py-0.5 rounded-full`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${lc.dot}`} />
-                    {repo.language}
+                    {repo?.language}
                   </span>
                 )}
               </div>
               <p className="text-[#3d5068] text-xs leading-relaxed mt-2 flex-1 min-h-[36px]">
-                {repo.description || 'No description provided'}
+                {repo?.description || 'No description provided'}
               </p>
               <div className="mt-3 bg-[#141b2d] rounded-lg px-3 py-2.5 flex justify-between items-center">
                 <span className="text-[11px] font-bold text-emerald-400 bg-emerald-400/10 px-2.5 py-0.5 rounded-full"> Active</span>
                 <motion.a
-                  href={repo.html_url} target="_blank" rel="noreferrer"
+                  href={repo?.html_url} target="_blank" rel="noreferrer"
                   whileHover={{ x: 2 }}
                   className="text-xs text-blue-400 no-underline font-semibold"
                 >
@@ -181,14 +181,14 @@ const Home = () => {
             <span className="text-purple-400 text-sm">◈</span>
             <p className="text-[#3d5068] text-[11px] font-bold uppercase tracking-widest m-0">Active Tasks</p>
           </div>
-          {repos.repos.slice(0, 4).map((repo, i) => (
+          {repos?.repos?.slice(0, 4).map((repo, i) => (
             <div
-              key={repo.id}
+              key={repo?.id}
               className={`flex justify-between items-center px-2 py-2.5 rounded-lg ${i % 2 !== 0 ? 'bg-[#141b2d]' : ''}`}
             >
               <div>
-                <p className="text-[#e2e8f0] text-sm font-medium m-0">{repo.name}</p>
-                <p className="text-[#3d5068] text-[11px] mt-0.5">{repo.language || 'Unknown'}</p>
+                <p className="text-[#e2e8f0] text-sm font-medium m-0">{repo?.name}</p>
+                <p className="text-[#3d5068] text-[11px] mt-0.5">{repo?.language || 'Unknown'}</p>
               </div>
               <span className="text-[11px] font-bold text-blue-400 bg-blue-400/10 px-2.5 py-0.5 rounded-full">
                 In Progress
@@ -218,9 +218,9 @@ const Home = () => {
               whileHover={{ x: 3 }}
               className={`flex items-center gap-3 px-2 py-2.5 rounded-lg ${i % 2 !== 0 ? 'bg-[#141b2d]' : ''}`}
             >
-              <div className={`w-2 h-2 rounded-full shrink-0 ${item.dot} shadow-[0_0_7px] ${item.glow}`} />
-              <p className="text-[#e2e8f0] text-sm flex-1 m-0">{item.msg}</p>
-              <span className="text-[11px] text-[#3d5068] bg-[#141b2d] px-2 py-0.5 rounded-full">{item.time}</span>
+              <div className={`w-2 h-2 rounded-full shrink-0 ${item?.dot} shadow-[0_0_7px] ${item?.glow}`} />
+              <p className="text-[#e2e8f0] text-sm flex-1 m-0">{item?.msg}</p>
+              <span className="text-[11px] text-[#3d5068] bg-[#141b2d] px-2 py-0.5 rounded-full">{item?.time}</span>
             </motion.div>
           ))}
         </motion.div>

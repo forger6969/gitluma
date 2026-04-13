@@ -4,7 +4,7 @@ const { createProject, getProjectById, getMyProjects } = require("../controllers
 const router = express.Router()
 
 router.post("/project/create" , userTokenMiddleware , createProject)
-router.get("/project/:id",  getProjectById)
 router.get("/project/my" , userTokenMiddleware , getMyProjects)
+router.get("/project/:id",  getProjectById)
 
 module.exports = router

@@ -56,7 +56,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/workSpace",
-        element: <WorkSpace/>
+        element: <WorkSpace />
       },
       
       {
@@ -77,31 +77,16 @@ const router = createBrowserRouter([
         <DashboardOutlet />
       </PrivateRoute>
     ),
-    errorElement: <PageNotFound404 />,
     children: [
       {
-        index: true,
-        element: <Home />,
-      },
-     
-      {
-        path: "projects",
-        element: <Projekt />,
+        path: "/dashboard",
+        children: [
+          { index: true, element: <Home /> },
+          { path: "projects", element: <Projekt /> },
+          { path: "profile", element: <Profile /> },
+          { path: "moreInf/:id",element: <ProjectMoreInf/>},
+        ]
       }
-   ,   
-   
-      {
-        path: "ActFeed",
-        element: <ActFeed/>
-      },
-      {
-      path: "create",
-      element: <CreateNewproject />, 
-    },
-     {
-        path: "moreInf/:id",
-        element: <ProjectMoreInf/>
-      },
     ],
   },
 ]);

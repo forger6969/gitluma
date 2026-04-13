@@ -7,7 +7,7 @@ export const getNotifications = createAsyncThunk(
 
         try {
            
-            const req = await api.get("/api/notfication/my")
+            const req = await api.get("/api/notification/my")
             console.log("notifications:" , req.data);
             
             return req.data
@@ -48,7 +48,7 @@ const notificationSlice = createSlice({
         })
 
         .addCase(getNotifications.fulfilled , (state , action)=>{
-            state.notifications = action.notifications
+            state.notifications = action.payload.notifications
             state.loading = false
         })
 
