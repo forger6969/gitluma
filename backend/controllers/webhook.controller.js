@@ -3,7 +3,7 @@ const axios = require("axios");
 const Project = require("../models/projects.model");
 const Commit = require("../models/commit.model");
 const User = require("../models/user.model");
-const { sendNotifyByID } = require("../socket");
+const { sendNotifyByID, sendCommitToPorjectRoom } = require("../socket");
 const Notification = require("../models/notification.model");
 // функция проверки подписи GitHub
 function verifySignature(req, secret) {
@@ -53,6 +53,23 @@ if (event === "push") {
     type:"commit"
   })
 
+  const commit = await Commit.create({
+    commit_id:payload.head_commit.id,
+    author_username:payload.head_commit.author.username || payload.head_commit.author.name,
+    author_github_id:payload.sender.id,
+    commit_author:user?._id || null,
+    commit_message:payload.head_commit.message,
+    project:project._id,
+    repo_id:payload.repository.id,
+    repo_fullname:payload.repository.full_name,
+    commit_date:payload.head_commit.timestamp
+  })
+
+sendCommitToPorjectRoom(project._id , {
+  commit
+})    
+project.commits.push(commit._id);
+await project.save();
   sendNotifyByID(user._id , notfication)
 
   for (const c of payload.commits){
