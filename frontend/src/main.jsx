@@ -49,10 +49,7 @@ const router = createBrowserRouter([
         path: "landing",
         element: <Landing />
       },
-      {
-        path: "ActFeed",
-        element: <ActFeed/>
-      },
+     
       {
         path: "onboarding",
         element: <OnBoardWizard />
@@ -61,10 +58,7 @@ const router = createBrowserRouter([
         path: "/workSpace",
         element: <WorkSpace />
       },
-      {
-        path: "moreInf/:id",
-        element: <ProjectMoreInf/>
-      },
+      
       {
         path: "/profile",
         element: <Profile/>
@@ -89,7 +83,9 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Home /> },
           { path: "projects", element: <Projekt /> },
-          { path: "profile", element: <Profile /> }
+          { path: "profile", element: <Profile /> },
+          {path:"project/:id", element:<ProjectMoreInf/>},
+          {path:"create" , element:<CreateNewproject/>},
         ]
       }
     ],
