@@ -17,13 +17,15 @@ const DashboardOutlet = () => {
   const dispatch = useDispatch()
 
 
-  useEffect(() => {
-    const userId = user?.user?._id || user?._id;
+// DashboardOutlet.jsx
+useEffect(() => {
+    // Берём userId из localStorage напрямую — он уже есть
+    const userId = user?.user?._id || user?._id || localStorage.getItem("user_id");
     if (!userId) return;
 
     connectSocket(userId);
     setSocketReady(true);
-  }, [user]);
+}, [user?._id, user?.user?._id]); // 👈 зависимость на конкретное поле, а не весь объект
 
 useEffect(()=>{
   console.log(notifications);

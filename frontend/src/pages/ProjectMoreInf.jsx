@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/api";
+import { buildProjectionTransform } from "framer-motion";
+import useCommitsEvents from "../hooks/useCommitsEvents";
 
 const ProjectDetails = () => {
   const { id } = useParams();
 
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const commit = useCommitsEvents(project?._id)
+  const commits = useSelector((state)=> state.projectcommits.commits)
+  
 
   const fetchProject = async () => {
     try {
@@ -25,6 +30,11 @@ const ProjectDetails = () => {
   useEffect(() => {
     fetchProject();
   }, [id]);
+
+useEffect(()=>{
+console.log( "new commit", commits);
+
+},[commits])
 
   if (loading) {
     return (
