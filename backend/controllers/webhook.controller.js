@@ -45,36 +45,12 @@ if (event === "push") {
     return res.status(404).json({ message: "User not found" });
   }
   
-  const notfication = await Notification.create({
-    title:"Новый коммит!",
-    text:`В проекте ${project.repo_name} новые коммиты! нажмите чтобы посмотреть`,
-    redirect_url:`${process.env.FRONTEND_URL}/dashboard/project/${project._id}`,
-    user:user._id,
-    type:"commit"
-  })
-
-  const commit = await Commit.create({
-    commit_id:payload.head_commit.id,
-    author_username:payload.head_commit.author.username || payload.head_commit.author.name,
-    author_github_id:payload.sender.id,
-    commit_author:user?._id || null,
-    commit_message:payload.head_commit.message,
-    project:project._id,
-    repo_id:payload.repository.id,
-    repo_fullname:payload.repository.full_name,
-    commit_date:payload.head_commit.timestamp
-  })
-
-sendCommitToPorjectRoom(project._id , {
-  commit
-})    
-project.commits.push(commit._id);
-await project.save();
-  sendNotifyByID(user._id , notfication)
-
+  const savedCommits = [];
   for (const c of payload.commits){
+    const existing = await Commit.findOne({ commit_id: c.id });
+    if (existing) continue;
 
-   const commit = await Commit.create({
+    const commit = await Commit.create({
       commit_id:c.id,
       author_username:c.author.username || c.author.name,
       author_github_id:payload.sender.id,
@@ -84,16 +60,30 @@ await project.save();
       repo_id:payload.repository.id,
       repo_fullname:payload.repository.full_name,
       commit_date:c.timestamp
-      
     })
 
-    console.log(commit);
-    
-
     project.commits.push(commit._id)
-    await project.save()
-
+    savedCommits.push(commit)
   }
+
+  if (savedCommits.length === 0) {
+    return res.status(200).json({ success: true, skipped: true });
+  }
+
+  await project.save()
+
+  const notfication = await Notification.create({
+    title:"Новый коммит!",
+    text:`В проекте ${project.repo_name} новые коммиты! нажмите чтобы посмотреть`,
+    redirect_url:`${process.env.FRONTEND_URL}/dashboard/project/${project._id}`,
+    user:user._id,
+    type:"commit"
+  })
+
+  for (const commit of savedCommits) {
+    sendCommitToPorjectRoom(project._id, { commit })
+  }
+  sendNotifyByID(user._id, notfication)
 
 }
 
