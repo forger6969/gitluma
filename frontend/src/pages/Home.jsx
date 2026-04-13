@@ -33,6 +33,7 @@ const SkeletonScreen = () => (
         <Skeleton className="w-14 h-14 rounded-full" />
         <div className="flex flex-col gap-2 flex-1">
           <Skeleton className="w-2/5 h-4" />
+          
           <Skeleton className="w-3/5 h-3" />
         </div>
       </div>

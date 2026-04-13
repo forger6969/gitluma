@@ -12,7 +12,7 @@ export const reposFetch = createAsyncThunk(
             return repos
 
         } catch (err) {
-            return thunkAPI.rejectWithValue(err.response ?.data || err.message)
+            return thunkAPI.rejectWithValue(err.response?.data || err.message)
         }
     }
 )

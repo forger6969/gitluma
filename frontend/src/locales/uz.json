@@ -1,0 +1,108 @@
+{
+    "platform": "Platforma",
+    "documentation": "Hujjatlar",
+    "changelog": "O‘zgarishlar",
+  
+    "hero_title": "Vazifalarni",
+    "commits": "commitlar orqali boshqaring",
+    "hero_desc": "Commitga vazifa ID sini qo‘shing — qolganini biz bajaramiz. Terminaldan dashboardga to‘g‘ridan-to‘g‘ri sinxronlang.",
+    "view_docs": "Hujjatlarni ko‘rish",
+  
+    "how_it_works": "Qanday ishlaydi",
+    "how_desc": "Terminalda ishlaydigan jamoalar uchun zamonaviy ish jarayoni",
+  
+    "phase1": "Vazifa yaratish",
+    "phase1_desc": "Dashboardda maqsadingizni belgilang. Har bir vazifa noyob ID oladi.",
+  
+    "phase2": "ID bilan commit",
+    "phase2_desc": "Commit xabarini vazifa ID bilan boshlang. Hammasi avtomatik sinxronlanadi.",
+  
+    "phase3": "Team Lead tekshiradi",
+    "phase3_desc": "Barcha commitlar va PRlar bitta joyda ko‘rib chiqiladi.",
+  
+    "ide": "Integratsiyalashgan IDE tajribasi",
+    "ide_desc": "Dasturchilar uchun, dasturchilar tomonidan yaratilgan.",
+  
+    "analytics": "Commit tahlillari",
+    "analytics_desc": "Git tarixingiz orqali tezlik va samaradorlikni kuzating.",
+  
+    "cta": "Commitlaringizni soddalashtirishga tayyormisiz?",
+    "start": "Bepul boshlash",
+  
+    "footer_desc": "Texnik jamoalar uchun loyiha boshqaruvini avtomatlashtirish.",
+  
+    "features": "Imkoniyatlar",
+    "integrations": "Integratsiyalar",
+    "pricing": "Narxlar",
+    "cli": "CLI vositasi",
+  
+    "company": "Kompaniya",
+    "about": "Biz haqimizda",
+    "careers": "Ish o‘rinlari",
+    "contact": "Aloqa",
+    "privacy": "Maxfiylik",
+  
+    "status": "TIZIM HOLATI",
+    "operational": "Barcha tizimlar ishlamoqda",
+    
+      "pricing_title": "Narxlar",
+      "pricing_desc": "Sizga mos tarifni tanlang",
+    
+      "free": "Bepul",
+      "pro": "Pro",
+      "team_plan": "Jamoa",
+    
+      "free_1": "Oddiy commit tracking",
+      "free_2": "1 loyiha",
+      "free_3": "Email yordam",
+    
+      "pro_1": "Cheksiz loyihalar",
+      "pro_2": "Jamoa bilan ishlash",
+      "pro_3": "Analitika",
+    
+      "team_1": "Barcha Pro funksiyalar",
+      "team_2": "Tezkor yordam",
+      "team_3": "Kengaytirilgan analitika",
+    
+      "testimonials": "Foydalanuvchilar fikri",
+      "testimonial_1": "Gitluma bizning ishimizni osonlashtirdi.",
+      "testimonial_2": "Commitlar bilan ishlash juda qulay bo‘ldi.",
+      "testimonial_3": "Jamoaviy ish uchun zo‘r vosita.",
+      "developer": "Dasturchi",
+    
+      "feature_1": "Aqlli commit parsing",
+      "feature_2": "Real vaqt sync",
+      "feature_3": "Jamoa insightlari",
+      "feature_4": "CLI integratsiya",
+      "feature_5": "GitHub avtomatika",
+      "feature_6": "Bildirishnomalar",
+      "feature_desc": "Workflow'ni yaxshilovchi kuchli funksiya",
+    
+      "faq": "Ko‘p beriladigan savollar",
+      "faq_q1": "Gitluma qanday ishlaydi?",
+      "faq_a1": "Commitlar orqali tasklarni boshqaradi.",
+      "faq_q2": "Bepulmi?",
+      "faq_a2": "Ha, bepul tarif mavjud.",
+      "faq_q3": "Jamoa uchun ishlaydimi?",
+      "faq_a3": "Ha, jamoaviy ishlash qo‘llab-quvvatlanadi.",
+      "cta_title": "Commitlaringizni boshqarishga tayyormisiz?",
+      "cta_desc": "Gitluma bilan jamoaviy ishni soddalashtiring.",
+      "cta_button": "Boshlash",
+    
+      "integrations_title": "Integratsiyalar",
+      "integrations_desc": "Sevimli vositalaringiz bilan ishlaydi",
+    
+      "security_title": "Xavfsizlik",
+      "security_desc": "Ma’lumotlaringiz biz bilan himoyalangan",
+    
+      "security_1_title": "End-to-end himoya",
+      "security_1_desc": "Ma’lumotlar to‘liq shifrlanadi",
+    
+      "security_2_title": "OAuth login",
+      "security_2_desc": "GitHub orqali xavfsiz kirish",
+    
+      "security_3_title": "Cloud storage",
+      "security_3_desc": "Ishonchli serverlarda saqlanadi"
+    
+
+  }

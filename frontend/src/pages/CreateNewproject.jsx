@@ -213,6 +213,8 @@ const handleSubmit = async (e) => {
   try {
     setSubmitting(true);
 
+    console.log(selectedRepo);
+    
     await api.post("/api/project/create", {
       fullname: selectedRepo,
     });

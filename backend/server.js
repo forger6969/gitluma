@@ -2,7 +2,8 @@ require("dotenv").config()
 const { default: mongoose } = require("mongoose")
 const app = require("./app");
 const http = require("http")
-const {Server} = require("socket.io")
+const {Server} = require("socket.io");
+const {initSocket} = require("./socket");
 
 const server = http.createServer(app)
 
@@ -12,14 +13,7 @@ const io = new Server(server , {
     }
 })
 
-io.on("connection", (socket)=>{
-console.log("User connected" , socket.id);
-
-socket.on("disconnect" , ()=>{
-console.log("user disconnected" , socket.id);
-})
-
-})
+initSocket(io)
 
 app.set("io" , io)
 
