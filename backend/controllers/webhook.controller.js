@@ -3,7 +3,7 @@ const axios = require("axios");
 const Project = require("../models/projects.model");
 const Commit = require("../models/commit.model");
 const User = require("../models/user.model");
-const { sendNotifyByID } = require("../socket");
+const { sendNotifyByID, sendCommitToPorjectRoom } = require("../socket");
 const Notification = require("../models/notification.model");
 // функция проверки подписи GitHub
 function verifySignature(req, secret) {
@@ -41,19 +41,16 @@ if (event === "push") {
  
   const user = await User.findOne({github_id:payload.sender.id})
   
-  const notfication = await Notification.create({
-    title:"Новый коммит!",
-    text:`В проекте ${project.repo_name} новые коммиты! нажмите чтобы посмотреть`,
-    redirect_url:`${process.env.FRONTEND_URL}/dashboard/project/${project._id}`,
-    user:user._id,
-    type:"commit"
-  })
-
-  sendNotifyByID(user._id , notfication)
-
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  
+  const savedCommits = [];
   for (const c of payload.commits){
+    const existing = await Commit.findOne({ commit_id: c.id });
+    if (existing) continue;
 
-   const commit = await Commit.create({
+    const commit = await Commit.create({
       commit_id:c.id,
       author_username:c.author.username || c.author.name,
       author_github_id:payload.sender.id,
@@ -65,13 +62,28 @@ if (event === "push") {
       commit_date:c.timestamp
     })
 
-    console.log(commit);
-    
-
     project.commits.push(commit._id)
-    await project.save()
-
+    savedCommits.push(commit)
   }
+
+  if (savedCommits.length === 0) {
+    return res.status(200).json({ success: true, skipped: true });
+  }
+
+  await project.save()
+
+  const notfication = await Notification.create({
+    title:"Новый коммит!",
+    text:`В проекте ${project.repo_name} новые коммиты! нажмите чтобы посмотреть`,
+    redirect_url:`${process.env.FRONTEND_URL}/dashboard/project/${project._id}`,
+    user:user._id,
+    type:"commit"
+  })
+
+  for (const commit of savedCommits) {
+    sendCommitToPorjectRoom(project._id, { commit })
+  }
+  sendNotifyByID(user._id, notfication)
 
 }
 

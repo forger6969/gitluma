@@ -1,15 +1,17 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './App.jsx';
-import { Provider } from 'react-redux';
-import { store } from './store/store.js';
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
-import Login from './pages/Login.jsx';
-import Home from './pages/Home.jsx';
-import GithubCallbackPage from './pages/GithubCallbackPage.jsx';
-import DashboardOutlet from './pages/DashboardOutlet.jsx';
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+import { Provider } from 'react-redux'
+import { store } from './store/store.js'
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import GithubCallbackPage from './pages/GithubCallbackPage.jsx'
+import Login from './pages/Login.jsx'
+import DashboardOutlet from './pages/DashboardOutlet.jsx'
+import Home from './pages/Home.jsx'
 import PublicRoute from './Guards/PublicRoute.jsx';
 import PrivateRoute from './Guards/PrivateRoute.jsx';
 import Projekt from './pages/Projekt.jsx';
@@ -20,7 +22,9 @@ import Profile from './pages/Profile.jsx'
 import OnBoardWizard from './pages/OnBoardWizard.jsx';
 import PageNotFound404 from './pages/404pagenotfound.jsx';
 import './locales/i18n.js'
+import ProjectMoreInf from './pages/ProjectMoreInf.jsx'
 import CreateNewproject from './pages/CreateNewproject.jsx';
+import ActFeed from './pages/ActFeed.jsx'
 
 
 const router = createBrowserRouter([
@@ -45,6 +49,7 @@ const router = createBrowserRouter([
         path: "landing",
         element: <Landing />
       },
+     
       {
         path: "onboarding",
         element: <OnBoardWizard />
@@ -53,6 +58,7 @@ const router = createBrowserRouter([
         path: "/workSpace",
         element: <WorkSpace />
       },
+      
       {
         path: "/profile",
         element: <Profile/>
@@ -77,7 +83,9 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Home /> },
           { path: "projects", element: <Projekt /> },
-          { path: "profile", element: <Profile /> }
+          { path: "profile", element: <Profile /> },
+          {path:"project/:id", element:<ProjectMoreInf/>},
+          {path:"create" , element:<CreateNewproject/>},
         ]
       }
     ],

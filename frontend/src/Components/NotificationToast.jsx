@@ -55,6 +55,7 @@ export default function NotificationToast({ notification, onClose }) {
     }}>
 
 
+
       <div style={{ padding: "14px 14px 14px 14px" }}>
         <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
           {/* Icon */}
