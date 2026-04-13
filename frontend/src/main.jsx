@@ -84,7 +84,8 @@ const router = createBrowserRouter([
           { index: true, element: <Home /> },
           { path: "projects", element: <Projekt /> },
           { path: "profile", element: <Profile /> },
-          { path: "moreInf/:id",element: <ProjectMoreInf/>},
+          {path:"project/:id", element:<ProjectMoreInf/>},
+          {path:"create" , element:<CreateNewproject/>},
         ]
       }
     ],

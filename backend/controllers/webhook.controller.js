@@ -41,6 +41,10 @@ if (event === "push") {
  
   const user = await User.findOne({github_id:payload.sender.id})
   
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  
   const notfication = await Notification.create({
     title:"Новый коммит!",
     text:`В проекте ${project.repo_name} новые коммиты! нажмите чтобы посмотреть`,
