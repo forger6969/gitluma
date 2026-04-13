@@ -5,7 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import HowItWorks from "../components/HowItWorks";
-import Footer from "../components/Footer";
+import Footer from "../Components/Footer";
 import FeaturesGrid from "../components/FeaturesGrid";
 import Testimonials from "../components/Testimonials";
 import FAQ from "../components/FAQ";
@@ -17,8 +17,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Landing = () => {
   useEffect(() => {
-    // Barcha h1, h2, h3, p — render bo'lgandan keyin animatsiya
-    const targets = gsap.utils.toArray("h1, h2, h3, p, li, a.animate");
+    const targets = gsap.utils.toArray("h1, h2, h3, p, li");
 
     targets.forEach((el) => {
       gsap.fromTo(
@@ -27,7 +26,7 @@ const Landing = () => {
         {
           opacity: 1,
           y: 0,
-          duration: 0.9,
+          duration: 0.8,
           ease: "power3.out",
           scrollTrigger: {
             trigger: el,
@@ -44,7 +43,7 @@ const Landing = () => {
   }, []);
 
   return (
-    <div className="bg-[#0b0f19] text-white">
+    <div className="bg-[#EEF1F7] text-[#2B3141]">
       <Navbar />
       <Hero />
       <HowItWorks />
