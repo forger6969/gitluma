@@ -13,6 +13,13 @@ const initSocket = (io)=>{
         socket.on("disconnect" , ()=>{
             console.log("user disconnected:", socket.id);
         })
+
+        socket.on("project_join" , (projectid)=>{
+console.log("User" , userId , "joined" , projectid , "room");
+
+            
+            socket.join(projectid)
+        })
     })
 
 };
@@ -24,4 +31,8 @@ ioInstance.to(userid).emit("notification" , data)
 
 }
 
-module.exports = {initSocket,sendNotifyByID}
+const sendCommitToPorjectRoom = (projectid , data)=>{
+    ioInstance.to(projectid).emit("new_commit" , data)
+}
+
+module.exports = {initSocket,sendNotifyByID,sendCommitToPorjectRoom}

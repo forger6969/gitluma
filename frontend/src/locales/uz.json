@@ -102,7 +102,35 @@
       "security_2_desc": "GitHub orqali xavfsiz kirish",
     
       "security_3_title": "Cloud storage",
-      "security_3_desc": "Ishonchli serverlarda saqlanadi"
-    
+      "security_3_desc": "Ishonchli serverlarda saqlanadi",
+      
+        "about": "Loyiha haqida",
+        "about_desc": "Gitluma — GitHub bilan integratsiya qilingan platforma bo‘lib, komandalar ish jarayonini avtomatlashtirish va vizualizatsiya qilish imkonini beradi.",
+        "goals": "Maqsadlar",
+        "goal1": "Komanda ishini shaffof qilish",
+        "goal2": "CI/CD jarayonlarni avtomatlashtirish",
+        "goal3": "Developer samaradorligini oshirish",
+        "goal4": "Real-time monitoring ta’minlash",
+        "advantages": "Afzalliklar",
+        "adv1": "Real-time tracking",
+        "adv2": "All-in-one platform",
+        "adv3": "Analytics va insights",
+        "adv4": "Scalability",
+      
+      
+        "hero_title": "GitLuma",
+        "hero_desc": "GitHub integratsiyalangan platforma",
+        "features": "Funksiyalar",
+        "integrations": "Integratsiyalar",
+        "about": "Loyiha haqida",
+        "feature1": "GitHub integratsiya",
+        "feature2": "Real-time kuzatish",
+        "feature3": "CI/CD monitoring",
+        "integr1": "GitHub API",
+        "integr2": "GitHub Actions",
+        "integr3": "OAuth",
+        "goals": "Maqsadlar",
+        "advantages": "Afzalliklar"
+      
 
   }
