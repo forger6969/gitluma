@@ -249,121 +249,90 @@ const CreateNewproject = () => {
     }
   };
 
+  const filteredRepos = repos.filter((repo) =>
+    repo.full_name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1b2330] via-[#121b29] to-[#0c141e] text-white flex justify-center py-14 px-6">
-
+    <div className="min-h-screen bg-[#EEF1F7] text-[#2B3141] flex justify-center py-14 px-6">
       <form onSubmit={handleSubmit} className="w-full max-w-4xl space-y-6">
-
-        {/* HEADER + LANGUAGE SWITCH */}
         <div className="flex items-start justify-between">
-
-          {/* LEFT TEXT */}
           <div>
-            <h1 className="text-3xl font-semibold bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-semibold text-[#010000]">
               {t("workspace")}
             </h1>
-            <p className="text-gray-400 mt-1 text-xs">
+            <p className="text-[#6B7280] mt-1 text-xs">
               {t("setup")}
             </p>
           </div>
 
-          {/* RIGHT LANGUAGE SWITCH */}
           <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => i18n.changeLanguage("uz")}
-              className="px-2 py-1 text-xs rounded bg-[#1f2937] hover:bg-[#374151]"
-            >
-              UZ
-            </button>
-
-            <button
-              type="button"
-              onClick={() => i18n.changeLanguage("ru")}
-              className="px-2 py-1 text-xs rounded bg-[#1f2937] hover:bg-[#374151]"
-            >
-              RU
-            </button>
-
-            <button
-              type="button"
-              onClick={() => i18n.changeLanguage("en")}
-              className="px-2 py-1 text-xs rounded bg-[#1f2937] hover:bg-[#374151]"
-            >
-              EN
-            </button>
+            {["uz", "ru", "en"].map((lng) => (
+              <button
+                key={lng}
+                type="button"
+                onClick={() => i18n.changeLanguage(lng)}
+                className="px-2 py-1 text-xs rounded bg-[#2B3141] text-white"
+              >
+                {lng.toUpperCase()}
+              </button>
+            ))}
           </div>
-
         </div>
 
-        {/* GRID */}
         <div className="grid md:grid-cols-2 gap-4">
-
-          {/* LEFT */}
-          <div className="bg-[#111827]/70 p-5 rounded-xl border border-gray-800 space-y-4">
-
-            <h2 className="text-[11px] text-gray-400 tracking-widest">
+          <div className="bg-white p-5 rounded-xl border space-y-4">
+            <h2 className="text-[11px] text-gray-500 tracking-widest">
               {t("project")}
             </h2>
 
             <input
-              type="text"
-              placeholder={t("projectName")}
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
-              className="w-full p-2.5 text-sm rounded-md bg-[#0c141e] border border-gray-700"
+              className="w-full p-2.5 text-sm rounded-md bg-gray-50 border"
+              placeholder={t("projectName")}
             />
 
             <textarea
               rows="3"
-              placeholder={t("description")}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-2.5 text-sm rounded-md bg-[#0c141e] border border-gray-700 resize-none"
+              className="w-full p-2.5 text-sm rounded-md bg-gray-50 border"
+              placeholder={t("description")}
             />
           </div>
 
-          {/* RIGHT */}
-          <div className="bg-[#111827]/70 p-5 rounded-xl border border-gray-800 space-y-3">
-
-            <h2 className="text-[11px] text-gray-400 tracking-widest">
+          <div className="bg-white p-5 rounded-xl border space-y-3">
+            <h2 className="text-[11px] text-gray-500 tracking-widest">
               {t("repository")}
             </h2>
 
-            {/* SELECTED CHIP */}
             {selectedRepo && (
-              <div className="flex items-center justify-between bg-[#1f2937] border border-gray-700 rounded-md px-3 py-2 text-sm">
+              <div className="flex justify-between bg-gray-100 border rounded px-3 py-2 text-sm">
                 <span className="truncate">{selectedRepo}</span>
-
                 <button
                   type="button"
                   onClick={() => setSelectedRepo("")}
-                  className="ml-3 text-gray-400 hover:text-red-400"
                 >
                   ✕
                 </button>
               </div>
             )}
 
-            {/* SELECT BUTTON */}
             <div
               onClick={openModal}
-              className="w-full p-2.5 text-sm rounded-md bg-[#0c141e] border border-gray-700 hover:border-purple-500 cursor-pointer transition"
+              className="w-full p-2.5 text-sm rounded-md bg-gray-50 border cursor-pointer"
             >
               {selectedRepo ? t("changeRepo") : t("selectRepo")}
             </div>
 
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[11px] text-gray-400">
               {t("sync")}
             </p>
-
           </div>
-
         </div>
 
-        {/* ACTIONS */}
         <div className="flex justify-between items-center pt-2">
-
           <button
             type="button"
             onClick={() => {
@@ -371,7 +340,7 @@ const CreateNewproject = () => {
               setDescription("");
               setSelectedRepo("");
             }}
-            className="text-gray-400 text-sm hover:text-white"
+            className="text-sm text-gray-500"
           >
             {t("reset")}
           </button>
@@ -379,91 +348,61 @@ const CreateNewproject = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="px-5 py-2 text-sm rounded-md bg-gradient-to-r from-indigo-600 to-purple-600 disabled:opacity-50"
+            className="px-5 py-2 text-sm rounded-md bg-[#E8654A] text-white"
           >
             {submitting ? t("creating") : t("create")}
           </button>
-
         </div>
-
       </form>
 
-      {/* MODAL */}
       {openRepoModal && (
         <div
           onClick={closeModal}
           className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-150 ${
-            showModal ? "bg-black/60 opacity-100" : "bg-black/0 opacity-0"
+            showModal ? "bg-black/40 opacity-100" : "bg-black/0 opacity-0"
           }`}
         >
-
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`w-[420px] max-h-[520px] bg-[#0f172a] border border-gray-800 rounded-xl p-4 transform transition-all duration-150 ${
-              showModal ? "opacity-100 scale-100" : "opacity-0 scale-95"
+            className={`w-[420px] max-h-[520px] bg-white rounded-xl p-4 transform transition-all duration-150 ${
+              showModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
           >
-
-            {/* HEADER */}
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="text-sm font-semibold">
-                {t("selectRepository")}
-              </h2>
-
-              <button
-                onClick={closeModal}
-                className="text-gray-400 hover:text-white text-sm"
-              >
-                ✕
-              </button>
+            <div className="flex justify-between mb-3">
+              <h2>{t("selectRepository")}</h2>
+              <button onClick={closeModal}>✕</button>
             </div>
 
-            {/* SEARCH */}
             <input
-              type="text"
-              placeholder={t("search")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full p-2 text-sm rounded-md bg-[#0c141e] border border-gray-700 mb-3"
+              className="w-full p-2 border mb-3"
+              placeholder={t("search")}
             />
 
-            {/* LIST */}
-            <div className="space-y-1.5 max-h-[340px] overflow-y-auto">
+            <div className="space-y-2 max-h-[340px] overflow-y-auto">
+              {filteredRepos.map((repo) => (
+                <div
+                  key={repo.id}
+                  onClick={() => {
+                    setSelectedRepo(repo.full_name);
+                    closeModal();
+                  }}
+                  className="p-2 bg-gray-50 border rounded cursor-pointer"
+                >
+                  <p className="text-sm">{repo.full_name}</p>
+                  <p className="text-xs text-gray-400">
+                    {repo.description || t("noDescription")}
+                  </p>
+                </div>
+              ))}
 
-              {loading && (
-                <p className="text-gray-400 text-sm">{t("loading")}</p>
-              )}
-
-              {error && (
-                <p className="text-red-400 text-sm">{t("error")}</p>
-              )}
-
-              {repos
-                .filter((repo) =>
-                  repo.full_name.toLowerCase().includes(search.toLowerCase())
-                )
-                .map((repo) => (
-                  <div
-                    key={repo.id}
-                    onClick={() => {
-                      setSelectedRepo(repo.full_name);
-                      closeModal();
-                    }}
-                    className="p-2 rounded-md bg-[#111827] hover:bg-[#1f2937] border border-gray-800 cursor-pointer"
-                  >
-                    <p className="text-sm truncate">{repo.full_name}</p>
-                    <p className="text-[11px] text-gray-500 truncate">
-                      {repo.description || t("noDescription")}
-                    </p>
-                  </div>
-                ))}
-
+              {loading && <p>Loading...</p>}
+              {error && <p>Error...</p>}
             </div>
-
           </div>
         </div>
       )}
-
     </div>
   );
 };
