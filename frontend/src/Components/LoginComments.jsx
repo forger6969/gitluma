@@ -1,64 +1,64 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 
 const testimonials = [
   {
-    text: "Just discovered reactbits.dev — a sleek, minimal, and super dev-friendly React component library. Clean UI, easy to use, and perfect for modern projects.",
-    author: "@syskey_dmg",
-    avatar: "S",
+    text: "GitLuma completely changed how our team manages repositories. The dashboard gives us instant visibility into every project's health and activity.",
+    author: "@alex_devops",
+    avatar: "A",
     color: "#6366f1",
   },
   {
-    text: "Everything about this is next level: the components, the registry, dynamic items.",
-    author: "@shadcn",
-    avatar: "🐸",
+    text: "Finally a tool that makes Git collaboration feel effortless. We onboarded 20 developers in a day and everyone loved it from the start.",
+    author: "@sarah_codes",
+    avatar: "S",
     color: "#8b5cf6",
   },
   {
-    text: "React Bits: A stellar collection of React components to make your landing pages shine ✨",
-    author: "@gregberge_",
-    avatar: "G",
+    text: "The project analytics in GitLuma are incredible. I can see commit trends, contributor stats, and bottlenecks at a glance. A must-have for any team lead.",
+    author: "@mkevin_eng",
+    avatar: "M",
     color: "#ec4899",
   },
   {
-    text: "Literally the coolest react library in react —",
-    author: "@Logreg_n_coffee",
-    avatar: "☕",
+    text: "We migrated from three different tools to just GitLuma. It handles everything — repos, reviews, and deployment tracking — all in one beautiful interface.",
+    author: "@devcraft_io",
+    avatar: "D",
     color: "#10b981",
   },
   {
-    text: "Have you heard of react bits? David Haz has lovingly put together a collection of animated and fully customizable React components.",
-    author: "@DIYDevs",
-    avatar: "🌍",
+    text: "GitLuma's GitHub integration is seamless. Linked my repos in seconds and the real-time sync is flawless. This is how developer tools should work.",
+    author: "@julia_tech",
+    avatar: "J",
     color: "#3b82f6",
   },
   {
-    text: "React Bits has grown into the ultimate visual animation library for React. This level of flexibility doesn't exist anywhere else.",
-    author: "@orcdev",
-    avatar: "O",
+    text: "As a freelancer juggling multiple clients, GitLuma keeps all my projects organized. The clean UI makes it a joy to use every single day.",
+    author: "@nomad_dev",
+    avatar: "N",
     color: "#f59e0b",
   },
   {
-    text: "The next shadcn is emerging this year 💀",
-    author: "ajaypatel_aj",
-    avatar: "A",
+    text: "Our open source community grew 3x after we started using GitLuma to showcase our projects. The public dashboard feature is a game changer.",
+    author: "@oss_collective",
+    avatar: "O",
     color: "#ef4444",
   },
   {
-    text: "Got to know about React Bits and its just wow, the components are incredibly well designed. Really loved the overall feel and quality.",
-    author: "@irohandev",
-    avatar: "I",
+    text: "I've tried dozens of project management tools but GitLuma is the only one that truly understands the developer workflow. Simple, fast, and powerful.",
+    author: "@ryanbuilds",
+    avatar: "R",
     color: "#14b8a6",
   },
   {
-    text: "This has to be the most artistic UI library we've seen in a while 🔥",
-    author: "@Murray",
-    avatar: "M",
+    text: "The commit history visualization alone is worth it. GitLuma turns raw Git data into beautiful, actionable insights for the whole team.",
+    author: "@data_nina",
+    avatar: "D",
     color: "#f97316",
   },
   {
-    text: "React Bits has grown into an amazing component library with beautiful animations.",
-    author: "@Gibson",
-    avatar: "G",
+    text: "GitLuma made code reviews so much smoother for our remote team. Everything is in one place, and the notification system is perfect.",
+    author: "@teamlead_max",
+    avatar: "T",
     color: "#a855f7",
   },
 ];
@@ -68,8 +68,8 @@ const row2 = testimonials.slice(5, 10);
 
 function Card({ item }) {
   return (
-    <div className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px] p-5 sm:p-6 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-sm flex flex-col justify-between gap-4 sm:gap-5 transition-all duration-300 cursor-default hover:border-white/[0.12] hover:bg-white/[0.05]">
-      <p className="text-[14.5px] leading-relaxed text-[#c8cdd5] font-normal">
+    <div className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px] p-5 sm:p-6 rounded-2xl bg-[#FFFFFF]/[0.04] border border-[#FFFFFF]/[0.08] backdrop-blur-sm flex flex-col justify-between gap-4 sm:gap-5 transition-all duration-300 cursor-default hover:border-[#E8654A]/30 hover:bg-[#FFFFFF]/[0.07]">
+      <p className="text-[14.5px] leading-relaxed text-[#EEF1F7]/70 font-normal">
         {item.text}
       </p>
       <div className="flex items-center gap-2.5">
@@ -81,7 +81,7 @@ function Card({ item }) {
         >
           <span className="text-sm text-white font-semibold">{item.avatar}</span>
         </div>
-        <span className="text-[13.5px] text-slate-400 font-medium">
+        <span className="text-[13.5px] text-[#EEF1F7]/50 font-medium">
           {item.author}
         </span>
       </div>
@@ -94,31 +94,64 @@ function MarqueeRow({ items, direction = "left", speed = 35 }) {
   const animRef = useRef(null);
   const offsetRef = useRef(0);
   const lastTimeRef = useRef(null);
-  const [hovered, setHovered] = useState(false);
   const hoveredRef = useRef(false);
   const singleSetWidthRef = useRef(0);
 
-  // items ni 3 marta duplicate qilamiz — seamless loop uchun
+  // Drag uchun reflar
+  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
+  const dragStartOffset = useRef(0);
+
   const duplicated = [...items, ...items, ...items];
 
-  // Birinchi set kengligini o'lchaymiz
   const measureWidth = useCallback(() => {
     if (!trackRef.current) return;
     const children = trackRef.current.children;
     const count = items.length;
     let width = 0;
     for (let i = 0; i < count && i < children.length; i++) {
-      width += children[i].offsetWidth + 16; // 16px = gap-4
+      width += children[i].offsetWidth + 16;
     }
     singleSetWidthRef.current = width;
   }, [items.length]);
 
-  useEffect(() => {
-    hoveredRef.current = hovered;
-  }, [hovered]);
+  // Offsetni [-setW, 0] oralig'ida ushlab turish — doimo kartalar ko'rinadi
+  const wrapOffset = useCallback(() => {
+    const setW = singleSetWidthRef.current;
+    if (setW <= 0) return;
+    while (offsetRef.current < -setW) offsetRef.current += setW;
+    while (offsetRef.current > 0) offsetRef.current -= setW;
+  }, []);
 
+  // --- Drag handlers ---
+  const handlePointerDown = useCallback((e) => {
+    isDragging.current = true;
+    dragStartX.current = e.clientX;
+    dragStartOffset.current = offsetRef.current;
+    hoveredRef.current = true; // avtomatik animatsiyani to'xtatish
+    e.currentTarget.setPointerCapture(e.pointerId);
+  }, []);
+
+  const handlePointerMove = useCallback((e) => {
+    if (!isDragging.current) return;
+    const delta = e.clientX - dragStartX.current;
+    offsetRef.current = dragStartOffset.current + delta;
+    wrapOffset();
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translateX(${offsetRef.current}px)`;
+    }
+  }, [wrapOffset]);
+
+  const handlePointerUp = useCallback(() => {
+    isDragging.current = false;
+    hoveredRef.current = false; // avtomatik animatsiyani davom ettirish
+    lastTimeRef.current = null; // delta jumpni oldini olish
+  }, []);
+
+  const initializedRef = useRef(false);
+
+  // Avtomatik animatsiya
   useEffect(() => {
-    // Kenglikni o'lchaymiz
     measureWidth();
     window.addEventListener("resize", measureWidth);
 
@@ -127,17 +160,18 @@ function MarqueeRow({ items, direction = "left", speed = 35 }) {
       const delta = timestamp - lastTimeRef.current;
       lastTimeRef.current = timestamp;
 
-      if (!hoveredRef.current && singleSetWidthRef.current > 0) {
+      // Birinchi frameda right uchun boshlang'ich offset: -setW
+      if (!initializedRef.current && singleSetWidthRef.current > 0) {
+        if (direction === "right") {
+          offsetRef.current = -singleSetWidthRef.current;
+        }
+        initializedRef.current = true;
+      }
+
+      if (!hoveredRef.current && !isDragging.current && singleSetWidthRef.current > 0) {
         const move = (delta / 1000) * speed * (direction === "left" ? -1 : 1);
         offsetRef.current += move;
-
-        // Offset bitta set kengligidan oshsa, reset qilamiz
-        const setW = singleSetWidthRef.current;
-        if (direction === "left" && offsetRef.current <= -setW) {
-          offsetRef.current += setW;
-        } else if (direction === "right" && offsetRef.current >= setW) {
-          offsetRef.current -= setW;
-        }
+        wrapOffset();
 
         if (trackRef.current) {
           trackRef.current.style.transform = `translateX(${offsetRef.current}px)`;
@@ -153,20 +187,30 @@ function MarqueeRow({ items, direction = "left", speed = 35 }) {
       cancelAnimationFrame(animRef.current);
       window.removeEventListener("resize", measureWidth);
     };
-  }, [direction, speed, measureWidth]);
+  }, [direction, speed, measureWidth, wrapOffset]);
 
   return (
     <div
-      className="relative w-full overflow-hidden py-1"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className="relative w-full overflow-hidden py-1 select-none"
+      style={{ cursor: isDragging.current ? "grabbing" : "grab" }}
+      onMouseEnter={() => { hoveredRef.current = true; }}
+      onMouseLeave={() => {
+        if (!isDragging.current) {
+          hoveredRef.current = false;
+          lastTimeRef.current = null;
+        }
+      }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
     >
-      <div className="absolute top-0 left-0 w-16 sm:w-32 h-full bg-gradient-to-r from-[#0e1117] to-transparent z-10 pointer-events-none" />
-      <div className="absolute top-0 right-0 w-16 sm:w-32 h-full bg-gradient-to-l from-[#0e1117] to-transparent z-10 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-16 sm:w-32 h-full bg-gradient-to-r from-[#2B3141] to-transparent z-10 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-16 sm:w-32 h-full bg-gradient-to-l from-[#2B3141] to-transparent z-10 pointer-events-none" />
 
       <div
         ref={trackRef}
-        className="flex gap-4 w-max"
+        className="flex gap-4 w-max pointer-events-none"
         style={{ willChange: "transform" }}
       >
         {duplicated.map((item, i) => (
@@ -179,19 +223,22 @@ function MarqueeRow({ items, direction = "left", speed = 35 }) {
 
 export default function LoginComments() {
   return (
-    <div className="relative w-full min-h-screen bg-[#0e1117] overflow-hidden flex flex-col items-center justify-center font-sans">
-      <div className="absolute -top-[20%] left-[30%] w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.08)_0%,transparent_70%)] pointer-events-none" />
-      <div className="absolute -bottom-[10%] right-[20%] w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.06)_0%,transparent_70%)] pointer-events-none" />
+    <div
+      className="relative w-full min-h-screen bg-[#2B3141] overflow-hidden flex flex-col items-center justify-center font-sans"
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+    >
+      <div className="absolute -top-[20%] left-[30%] w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full bg-[radial-gradient(circle,rgba(232,101,74,0.08)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute -bottom-[10%] right-[20%] w-[250px] sm:w-[400px] h-[250px] sm:h-[400px] rounded-full bg-[radial-gradient(circle,rgba(232,101,74,0.06)_0%,transparent_70%)] pointer-events-none" />
 
       <div className="text-center mb-8 sm:mb-12 relative z-50 px-4">
-        <p className="text-xs font-semibold tracking-[3px] text-indigo-500 mb-3">
+        <p className="text-xs font-semibold tracking-[3px] text-[#E8654A] mb-3">
           WALL OF LOVE
         </p>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-200 mb-3 leading-tight">
-          What developers are saying
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#EEF1F7] mb-3 leading-tight">
+          Loved by developers worldwide
         </h1>
-        <p className="text-sm sm:text-base text-slate-500 font-normal">
-          Join thousands of developers building beautiful interfaces
+        <p className="text-sm sm:text-base text-[#EEF1F7]/50 font-normal">
+          Join thousands of developers managing projects with GitLuma
         </p>
       </div>
 
@@ -201,4 +248,4 @@ export default function LoginComments() {
       </div>
     </div>
   );
-}
+} 
