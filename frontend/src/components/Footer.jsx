@@ -1,54 +1,63 @@
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
-    <footer className="bg-[#0b0f19] text-gray-400 border-t border-gray-800">
-      <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-4 gap-10 text-left">
+    <footer className="bg-white text-[#5b6275] border-t border-gray-200">
 
-       
+      <div className="max-w-7xl mx-auto px-6 py-6 grid md:grid-cols-4 gap-10">
+
         <div>
-          <h2 className="text-white font-semibold text-lg mb-4">Kinetic</h2>
-          <p className="text-sm leading-relaxed">
+          <h2 className="text-[#2B3141] font-semibold text-lg mb-4">
+            GitLuma
+          </h2>
+          <p className="text-sm leading-relaxed mb-4">
             {t("footer_desc")}
           </p>
+
+         
         </div>
 
-      
         <div>
-          <h3 className="text-white mb-4">{t("features")}</h3>
+          <h3 className="text-[#2B3141] mb-4">{t("features")}</h3>
           <ul className="space-y-2 text-sm">
             <li>{t("features")}</li>
             <li>{t("integrations")}</li>
-            <li>{t("pricing")}</li>
-            <li>{t("cli")}</li>
           </ul>
         </div>
 
-   
         <div>
-          <h3 className="text-white mb-4">{t("company")}</h3>
+          <h3 className="text-[#2B3141] mb-4">{t("company")}</h3>
           <ul className="space-y-2 text-sm">
             <li>{t("about")}</li>
-            <li>{t("careers")}</li>
-            <li>{t("contact")}</li>
-            <li>{t("privacy")}</li>
           </ul>
         </div>
 
-     
         <div>
-          <h3 className="text-white mb-4">{t("status")}</h3>
+          <h3 className="text-[#2B3141] mb-4">{t("status")}</h3>
           <div className="flex items-center gap-2 text-sm">
-            <span className="w-2 h-2 bg-orange-400 rounded-full"></span>
+            <span className="w-2 h-2 bg-[#E8654A] rounded-full"></span>
             <span>{t("operational")}</span>
           </div>
         </div>
+
+      </div>
+      
+      <div className="text-center py-5 text-xl">
+         {/* 🔥 More button */}
+         <button
+            onClick={() => navigate("/info")}
+            className="bg-orange-500 hover:bg-orange-600 text-white text-sm px-4 py-2 rounded-md transition"
+          >
+            More
+          </button>
       </div>
 
-    
-      <div className="text-center text-xs text-gray-500 border-t border-gray-800 py-6">
+
+      <div className="text-center text-xs text-gray-400 border-t border-gray-200 py-6">
         © 2024 Gitluma. All rights reserved.
       </div>
     </footer>

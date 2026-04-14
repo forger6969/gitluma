@@ -27,6 +27,7 @@ import CreateNewproject from './pages/CreateNewproject.jsx';
 import ActFeed from './pages/ActFeed.jsx'
 
 
+import Info from './pages/Info.jsx'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -66,8 +67,12 @@ const router = createBrowserRouter([
       {
         path: "*",
         element: <PageNotFound404 />
-      }
+      },
      
+      {
+        path:"/info",
+        element:<Info/>
+      }
     ],
   },
   {
