@@ -7,10 +7,15 @@ const HowItWorks = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="py-20 px-6">
+    <div className="py-20 px-6 bg-[#EEF1F7] text-[#2B3141]">
 
-      <h2 className="text-3xl font-semibold mb-2">{t("how_it_works")}</h2>
-      <p className="text-gray-400 mb-10">{t("how_desc")}</p>
+      <h2 className="text-3xl font-semibold mb-2">
+        {t("how_it_works")}
+      </h2>
+
+      <p className="text-[#5b6275] mb-10">
+        {t("how_desc")}
+      </p>
 
       <div className="grid md:grid-cols-3 gap-6 mb-10">
         <FeatureCard phase="phase 01" title={t("phase1")} desc={t("phase1_desc")} />
@@ -19,11 +24,15 @@ const HowItWorks = () => {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <ImageCard img={bgimg}  desc={t("ide_desc")} />
+        <ImageCard img={bgimg} desc={t("ide_desc")} />
 
-        <div className="bg-[#13233a] rounded-2xl p-6">
-          <h2>{t("analytics")}</h2>
-          <p>{t("analytics_desc")}</p>
+        <div className="bg-[#2B3141] text-white rounded-2xl p-6">
+          <h2 className="text-lg font-semibold mb-2">
+            {t("analytics")}
+          </h2>
+          <p className="text-gray-300">
+            {t("analytics_desc")}
+          </p>
         </div>
       </div>
 
