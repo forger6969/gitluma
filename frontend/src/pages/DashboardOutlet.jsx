@@ -17,15 +17,13 @@ const DashboardOutlet = () => {
   const dispatch = useDispatch()
 
 
-// DashboardOutlet.jsx
 useEffect(() => {
-    // Берём userId из localStorage напрямую — он уже есть
     const userId = user?.user?._id || user?._id || localStorage.getItem("user_id");
     if (!userId) return;
 
     connectSocket(userId);
     setSocketReady(true);
-}, [user?._id, user?.user?._id]); // 👈 зависимость на конкретное поле, а не весь объект
+}, [user?._id, user?.user?._id]); 
 
 useEffect(()=>{
   console.log(notifications);
@@ -40,7 +38,7 @@ dispatch(getProjects())
 
   if (!token) return <Navigate to="/" />;
   return (
-    <div className="flex bg-bg-gray-950 max-w-full max-h-full">
+    <div className="flex bg-oq max-w-full max-h-full">
       <div className="max-h-screen ">
         <Sidebar />
       </div>

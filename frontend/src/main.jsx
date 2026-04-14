@@ -90,6 +90,10 @@ const router = createBrowserRouter([
       }
     ],
   },
+  {
+    path: "/too-many-requests",
+    element: <div> <p>aloo</p> </div>
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(
