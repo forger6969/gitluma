@@ -22,6 +22,10 @@ const Navbar = () => {
           <button onClick={() => changeLang("uz")} className="hover:text-[#E8654A]">UZ</button>
           <button onClick={() => changeLang("ru")} className="hover:text-[#E8654A]">RU</button>
         </div>
+
+        <div className="">
+          
+        </div>
       </div>
     </div>
   );

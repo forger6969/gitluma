@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+
 
 const Footer = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+
 
   return (
     <footer className="bg-white text-[#5b6275] border-t border-gray-200">
@@ -46,15 +46,7 @@ const Footer = () => {
 
       </div>
       
-      <div className="text-center py-5 text-xl">
-         {/* 🔥 More button */}
-         <button
-            onClick={() => navigate("/info")}
-            className="bg-orange-500 hover:bg-orange-600 text-white text-sm px-4 py-2 rounded-md transition"
-          >
-            More
-          </button>
-      </div>
+      
 
 
       <div className="text-center text-xs text-gray-400 border-t border-gray-200 py-6">

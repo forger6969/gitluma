@@ -92,7 +92,7 @@
         "integrations_desc": "Works with your favorite tools",
       
         "security_title": "Security",
-        "security_desc": "Your data is सुरक्षित with us",
+        "security_desc": "Your data is  with us",
       
         "security_1_title": "End-to-end protection",
         "security_1_desc": "All data is fully encrypted",
@@ -135,9 +135,37 @@
   "adv1": "Real-time tracking",
   "adv2": "All-in-one platform",
   "adv3": "Analytics and insights",
-  "adv4": "Scalability"
+  "adv4": "Scalability",
     
-    
+  
+    "title": "GitLuma",
+    "steps": [
+      {
+        "badge": "01 — start",
+        "title": "Connect GitHub OAuth",
+        "desc": "Sign in with GitHub and link repositories",
+        "color": "bg-purple-100 text-purple-800"
+      },
+      {
+        "badge": "02 — tracking",
+        "title": "Commit & branch monitoring",
+        "desc": "Track commits and PRs in real-time",
+        "color": "bg-teal-100 text-teal-800"
+      },
+      {
+        "badge": "03 — automation",
+        "title": "CI/CD & workflow",
+        "desc": "Automated testing with logs",
+        "color": "bg-orange-100 text-orange-800"
+      },
+      {
+        "badge": "04 — analytics",
+        "title": "Team analytics",
+        "desc": "Visual reports and performance stats",
+        "color": "bg-blue-100 text-blue-800"
+      }
+    ]
+  
   
     
   }

@@ -130,7 +130,35 @@
         "integr2": "GitHub Actions",
         "integr3": "OAuth",
         "goals": "Maqsadlar",
-        "advantages": "Afzalliklar"
+        "advantages": "Afzalliklar",
+
+        "title": "GitLuma",
+  "steps": [
+    {
+      "badge": "01 — boshlash",
+      "title": "GitHub OAuth ulash",
+      "desc": "GitHub orqali ro'yxatdan o'tish va repozitoriyalarni bog'lash",
+      "color": "bg-purple-100 text-purple-800"
+    },
+    {
+      "badge": "02 — kuzatish",
+      "title": "Commit va branch monitoring",
+      "desc": "Commitlar va PR larni real vaqtda kuzatish",
+      "color": "bg-teal-100 text-teal-800"
+    },
+    {
+      "badge": "03 — avtomatik",
+      "title": "CI/CD va workflow",
+      "desc": "Testlar avtomatik ishlaydi va loglar chiqadi",
+      "color": "bg-orange-100 text-orange-800"
+    },
+    {
+      "badge": "04 — tahlil",
+      "title": "Jamoa analitikasi",
+      "desc": "Faoliyat grafik va hisobotlarda ko‘rinadi",
+      "color": "bg-blue-100 text-blue-800"
+    }
+  ]
       
 
   }

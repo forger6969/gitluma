@@ -1,17 +1,19 @@
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import img from "../assets/code.png";
 import SoftAurora from "./SoftAurora";
 
 const Hero = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
-    <div className="bg-[#EEF1F7] relative flex flex-col items-center text-center mt-16 px-4 overflow-hidden">
+    <div className="bg-[#EEF1F7] relative flex flex-col items-center text-center mt-16 py-10 px-4 overflow-hidden">
 
-      {/* Background */}
+     
       <div className="absolute inset-0 z-0 pointer-events-none">
 
-        {/* Aurora */}
+        
         <div className="absolute bottom-0 left-0 right-0 h-[80%] opacity-80">
           <SoftAurora
             speed={0.5}
@@ -72,7 +74,15 @@ const Hero = () => {
         <div className="mt-16 bg-white border border-gray-200 rounded-xl w-full max-w-2xl p-5 shadow-sm">
           <img src={img} alt="preview" className="rounded-lg" />
         </div>
-
+        <div className="text-center py-5 text-xl">
+         {/* 🔥 More button */}
+         <button
+            onClick={() => navigate("/info")}
+            className="bg-orange-500 hover:bg-orange-600 text-white text-xl px-6 py-4 rounded-xl transition"
+          >
+            More Info
+          </button>
+      </div>
       </div>
     </div>
   );
