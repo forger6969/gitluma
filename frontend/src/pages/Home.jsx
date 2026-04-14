@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { userFetch } from '../store/slices/userSlice'
 import { reposFetch } from '../store/slices/repoSlices'
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
+
+
 
 const langColors = {
   JavaScript: { text: 'text-yellow-300', bg: 'bg-yellow-300/10', dot: 'bg-yellow-300' },
@@ -84,12 +87,14 @@ const Home = () => {
           <h1 className="text-[#e2e8f0] text-xl font-bold tracking-tight m-0">Workspace</h1>
           <p className="text-[#3d5068] text-sm mt-1">{repos.repos.length} repositories</p>
         </div>
+     <Link to={'/dashboard/create'}>
         <motion.button
           whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
           className="bg-blue-500  transition-colors text-white text-sm font-semibold px-4 py-2 rounded-lg cursor-pointer border-none hover:bg-black hover:border-blue-500 border-2"
         >
-          Create Project
+          Create Project  
         </motion.button>
+        </Link>
       </motion.div>
 
       <motion.div
@@ -235,3 +240,6 @@ const Home = () => {
 }
 
 export default Home
+
+
+
