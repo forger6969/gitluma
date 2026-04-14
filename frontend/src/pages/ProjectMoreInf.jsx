@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import api from "../api/api";
 import { buildProjectionTransform } from "framer-motion";
 import useCommitsEvents from "../hooks/useCommitsEvents";
+import { useSelector } from "react-redux";
 
 const ProjectDetails = () => {
   const { id } = useParams();
@@ -38,7 +39,7 @@ console.log( "new commit", commits);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0f172a] text-white">
+      <div className="min-h-screen flex items-center justify-center bg-[#EEF1F7] text-white">
         Loading...
       </div>
     );
@@ -46,18 +47,18 @@ console.log( "new commit", commits);
 
   if (!project) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0f172a] text-red-400">
+      <div className="min-h-screen flex items-center justify-center bg-[#EEF1F7] text-[#E8654A]">
         Project not found
       </div>
     );
   }
 
   return (
-    <div className="bg-[#0f172a] min-h-screen text-white p-6">
+    <div className="bg-[#EEF1F7] min-h-screen text-[#E8654A] p-6">
       <div className="max-w-6xl mx-auto space-y-6">
 
         {/* 🔹 Header */}
-        <div className="bg-[#1e293b] rounded-2xl p-6 shadow flex items-center gap-4">
+        <div className="bg-[#FFFFFF] rounded-2xl p-6 shadow flex items-center gap-4">
           <img
             src={project.repo_owner_user?.avatar_url}
             alt="avatar"
@@ -65,21 +66,21 @@ console.log( "new commit", commits);
           />
           <div>
             <h1 className="text-2xl font-bold">{project.repo_name}</h1>
-            <p className="text-gray-400 text-sm">
+            <p className="text-[#181D2A] text-sm">
               {project.repo_full_name}
             </p>
           </div>
         </div>
 
         {/* 🔹 Info */}
-        <div className="grid md:grid-cols-3 gap-4">
-          <Card title="Branch" value={project.default_branch} />
-          <Card title="Commits" value={project.commits?.length} />
-          <Card title="Visibility" value={project.visibility} />
+        <div className="grid  md:grid-cols-3 gap-4">
+          <Card className="text-[#181D2A]" title="Branch" value={project.default_branch} />
+          <Card className="text-[#181D2A]" title="Commits" value={project.commits?.length} />
+          <Card className="text-[#181D2A]" title="Visibility" value={project.visibility} />
         </div>
 
         {/* 🔹 Owner */}
-        <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
+        <div className="bg-[#FFFFFF] rounded-2xl p-6 shadow">
           <h2 className="text-xl mb-4 font-semibold">Owner</h2>
 
           <div className="flex items-center gap-4">
@@ -100,7 +101,7 @@ console.log( "new commit", commits);
         </div>
 
        {/* 🔹 Commits */}
-<div className="bg-[#1e293b] rounded-2xl p-6 shadow">
+<div className="bg-[#FFFFFF] rounded-2xl p-6 shadow">
   <h2 className="text-xl font-semibold mb-4">
     Commits ({project.commits?.length})
   </h2>
@@ -109,9 +110,9 @@ console.log( "new commit", commits);
     {[...(project.commits || [])].reverse().map((commit, index) => (
       <div
         key={index}
-        className="bg-[#0f172a] p-4 rounded-xl hover:bg-[#1e293b] transition"
+        className="bg-[#F4F6FB] p-4 rounded-xl hover:text-[#F4F6FB] hover:bg-[#c8cad0] transition"
       >
-        <p className="text-sm font-medium">
+        <p className="text-sm text-[#9AA0B4] font-medium">
           {commit.commit_message || "No message"}
         </p>
 
@@ -128,7 +129,7 @@ console.log( "new commit", commits);
   </div>
 </div>
             {/* 🔹 Members */}
-<div className="bg-[#1e293b] rounded-2xl p-6 shadow">
+<div className="bg-[#FFFFFF] rounded-2xl p-6 shadow">
   <h2 className="text-xl font-semibold mb-4">
     Members ({project.members?.length})
   </h2>
@@ -137,7 +138,7 @@ console.log( "new commit", commits);
     {project.members?.map((member, index) => (
       <div
         key={index}
-        className="flex items-center gap-3 bg-[#0f172a] p-3 rounded-xl hover:bg-[#334155] transition"
+        className="flex items-center gap-3 bg-[#F4F6FB] p-3 rounded-xl hover:bg-[#c8cad0] transition"
       >
         <img
           src={member.user?.avatar_url}
@@ -174,7 +175,7 @@ console.log( "new commit", commits);
 };
 
 const Card = ({ title, value }) => (
-  <div className="bg-[#1e293b] p-4 rounded-2xl shadow">
+  <div className="bg-[#FFFFFF] p-4 rounded-2xl shadow">
     <p className="text-gray-400 text-sm">{title}</p>
     <p className="text-lg font-semibold">{value || "N/A"}</p>
   </div>
