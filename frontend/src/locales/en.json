@@ -88,8 +88,11 @@
         "cta_desc": "Simplify teamwork with Gitluma.",
         "cta_button": "Get Started",
       
-        "integrations_title": "Integrations",
-        "integrations_desc": "Works with your favorite tools",
+    "integrations_title": "Integrations",
+    "integrations_desc": "Works with your favorite tools",
+    "github_title": "GitHub Integration",
+    "github_desc": "Connect your repository and sync commits with tasks automatically.",
+    "connect_github": "Connect GitHub",
       
         "security_title": "Security",
         "security_desc": "Your data is सुरक्षित with us",

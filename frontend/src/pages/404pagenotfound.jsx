@@ -7,23 +7,23 @@ const particles = Array.from({ length: 36 }, (_, i) => {
     id: i,
     x: Math.cos(angle) * radius,
     y: Math.sin(angle) * radius,
-    delay: (i % 12) * 0.2,
-    duration: 4 + (i % 5) * 0.7,
+    delay: i * 0.11,
+    duration: 3.6,
     scale: 0.8 + (i % 4) * 0.2,
   };
 });
 
 export default function PageNotFound404() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#06070f] text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(136,92,255,0.24),_transparent_55%)]" />
-      <div className="absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-violet-300/20 antigravity-ring" />
-      <div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-fuchsia-300/20 antigravity-ring antigravity-ring-reverse" />
+    <div className="relative min-h-screen overflow-hidden text-white page-404-shell">
+      <div className="absolute inset-0 page-404-aura" />
+      <div className="absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full antigravity-ring page-404-ring-main" />
+      <div className="absolute left-1/2 top-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full antigravity-ring antigravity-ring-reverse page-404-ring-alt" />
 
       {particles.map((particle) => (
         <span
           key={particle.id}
-          className="absolute left-1/2 top-1/2 h-2 w-2 rounded-full bg-fuchsia-200/80 antigravity-particle"
+          className="absolute left-1/2 top-1/2 h-2 w-2 rounded-full antigravity-particle page-404-particle"
           style={{
             transform: `translate(${particle.x}px, ${particle.y}px) scale(${particle.scale})`,
             animationDelay: `${particle.delay}s`,
@@ -33,28 +33,64 @@ export default function PageNotFound404() {
       ))}
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 text-center">
-        <p className="mb-3 text-sm uppercase tracking-[0.38em] text-violet-200/80">
+        <p className="mb-3 text-sm uppercase tracking-[0.38em] page-404-kicker">
           lost in orbit
         </p>
-        <h1 className="bg-gradient-to-r from-violet-200 via-fuchsia-100 to-cyan-200 bg-clip-text text-5xl font-black text-transparent md:text-7xl">
+        <h1 className="bg-clip-text text-5xl font-black text-transparent md:text-7xl page-404-title">
           404 page not found
         </h1>
-        <p className="mt-5 max-w-xl text-sm text-slate-300 md:text-base">
+        <p className="mt-5 max-w-xl text-sm page-404-description md:text-base">
           Эта страница улетела за пределы гравитации. Возвращайся на главную и
           продолжай миссию.
         </p>
         <Link
           to="/"
-          className="mt-8 rounded-full border border-violet-300/40 px-6 py-3 text-sm font-semibold text-violet-100 transition hover:bg-violet-300/10"
+          className="mt-8 rounded-full border px-6 py-3 text-sm font-semibold transition page-404-home-link"
         >
           Вернуться на главную
         </Link>
       </div>
 
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        .page-404-shell {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          background: #EEF1F7;
+          color: #2B3141;
+        }
+        .page-404-aura {
+          background: radial-gradient(circle at center, rgba(232, 101, 74, 0.2), transparent 58%);
+        }
+        .page-404-ring-main {
+          border: 1px solid rgba(232, 101, 74, 0.24);
+        }
+        .page-404-ring-alt {
+          border: 1px solid rgba(43, 49, 65, 0.18);
+        }
+        .page-404-particle {
+          background: rgba(232, 101, 74, 0.78);
+        }
+        .page-404-kicker {
+          color: rgba(92, 100, 139, 0.9);
+        }
+        .page-404-title {
+          background-image: linear-gradient(90deg, #2B3141, #E8654A, #2B3141);
+        }
+        .page-404-description {
+          color: #5C648B;
+        }
+        .page-404-home-link {
+          border-color: rgba(232, 101, 74, 0.42);
+          color: #E8654A;
+          background: rgba(255, 255, 255, 0.66);
+        }
+        .page-404-home-link:hover {
+          background: rgba(232, 101, 74, 0.12);
+        }
         .antigravity-ring {
           animation: antiSpin 18s linear infinite;
-          box-shadow: 0 0 80px rgba(182, 114, 255, 0.22);
+          box-shadow: 0 0 80px rgba(232, 101, 74, 0.18);
         }
         .antigravity-ring-reverse {
           animation-direction: reverse;
@@ -62,9 +98,9 @@ export default function PageNotFound404() {
         }
         .antigravity-particle {
           animation-name: antiPulse;
-          animation-timing-function: ease-in-out;
+          animation-timing-function: linear;
           animation-iteration-count: infinite;
-          box-shadow: 0 0 16px rgba(238, 130, 255, 0.72);
+          box-shadow: 0 0 16px rgba(232, 101, 74, 0.52);
         }
         @keyframes antiSpin {
           0% {
@@ -76,12 +112,24 @@ export default function PageNotFound404() {
         }
         @keyframes antiPulse {
           0%, 100% {
-            opacity: 0.35;
+            opacity: 0.22;
             filter: brightness(0.7);
           }
-          50% {
+          14% {
+            opacity: 0.22;
+            filter: brightness(0.7);
+          }
+          24% {
             opacity: 1;
-            filter: brightness(1.35);
+            filter: brightness(1.55);
+          }
+          34% {
+            opacity: 1;
+            filter: brightness(1.45);
+          }
+          46% {
+            opacity: 0.28;
+            filter: brightness(0.75);
           }
         }
       `}</style>
