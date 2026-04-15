@@ -179,13 +179,19 @@
 // export default CreateNewproject;
 
 
+
+
+
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { reposFetch } from "../store/slices/repoSlices";
 import api from "../api/api";
+import { useTranslation } from "react-i18next";
 
 const CreateNewproject = () => {
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
+
   const { repos = [], loading, error } = useSelector(
     (state) => state.repos || {}
   );
@@ -195,121 +201,138 @@ const CreateNewproject = () => {
   const [selectedRepo, setSelectedRepo] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const [openRepoModal, setOpenRepoModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     dispatch(reposFetch());
   }, [dispatch]);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const openModal = () => {
+    setOpenRepoModal(true);
+    setTimeout(() => setShowModal(true), 10);
+  };
 
-  if (!selectedRepo) {
-    alert("Repo tanlang");
-    return;
-  }
+  const closeModal = () => {
+    setShowModal(false);
+    setTimeout(() => setOpenRepoModal(false), 150);
+  };
 
-  try {
-    setSubmitting(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    console.log(selectedRepo);
-    
-    await api.post("/api/project/create", {
-      fullname: selectedRepo,
-    });
+    if (!selectedRepo) {
+      alert(t("selectAlert"));
+      return;
+    }
 
-    setSelectedRepo("");
+    try {
+      setSubmitting(true);
 
-    alert("Project created 🚀");
-  } catch (err) {
-    console.error(err);
-    alert("Error ❌");
-  } finally {
-    setSubmitting(false);
-  }
-};
+      await api.post("/api/project/create", {
+        fullname: selectedRepo,
+        name: projectName,
+        description,
+      });
+
+      setProjectName("");
+      setDescription("");
+      setSelectedRepo("");
+
+      alert(t("projectCreated"));
+    } catch (err) {
+      console.error(err);
+      alert(t("error"));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const filteredRepos = repos.filter((repo) =>
+    repo.full_name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1b2330] via-[#121b29] to-[#0c141e] text-white flex justify-center py-14 px-6">
-      <form onSubmit={handleSubmit} className="w-full max-w-5xl space-y-8">
-
-        {/* Header */}
-        <div>
-          <h1 className="text-4xl font-semibold tracking-tight bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
-            Architect New Workspace
-          </h1>
-          <p className="text-gray-400 mt-2 text-sm">
-            Define the core parameters and stack for your next monolith.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-
-          {/* LEFT: Project Info */}
-          <div className="bg-[#111827]/70 backdrop-blur-xl p-6 rounded-2xl border border-gray-800 hover:border-indigo-500/40 transition duration-300 space-y-5 shadow-xl">
-            <h2 className="text-xs text-gray-400 tracking-widest">
-              PROJECT IDENTITY
-            </h2>
-
-            <input
-              type="text"
-              placeholder="e.g. Project Catalyst"
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
-              className="w-full p-3 rounded-lg bg-[#0c141e] border border-gray-700 
-              focus:outline-none focus:ring-2 focus:ring-indigo-500 
-              focus:border-indigo-500 transition-all duration-200
-              hover:border-gray-500"
-            />
-
-            <textarea
-              rows="4"
-              placeholder="Briefly describe the objective..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-3 rounded-lg bg-[#0c141e] border border-gray-700 
-              focus:outline-none focus:ring-2 focus:ring-indigo-500 
-              focus:border-indigo-500 transition-all duration-200
-              hover:border-gray-500 resize-none"
-            />
-          </div>
-
-          {/* RIGHT: Repository Integration */}
-          <div className="bg-[#111827]/70 backdrop-blur-xl p-6 rounded-2xl border border-gray-800 hover:border-purple-500/40 transition duration-300 space-y-5 shadow-xl">
-            <h2 className="text-xs text-gray-400 tracking-widest">
-              INTEGRATION
-            </h2>
-
-            <select
-              value={selectedRepo}
-              onChange={(e) => setSelectedRepo(e.target.value)}
-              className="w-full p-3 rounded-lg bg-[#0c141e] border border-gray-700 
-              focus:outline-none focus:ring-2 focus:ring-purple-500 
-              focus:border-purple-500 transition-all duration-200
-              hover:border-gray-500 cursor-pointer"
-            >
-              <option value="">Select a repository...</option>
-
-              {loading && <option disabled>Loading...</option>}
-              {error && <option disabled>Error loading</option>}
-
-              {!loading &&
-                !error &&
-                repos.map((repo) => (
-                  <option key={repo.id} value={repo.full_name}>
-                    {repo.full_name}
-                  </option>
-                ))}
-            </select>
-
-            <p className="text-xs text-gray-500 leading-relaxed">
-              Connecting a repository allows live sync with your codebase.
+    <div className="min-h-screen bg-[#EEF1F7] text-[#2B3141] flex justify-center py-14 px-6">
+      <form onSubmit={handleSubmit} className="w-full max-w-4xl space-y-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-semibold text-[#010000]">
+              {t("workspace")}
+            </h1>
+            <p className="text-[#6B7280] mt-1 text-xs">
+              {t("setup")}
             </p>
           </div>
 
+          <div className="flex gap-2">
+            {["uz", "ru", "en"].map((lng) => (
+              <button
+                key={lng}
+                type="button"
+                onClick={() => i18n.changeLanguage(lng)}
+                className="px-2 py-1 text-xs rounded bg-[#2B3141] text-white"
+              >
+                {lng.toUpperCase()}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* ACTIONS */}
-        <div className="flex justify-between items-center pt-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-white p-5 rounded-xl border space-y-4">
+            <h2 className="text-[11px] text-gray-500 tracking-widest">
+              {t("project")}
+            </h2>
 
+            <input
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              className="w-full p-2.5 text-sm rounded-md bg-gray-50 border"
+              placeholder={t("projectName")}
+            />
+
+            <textarea
+              rows="3"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full p-2.5 text-sm rounded-md bg-gray-50 border"
+              placeholder={t("description")}
+            />
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border space-y-3">
+            <h2 className="text-[11px] text-gray-500 tracking-widest">
+              {t("repository")}
+            </h2>
+
+            {selectedRepo && (
+              <div className="flex justify-between bg-gray-100 border rounded px-3 py-2 text-sm">
+                <span className="truncate">{selectedRepo}</span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedRepo("")}
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            <div
+              onClick={openModal}
+              className="w-full p-2.5 text-sm rounded-md bg-gray-50 border cursor-pointer"
+            >
+              {selectedRepo ? t("changeRepo") : t("selectRepo")}
+            </div>
+
+            <p className="text-[11px] text-gray-400">
+              {t("sync")}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center pt-2">
           <button
             type="button"
             onClick={() => {
@@ -317,25 +340,69 @@ const handleSubmit = async (e) => {
               setDescription("");
               setSelectedRepo("");
             }}
-            className="text-gray-400 hover:text-white transition duration-200"
+            className="text-sm text-gray-500"
           >
-            Reset
+            {t("reset")}
           </button>
 
           <button
             type="submit"
             disabled={submitting}
-            className="px-7 py-2.5 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 
-            hover:from-indigo-500 hover:to-purple-500 active:scale-95
-            transition-all duration-200 shadow-lg shadow-indigo-600/30
-            disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-5 py-2 text-sm rounded-md bg-[#E8654A] text-white"
           >
-            {submitting ? "Creating..." : "Create"}
+            {submitting ? t("creating") : t("create")}
           </button>
-
         </div>
-
       </form>
+
+      {openRepoModal && (
+        <div
+          onClick={closeModal}
+          className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-150 ${
+            showModal ? "bg-black/40 opacity-100" : "bg-black/0 opacity-0"
+          }`}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={`w-[420px] max-h-[520px] bg-white rounded-xl p-4 transform transition-all duration-150 ${
+              showModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
+            }`}
+          >
+            <div className="flex justify-between mb-3">
+              <h2>{t("selectRepository")}</h2>
+              <button onClick={closeModal}>✕</button>
+            </div>
+
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full p-2 border mb-3"
+              placeholder={t("search")}
+            />
+
+            <div className="space-y-2 max-h-[340px] overflow-y-auto">
+              {filteredRepos.map((repo) => (
+                <div
+                  key={repo.id}
+                  onClick={() => {
+                    setSelectedRepo(repo.full_name);
+                    closeModal();
+                  }}
+                  className="p-2 bg-gray-50 border rounded cursor-pointer"
+                >
+                  <p className="text-sm">{repo.full_name}</p>
+                  <p className="text-xs text-gray-400">
+                    {repo.description || t("noDescription")}
+                  </p>
+                </div>
+              ))}
+
+              {loading && <p>Loading...</p>}
+              {error && <p>Error...</p>}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

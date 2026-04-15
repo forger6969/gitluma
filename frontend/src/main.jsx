@@ -39,7 +39,7 @@ const router = createBrowserRouter([
         element: <GithubCallbackPage />
       },
       {
-        index: true,
+        path:"/login",
         element: (
           <PublicRoute>
             <Login />
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "landing",
+        index: true,
         element: <Landing />
       },
      

@@ -133,7 +133,26 @@
         "integr2": "GitHub Actions",
         "integr3": "OAuth",
         "goals": "Maqsadlar",
-        "advantages": "Afzalliklar"
+        "advantages": "Afzalliklar",
       
+     "workspace": "Yangi loyiha",
+  "setup": "Loyihani tez sozlang",
+  "project": "LOYIHA",
+  "projectName": "Loyiha nomi",
+  "description": "Tavsif...",
+  "repository": "REPOZITORIYA",
+  "selectRepo": "Repo tanlash",
+  "changeRepo": "Repo o‘zgartirish",
+  "sync": "GitHub bilan bog‘lanadi",
+  "reset": "Tozalash",
+  "create": "Yaratish",
+  "creating": "Yaratilmoqda...",
+  "search": "Qidirish...",
+  "selectRepository": "Repo tanlang",
+  "loading": "Yuklanmoqda...",
+  "error": "Xatolik",
+  "noDescription": "Tavsif yo‘q",
+  "projectCreated": "Loyiha yaratildi 🚀",
+  "selectAlert": "Repo tanlang"
 
   }
