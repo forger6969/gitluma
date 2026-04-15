@@ -15,7 +15,7 @@ const auth_github = async (req, res, next) => {
     });
 
     const redirectUri = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${process.env.BACKEND_URL}/api/auth/github/callback`)}&scope=repo%20read:user%20user:email&state=${state}`;
-    
+
     return res.redirect(redirectUri);
   } catch (error) {
     next(error);
@@ -25,12 +25,10 @@ const auth_github = async (req, res, next) => {
 const callback_github = async (req , res ,next)=>{
 
     try {
-        
+
         const code = req.query.code
         const githubState = req.query.state
         const cookieState = req.cookies.oauth_state
-        console.log(code,githubState,cookieState);
-        
 
         if (!githubState || githubState !== cookieState) {
               return res.status(403).send("Invalid state");
@@ -45,8 +43,6 @@ const callback_github = async (req , res ,next)=>{
         })
 
         const access_token_github = tokenResponse.data.access_token
-        console.log("token response🔑",tokenResponse.data);
-        
 
         const user_respoonse = await axios.get("https://api.github.com/user",{
             headers:{
@@ -59,7 +55,7 @@ const callback_github = async (req , res ,next)=>{
         const checkIsAuth = await User.findOne({github_id:githubUser.id})
 
         if (checkIsAuth) {
-           const access_token = await generate_access_token({id:checkIsAuth._id})
+           const access_token = generate_access_token({id:checkIsAuth._id})
            const refresh_token = await generate_refresh_token({id:checkIsAuth._id})
            checkIsAuth.github_token = access_token_github
            await checkIsAuth.save()
@@ -74,7 +70,7 @@ const callback_github = async (req , res ,next)=>{
 
        return res.redirect(
        `${process.env.FRONTEND_URL}/github/callback?access_token=${access_token.token}&refresh_token=${refresh_token.token}`
-      ) 
+      )
     }
 
 const newUser = await User.create({
@@ -87,12 +83,12 @@ const newUser = await User.create({
     bio:githubUser.bio
 })
 
-const refresh_token = await  generate_refresh_token({id:newUser._id})
-const access_token =  generate_access_token({id:newUser._id})
-        console.log(githubUser);
+const refresh_token = await generate_refresh_token({id:newUser._id})
+const access_token = generate_access_token({id:newUser._id})
+
       res.redirect(
        `${process.env.FRONTEND_URL}/github/callback?access_token=${access_token.token}&refresh_token=${refresh_token.token}`
-      )  
+      )
 
     } catch (err) {
         next(err)
@@ -101,18 +97,15 @@ const access_token =  generate_access_token({id:newUser._id})
 }
 
 
-const refreshToken = async (req , res)=>{
+const refreshToken = async (req , res , next)=>{
 
   try {
-    
+
     const {refresh_token} = req.body
-
-    const access_token = await  refresh_access_token(refresh_token , req ,res)
-
-res.json({success:true , access_token})    
+    await refresh_access_token(refresh_token , req , res)
 
   } catch (err) {
-    
+    next(err)
   }
 
 }

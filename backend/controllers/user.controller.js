@@ -1,9 +1,9 @@
 const User = require("../models/user.model")
 
-const getMe = async (req , res)=>{
+const getMe = async (req , res , next)=>{
 
     try {
-        
+
         const {id} = req.user
 
         const user = await User.findById(id)
@@ -16,7 +16,7 @@ const getMe = async (req , res)=>{
 
 
     } catch (err) {
-        
+        next(err)
     }
 
 

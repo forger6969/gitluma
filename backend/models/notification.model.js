@@ -16,7 +16,7 @@ const notificationSchema = mongoose.Schema({
     user:{type:Schema.Types.ObjectId , ref:"User"}
 })
 
-notificationSchema.index({createdAt:1} , {expirseAfterSeconds: 7 * 24 * 60 * 60})
+notificationSchema.index({createdAt:1} , {expireAfterSeconds: 7 * 24 * 60 * 60})
 
 const Notification = mongoose.model("Notification" , notificationSchema)
 

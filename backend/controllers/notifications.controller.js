@@ -8,11 +8,9 @@ const getNotifications = async (req , res , next)=>{
         const {id} = req.user
 
 
-const notifications = await Notification.find({
-    user: new mongoose.Types.ObjectId(id)
-});
-        console.log(notifications);
-        
+        const notifications = await Notification.find({
+            user: new mongoose.Types.ObjectId(id)
+        });
 
         res.json({success:true , notifications })
 
