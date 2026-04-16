@@ -1,8 +1,9 @@
 const express = require("express")
 const { userTokenMiddleware } = require("../middlewares/tokenMIddleware")
-const { assignTask } = require("../controllers/task.controller")
+const { assignTask, getProjectTasks } = require("../controllers/task.controller")
 const router = express.Router()
 
 router.post("/task/assign",userTokenMiddleware, assignTask)
+router.get("/task/project/:id" , userTokenMiddleware , getProjectTasks)
 
 module.exports = router
