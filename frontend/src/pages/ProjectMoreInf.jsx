@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/api";
 import useCommitsEvents from "../hooks/useCommitsEvents";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { clearCommits } from "../store/slices/projectCommitsSlice";
 
 /* ─────────── Invite Modal ─────────── */
 const InviteModal = ({ projectId, onClose }) => {
@@ -133,8 +134,9 @@ const ProjectDetails = () => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [inviteOpen, setInviteOpen] = useState(false);
-  const commit = useCommitsEvents(project?._id);
-  const commits = useSelector((state) => state.projectcommits.commits);
+  const dispatch = useDispatch();
+  const socketCommits = useSelector((state) => state.projectcommits.commits);
+  useCommitsEvents(project?._id);
 
   const fetchProject = async () => {
     try {
@@ -149,12 +151,10 @@ const ProjectDetails = () => {
   };
 
   useEffect(() => {
+    dispatch(clearCommits());
     fetchProject();
+    return () => dispatch(clearCommits());
   }, [id]);
-
-  useEffect(() => {
-    console.log("new commit", commits);
-  }, [commits]);
 
   if (loading) {
     return (
@@ -230,25 +230,44 @@ const ProjectDetails = () => {
 
         {/* Commits */}
         <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
-          <h2 className="text-xl font-semibold mb-4">
-            Commits ({project.commits?.length})
-          </h2>
-          <div className="space-y-3 max-h-[400px] overflow-y-auto">
-            {[...(project.commits || [])].reverse().map((commit, index) => (
-              <div
-                key={index}
-                className="bg-[#0f172a] p-4 rounded-xl hover:bg-[#1e293b] transition"
-              >
-                <p className="text-sm font-medium">
-                  {commit.commit_message || "No message"}
-                </p>
-                <div className="flex justify-between text-xs text-gray-400 mt-2">
-                  <span>{new Date(commit.createdAt).toLocaleString()}</span>
-                  <span className="text-indigo-400">#{index + 1}</span>
+          {(() => {
+            const allCommits = [
+              ...socketCommits,
+              ...[...(project.commits || [])].reverse(),
+            ];
+            return (
+              <>
+                <h2 className="text-xl font-semibold mb-4">
+                  Commits ({allCommits.length})
+                </h2>
+                <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                  {allCommits.map((commit, index) => (
+                    <div
+                      key={commit._id || index}
+                      className={`p-4 rounded-xl transition ${
+                        index < socketCommits.length
+                          ? "bg-indigo-900/30 border border-indigo-500/30 hover:bg-indigo-900/50"
+                          : "bg-[#0f172a] hover:bg-[#1e293b]"
+                      }`}
+                    >
+                      {index < socketCommits.length && (
+                        <span className="text-[10px] font-semibold text-indigo-400 uppercase tracking-wider mb-1 block">
+                          New
+                        </span>
+                      )}
+                      <p className="text-sm font-medium">
+                        {commit.commit_message || "No message"}
+                      </p>
+                      <div className="flex justify-between text-xs text-gray-400 mt-2">
+                        <span>{new Date(commit.createdAt).toLocaleString()}</span>
+                        <span className="text-indigo-400">#{index + 1}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            ))}
-          </div>
+              </>
+            );
+          })()}
         </div>
 
         {/* Members */}
