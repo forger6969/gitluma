@@ -6,12 +6,15 @@ import { useEffect } from "react";
 const useCommitsEvents = (projectId) => {
     const dispatch = useDispatch();
     const socket = getSocket()
+
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !projectId) return;
+
+    socket.emit("project_join", projectId);
 
     const handleNewCommit = (data) => {
       console.log("New commit received for project", projectId, data);
-dispatch(addNewCommit(data.commit))
+      dispatch(addNewCommit(data.commit));
     };
 
     socket.on("new_commit", handleNewCommit);
