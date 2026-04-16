@@ -1,25 +1,32 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchMe } from "./store/slices/authSlice";
-import { Outlet } from "react-router-dom";import { Toaster } from "react-hot-toast";
+// import { Outlet } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 
+import { Outlet, useLocation } from "react-router-dom";
 
 const App = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    if (token) {
-      dispatch(fetchMe());
 
+    if (token && location.pathname !== "/too-many-requests") {
+      dispatch(fetchMe());
     }
-  }, []);
+  }, [location.pathname]);
+
   return (
-    <div className="bg-bg-gray-950">
+    <div className="bg-oq">
       <Outlet />
       <Toaster position="top-right" />
     </div>
-  )
+  );
 };
 
 export default App;
+
+
