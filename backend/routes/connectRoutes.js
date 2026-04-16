@@ -8,6 +8,7 @@ const testRouter = require("./test.routes")
 const notifyRouter = require("./notifications.routes")
 const inviteRouter = require("./invite.routes")
 const searchRouter = require("./search.routes")
+const taskRouter = require("./task.routes")
 
 const connectRoutes = (app)=>{
 app.use("/api",authRouter)
@@ -19,6 +20,7 @@ app.use("/api" , testRouter)
 app.use("/api" , notifyRouter)
 app.use("/api" ,inviteRouter)
 app.use("/api" ,searchRouter)
+app.use("/api" , taskRouter)
 }
 
 module.exports = connectRoutes

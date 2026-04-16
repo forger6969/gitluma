@@ -340,6 +340,7 @@ const getProjectInvites = async (req ,res,next)=>{
     const invites = await Invite.find({project:projectId})
       .populate("invitedUser", "username avatar_url")
       .populate("inviteBy", "username")
+      
     res.json({success:true , invites})
 
   } catch (err) {
@@ -352,5 +353,5 @@ const getProjectInvites = async (req ,res,next)=>{
 module.exports = {
     inviteByUsername,
     acceptInvite,
-    getProjectInvites
+    getProjectInvites 
 }
