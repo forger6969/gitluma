@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/api";
-import { buildProjectionTransform } from "framer-motion";
 import useCommitsEvents from "../hooks/useCommitsEvents";
 import { useSelector } from "react-redux";
 

@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchMe } from "./store/slices/authSlice";
 import { Outlet, useLocation } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
+
 
 const App = () => {
   const dispatch = useDispatch();
@@ -18,6 +21,7 @@ const App = () => {
   return (
     <div className="bg-oq">
       <Outlet />
+      <Toaster position="top-right" />
     </div>
   );
 };

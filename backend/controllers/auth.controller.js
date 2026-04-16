@@ -1,4 +1,4 @@
-const { default: axios } = require("axios");
+const axios = require("axios");
 const crypto = require("crypto");
 const User = require("../models/user.model");
 const { generate_access_token, generate_refresh_token, refresh_access_token } = require("../utils/token");
@@ -9,116 +9,122 @@ const auth_github = async (req, res, next) => {
 
     res.cookie("oauth_state", state, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       maxAge: 5 * 60 * 1000,
       sameSite: "lax"
     });
 
     const redirectUri = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(`${process.env.BACKEND_URL}/api/auth/github/callback`)}&scope=repo%20read:user%20user:email&state=${state}`;
-    
+
     return res.redirect(redirectUri);
   } catch (error) {
     next(error);
   }
 };
 
-const callback_github = async (req , res ,next)=>{
+const callback_github = async (req, res, next) => {
+  try {
+    const code = req.query.code;
+    const githubState = req.query.state;
+    const cookieState = req.cookies.oauth_state;
 
-    try {
-        
-        const code = req.query.code
-        const githubState = req.query.state
-        const cookieState = req.cookies.oauth_state
-        console.log(code,githubState,cookieState);
-        
+    if (!githubState || githubState !== cookieState) {
+      return res.status(403).send("Invalid state");
+    }
 
-        if (!githubState || githubState !== cookieState) {
-              return res.status(403).send("Invalid state");
-        }
-
-        const tokenResponse = await axios.post("https://github.com/login/oauth/access_token", {
-             client_id: process.env.GITHUB_CLIENT_ID,
+    const tokenResponse = await axios.post(
+      "https://github.com/login/oauth/access_token",
+      {
+        client_id: process.env.GITHUB_CLIENT_ID,
         client_secret: process.env.GITHUB_CLIENT_SECRET,
         code,
-        },{
-            headers: { Accept: "application/json" }
-        })
+      },
+      {
+        headers: { Accept: "application/json" },
+      }
+    );
 
-        const access_token_github = tokenResponse.data.access_token
-        console.log("token response🔑",tokenResponse.data);
-        
+    const access_token_github = tokenResponse.data.access_token;
 
-        const user_respoonse = await axios.get("https://api.github.com/user",{
-            headers:{
-                Authorization:`Bearer ${tokenResponse.data.access_token}`
-            }
-        })
+    const userResponse = await axios.get("https://api.github.com/user", {
+      headers: { Authorization: `Bearer ${access_token_github}` },
+    });
 
-        const githubUser = user_respoonse.data
+    const githubUser = userResponse.data;
 
-        const checkIsAuth = await User.findOne({github_id:githubUser.id})
-
-        if (checkIsAuth) {
-           const access_token = await generate_access_token({id:checkIsAuth._id})
-           const refresh_token = await generate_refresh_token({id:checkIsAuth._id})
-           checkIsAuth.github_token = access_token_github
-           await checkIsAuth.save()
-
-           if (!access_token.success) {
-           return res.status(500).json({success:false , error:access_token.error || "Access token error"})
-           }
-
-           if (!refresh_token.success) {
-          return  res.status(500).json({success:false , error:refresh_token.error || "refresh token error"})
-           }
-
-       return res.redirect(
-       `${process.env.FRONTEND_URL}/github/callback?access_token=${access_token.token}&refresh_token=${refresh_token.token}`
-      ) 
+    // Получаем email отдельно если он скрыт в профиле
+    let email = githubUser.email;
+    if (!email) {
+      const emailResponse = await axios.get("https://api.github.com/user/emails", {
+        headers: { Authorization: `Bearer ${access_token_github}` },
+      });
+      const primaryEmail = emailResponse.data.find(e => e.primary && e.verified);
+      email = primaryEmail?.email || null;
     }
 
-const newUser = await User.create({
-    github_id:githubUser.id,
-    username:githubUser.login,
-    github_token:access_token_github,
-    avatar_url:githubUser.avatar_url,
-    email:githubUser.email,
-    name:githubUser.name,
-    bio:githubUser.bio
-})
+    const checkIsAuth = await User.findOne({ github_id: githubUser.id });
 
-const refresh_token = await  generate_refresh_token({id:newUser._id})
-const access_token =  generate_access_token({id:newUser._id})
-        console.log(githubUser);
-      res.redirect(
-       `${process.env.FRONTEND_URL}/github/callback?access_token=${access_token.token}&refresh_token=${refresh_token.token}`
-      )  
+    if (checkIsAuth) {
+      const access_token = generate_access_token({ id: checkIsAuth._id });
+      const refresh_token = await generate_refresh_token({ id: checkIsAuth._id });
 
-    } catch (err) {
-        next(err)
+      if (!access_token.success) {
+        return res.status(500).json({ success: false, error: access_token.error || "Access token error" });
+      }
+
+      if (!refresh_token.success) {
+        return res.status(500).json({ success: false, error: refresh_token.error || "Refresh token error" });
+      }
+
+      checkIsAuth.github_token = access_token_github;
+      await checkIsAuth.save();
+
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/github/callback?access_token=${access_token.token}&refresh_token=${refresh_token.token}`
+      );
     }
 
-}
+    const newUser = await User.create({
+      github_id: githubUser.id,
+      username: githubUser.login,
+      github_token: access_token_github,
+      avatar_url: githubUser.avatar_url,
+      email,
+      name: githubUser.name,
+      bio: githubUser.bio,
+    });
 
+    const access_token = generate_access_token({ id: newUser._id });
+    const refresh_token = await generate_refresh_token({ id: newUser._id });
 
-const refreshToken = async (req , res)=>{
+    if (!access_token.success) {
+      return res.status(500).json({ success: false, error: access_token.error || "Access token error" });
+    }
 
-  try {
-    
-    const {refresh_token} = req.body
+    if (!refresh_token.success) {
+      return res.status(500).json({ success: false, error: refresh_token.error || "Refresh token error" });
+    }
 
-    const access_token = await  refresh_access_token(refresh_token , req ,res)
-
-res.json({success:true , access_token})    
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/github/callback?access_token=${access_token.token}&refresh_token=${refresh_token.token}`
+    );
 
   } catch (err) {
-    
+    next(err);
   }
+};
 
-}
+const refreshToken = async (req, res, next) => {
+  try {
+    const { refresh_token } = req.body;
+    await refresh_access_token(refresh_token, req, res);
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {
-    auth_github,
-    callback_github,
-    refreshToken
-}
+  auth_github,
+  callback_github,
+  refreshToken,
+};

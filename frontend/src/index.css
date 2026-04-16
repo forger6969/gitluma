@@ -1,6 +1,61 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+/* ── GitLuma Design Tokens ────────────────────────────────────────────────── */
+:root, [data-theme="light"] {
+  --gl-bg-page:        #EEF1F7;
+  --gl-bg-card:        #FFFFFF;
+  --gl-bg-card-hdr:    #F8F9FB;
+  --gl-bg-input:       #F4F6FB;
+  --gl-heading:        #181D2A;
+  --gl-body:           #2B3141;
+  --gl-muted:          #5C6480;
+  --gl-placeholder:    #9AA0B4;
+  --gl-border-subtle:  #E2E5EE;
+  --gl-border-default: #C8CDD9;
+  --gl-coral:          #E8654A;
+  --gl-coral-bg:       #FCEDE9;
+  --gl-shadow:         0 1px 4px rgba(0,0,0,0.06);
+  --gl-sec-hover:      #EEF0F4;
+  --gl-sec-active:     #C8CDD9;
+  /* feature card backgrounds */
+  --gl-feat1-bg:  #FCEDE9;
+  --gl-feat2-bg:  #EEF1F7;
+  --gl-feat3-bg:  rgba(34,176,125,0.07);
+  --gl-feat4-bg:  rgba(58,126,232,0.07);
+  /* step card backgrounds */
+  --gl-step1-bg:  rgba(58,126,232,0.07);
+  --gl-step2-bg:  #FCEDE9;
+  --gl-step3-bg:  rgba(34,176,125,0.07);
+  --gl-node-fill: #FFFFFF;
+}
+
+[data-theme="dark"] {
+  --gl-bg-page:        #0d1117;
+  --gl-bg-card:        #161b22;
+  --gl-bg-card-hdr:    #1c2128;
+  --gl-bg-input:       #21262d;
+  --gl-heading:        #e6edf3;
+  --gl-body:           #c9d1d9;
+  --gl-muted:          #8b949e;
+  --gl-placeholder:    #6e7681;
+  --gl-border-subtle:  #30363d;
+  --gl-border-default: #21262d;
+  --gl-coral:          #E8654A;
+  --gl-coral-bg:       rgba(232,101,74,0.15);
+  --gl-shadow:         0 1px 4px rgba(0,0,0,0.4);
+  --gl-sec-hover:      rgba(255,255,255,0.08);
+  --gl-sec-active:     rgba(255,255,255,0.12);
+  --gl-feat1-bg:  rgba(232,101,74,0.10);
+  --gl-feat2-bg:  rgba(255,255,255,0.04);
+  --gl-feat3-bg:  rgba(34,176,125,0.10);
+  --gl-feat4-bg:  rgba(58,126,232,0.10);
+  --gl-step1-bg:  rgba(58,126,232,0.12);
+  --gl-step2-bg:  rgba(232,101,74,0.12);
+  --gl-step3-bg:  rgba(34,176,125,0.12);
+  --gl-node-fill: #161b22;
+}
+
 
 .custom-scroll::-webkit-scrollbar {
     width: 0px;
