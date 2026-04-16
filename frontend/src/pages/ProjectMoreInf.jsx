@@ -147,6 +147,7 @@ const ProjectDetails = () => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [invites, setInvites] = useState([]);
   const dispatch = useDispatch();
   const socketCommits = useSelector((state) => state.projectcommits.commits);
   useCommitsEvents(project?._id);
@@ -163,9 +164,21 @@ const ProjectDetails = () => {
     }
   };
 
+  const fetchInvites = async () => {
+    try {
+      const res = await api.get("/api/invite/invites", {
+        data: { projectId: id },
+      });
+      setInvites(res.data.invites || []);
+    } catch {
+      // не owner/member — просто не показываем
+    }
+  };
+
   useEffect(() => {
     dispatch(clearCommits());
     fetchProject();
+    fetchInvites();
     return () => dispatch(clearCommits());
   }, [id]);
 
@@ -318,6 +331,48 @@ const ProjectDetails = () => {
             ))}
           </div>
         </div>
+
+        {/* Invites */}
+        {invites.length > 0 && (
+          <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
+            <h2 className="text-xl font-semibold mb-4">
+              Invites ({invites.length})
+            </h2>
+            <div className="space-y-2">
+              {invites.map((invite) => (
+                <div
+                  key={invite._id}
+                  className="flex items-center gap-3 bg-[#0f172a] px-4 py-3 rounded-xl"
+                >
+                  <img
+                    src={invite.invitedUser?.avatar_url}
+                    alt={invite.invitedUser?.username}
+                    className="w-9 h-9 rounded-full shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-white truncate">
+                      {invite.invitedUser?.username || "Unknown"}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      invited by {invite.inviteBy?.username} · {new Date(invite.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <span
+                    className={`text-xs px-2.5 py-1 rounded-full font-medium shrink-0 ${
+                      invite.status === "accepted"
+                        ? "bg-green-500/15 text-green-400"
+                        : invite.status === "rejected"
+                        ? "bg-red-500/15 text-red-400"
+                        : "bg-yellow-500/15 text-yellow-400"
+                    }`}
+                  >
+                    {invite.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
     </div>
