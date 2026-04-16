@@ -16,6 +16,10 @@ const searchUser = async (req, res, next) => {
 
         res.json({ success: true, users })
 
+
+        
+
+
     } catch (err) {
         next(err)
     }
