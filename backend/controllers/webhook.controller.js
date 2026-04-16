@@ -78,9 +78,9 @@ async function githubWebhook(req, res, next) {
   })
 
   for (const commit of savedCommits) {
-    sendCommitToPorjectRoom(project._id, { commit })
+    sendCommitToPorjectRoom(project._id.toString(), { commit })
   }
-  sendNotifyByID(user._id, notfication)
+  sendNotifyByID(user._id.toString(), notfication)
 
 }
 
