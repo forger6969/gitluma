@@ -140,6 +140,162 @@ const InviteModal = ({ projectId, members = [], onClose }) => {
   );
 };
 
+/* ─────────── Assign Task Modal ─────────── */
+const PRIORITIES = ["low", "medium", "high"];
+
+const AssignTaskModal = ({ projectId, members = [], onClose, onAssigned }) => {
+  const [form, setForm] = useState({
+    task_name: "",
+    task_describe: "",
+    task_deadline: "",
+    assigned_user: "",
+    priority: "medium",
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const set = (field) => (e) =>
+    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    if (!form.assigned_user) {
+      setError("Please select a member to assign");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await api.post("/api/task/assign", {
+        ...form,
+        project_id: projectId,
+      });
+      onAssigned(res.data.task);
+      onClose();
+    } catch (err) {
+      setError(err?.response?.data?.message || "Error assigning task");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const nonOwnerMembers = members.filter((m) => m.role !== "owner");
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className="bg-[#1e293b] rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-bold text-white">Assign Task</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-white transition text-xl leading-none"
+          >
+            ×
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="text-xs text-gray-400 mb-1 block">Task name *</label>
+            <input
+              required
+              value={form.task_name}
+              onChange={set("task_name")}
+              placeholder="Fix login bug"
+              className="w-full bg-[#0f172a] text-white placeholder-gray-500 border border-[#334155] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-indigo-500 transition"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs text-gray-400 mb-1 block">Description *</label>
+            <textarea
+              required
+              rows={3}
+              value={form.task_describe}
+              onChange={set("task_describe")}
+              placeholder="Describe what needs to be done…"
+              className="w-full bg-[#0f172a] text-white placeholder-gray-500 border border-[#334155] rounded-xl px-4 py-2.5 text-sm outline-none focus:border-indigo-500 transition resize-none"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs text-gray-400 mb-1 block">Deadline *</label>
+              <input
+                required
+                type="datetime-local"
+                value={form.task_deadline}
+                onChange={set("task_deadline")}
+                className="w-full bg-[#0f172a] text-white border border-[#334155] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-500 transition"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-gray-400 mb-1 block">Priority</label>
+              <select
+                value={form.priority}
+                onChange={set("priority")}
+                className="w-full bg-[#0f172a] text-white border border-[#334155] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-500 transition cursor-pointer"
+              >
+                {PRIORITIES.map((p) => (
+                  <option key={p} value={p}>
+                    {p.charAt(0).toUpperCase() + p.slice(1)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs text-gray-400 mb-1 block">Assign to *</label>
+            <select
+              value={form.assigned_user}
+              onChange={set("assigned_user")}
+              className="w-full bg-[#0f172a] text-white border border-[#334155] rounded-xl px-3 py-2.5 text-sm outline-none focus:border-indigo-500 transition cursor-pointer"
+            >
+              <option value="">— Select member —</option>
+              {nonOwnerMembers.map((m) => (
+                <option key={m._id} value={m.user?._id}>
+                  {m.user?.username}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {error && <p className="text-red-400 text-xs">{error}</p>}
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-semibold py-2.5 rounded-xl transition text-sm"
+          >
+            {submitting ? "Assigning…" : "Assign Task"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const PRIORITY_STYLES = {
+  high: "bg-red-500/15 text-red-400",
+  medium: "bg-yellow-500/15 text-yellow-400",
+  low: "bg-green-500/15 text-green-400",
+};
+
+const STATUS_STYLES = {
+  todo: "bg-gray-500/15 text-gray-400",
+  in_progress: "bg-blue-500/15 text-blue-400",
+  done: "bg-green-500/15 text-green-400",
+  verified: "bg-indigo-500/15 text-indigo-400",
+  overdue: "bg-red-500/15 text-red-400",
+};
+
 /* ─────────── Main Page ─────────── */
 const ProjectDetails = () => {
   const { id } = useParams();
@@ -147,7 +303,9 @@ const ProjectDetails = () => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [assignOpen, setAssignOpen] = useState(false);
   const [invites, setInvites] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.user);
   const currentUserId = currentUser?.user?._id || currentUser?._id;
@@ -175,10 +333,20 @@ const ProjectDetails = () => {
     }
   };
 
+  const fetchTasks = async () => {
+    try {
+      const res = await api.get(`/api/task/project/${id}`);
+      setTasks(res.data.tasks || []);
+    } catch {
+      // endpoint may not exist yet — silently ignore
+    }
+  };
+
   useEffect(() => {
     dispatch(clearCommits());
     fetchProject();
     fetchInvites();
+    fetchTasks();
     return () => dispatch(clearCommits());
   }, [id]);
 
@@ -229,6 +397,14 @@ const ProjectDetails = () => {
       {inviteOpen && (
         <InviteModal projectId={project._id} members={project.members} onClose={() => setInviteOpen(false)} />
       )}
+      {assignOpen && (
+        <AssignTaskModal
+          projectId={project._id}
+          members={project.members}
+          onClose={() => setAssignOpen(false)}
+          onAssigned={(task) => setTasks((prev) => [task, ...prev])}
+        />
+      )}
 
       <div className="max-w-6xl mx-auto space-y-6">
 
@@ -243,18 +419,37 @@ const ProjectDetails = () => {
             <h1 className="text-2xl font-bold">{project.repo_name}</h1>
             <p className="text-gray-400 text-sm">{project.repo_full_name}</p>
           </div>
-          <button
-            onClick={() => setInviteOpen(true)}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 transition text-white text-sm font-semibold px-4 py-2 rounded-xl"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-              <circle cx="9" cy="7" r="4"/>
-              <line x1="19" y1="8" x2="19" y2="14"/>
-              <line x1="22" y1="11" x2="16" y2="11"/>
-            </svg>
-            Invite
-          </button>
+          <div className="flex items-center gap-2">
+            {(() => {
+              const isCurrOwner = project.members?.some(
+                (m) => m.user?._id === currentUserId && m.role === "owner"
+              );
+              return isCurrOwner ? (
+                <button
+                  onClick={() => setAssignOpen(true)}
+                  className="flex items-center gap-2 bg-[#1e293b] hover:bg-[#334155] border border-[#334155] transition text-white text-sm font-semibold px-4 py-2 rounded-xl"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 11l3 3L22 4"/>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                  </svg>
+                  Assign Task
+                </button>
+              ) : null;
+            })()}
+            <button
+              onClick={() => setInviteOpen(true)}
+              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 transition text-white text-sm font-semibold px-4 py-2 rounded-xl"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <line x1="19" y1="8" x2="19" y2="14"/>
+                <line x1="22" y1="11" x2="16" y2="11"/>
+              </svg>
+              Invite
+            </button>
+          </div>
         </div>
 
         {/* Info cards */}
@@ -429,6 +624,59 @@ const ProjectDetails = () => {
               ))}
             </div>
             )}
+        </div>
+
+        {/* Tasks */}
+        <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold">Tasks ({tasks.length})</h2>
+            {(() => {
+              const isCurrOwner = project.members?.some(
+                (m) => m.user?._id === currentUserId && m.role === "owner"
+              );
+              return isCurrOwner ? (
+                <button
+                  onClick={() => setAssignOpen(true)}
+                  className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition"
+                >
+                  + Assign Task
+                </button>
+              ) : null;
+            })()}
+          </div>
+          {tasks.length === 0 ? (
+            <p className="text-gray-500 text-sm">No tasks yet</p>
+          ) : (
+            <div className="space-y-2">
+              {tasks.map((task) => (
+                <div
+                  key={task._id}
+                  className="bg-[#0f172a] px-4 py-3 rounded-xl flex items-start gap-3"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-mono text-gray-500">{task.key}</span>
+                      <p className="text-sm font-medium text-white truncate">{task.task_name}</p>
+                    </div>
+                    {task.task_describe && (
+                      <p className="text-xs text-gray-400 mt-0.5 line-clamp-2">{task.task_describe}</p>
+                    )}
+                    <p className="text-xs text-gray-500 mt-1">
+                      Due: {new Date(task.task_deadline).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end gap-1.5 shrink-0">
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${PRIORITY_STYLES[task.priority] || ""}`}>
+                      {task.priority}
+                    </span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_STYLES[task.status] || ""}`}>
+                      {task.status}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
       </div>

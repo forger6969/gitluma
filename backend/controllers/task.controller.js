@@ -2,6 +2,7 @@ const { generateTaskKey } = require("../utils/generate");
 const Project = require("../models/projects.model");
 const User = require("../models/user.model");
 const Task = require("../models/task.model");
+const Notification = require("../models/notification.model");
 const { sendNotifyByID } = require("../socket");
 
 const assignTask = async (req, res, next) => {
