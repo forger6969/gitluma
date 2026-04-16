@@ -149,6 +149,8 @@ const ProjectDetails = () => {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [invites, setInvites] = useState([]);
   const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.user);
+  const currentUserId = currentUser?.user?._id || currentUser?._id;
   const socketCommits = useSelector((state) => state.projectcommits.commits);
   useCommitsEvents(project?._id);
 
@@ -179,6 +181,32 @@ const ProjectDetails = () => {
     fetchInvites();
     return () => dispatch(clearCommits());
   }, [id]);
+
+  const handleRoleChange = async (memberId, role) => {
+    try {
+      await api.patch(`/api/project/${id}/members/${memberId}/role`, { role });
+      setProject((prev) => ({
+        ...prev,
+        members: prev.members.map((m) =>
+          m._id === memberId ? { ...m, role } : m
+        ),
+      }));
+    } catch (err) {
+      console.error(err?.response?.data?.message || err);
+    }
+  };
+
+  const handleRemoveMember = async (memberId) => {
+    try {
+      await api.delete(`/api/project/${id}/members/${memberId}`);
+      setProject((prev) => ({
+        ...prev,
+        members: prev.members.filter((m) => m._id !== memberId),
+      }));
+    } catch (err) {
+      console.error(err?.response?.data?.message || err);
+    }
+  };
 
   if (loading) {
     return (
@@ -295,40 +323,69 @@ const ProjectDetails = () => {
         </div>
 
         {/* Members */}
-        <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
-          <h2 className="text-xl font-semibold mb-4">
-            Members ({project.members?.length})
-          </h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {project.members?.map((member, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-3 bg-[#0f172a] p-3 rounded-xl hover:bg-[#334155] transition"
-              >
-                <img
-                  src={member.user?.avatar_url}
-                  alt="avatar"
-                  className="w-10 h-10 rounded-full"
-                />
-                <div className="flex-1">
-                  <p className="text-sm font-medium">
-                    {member.user?.username || "Unknown"}
-                  </p>
-                  <p className="text-xs text-gray-400">{member.role}</p>
-                </div>
-                <span
-                  className={`text-xs px-2 py-1 rounded-full ${
-                    member.role === "owner"
-                      ? "bg-indigo-500/20 text-indigo-400"
-                      : "bg-gray-500/20 text-gray-300"
-                  }`}
-                >
-                  {member.role}
-                </span>
+        {(() => {
+          const isOwner = project.repo_owner_user?._id === currentUserId ||
+                          project.repo_owner_user?.toString() === currentUserId;
+          return (
+            <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
+              <h2 className="text-xl font-semibold mb-4">
+                Members ({project.members?.length})
+              </h2>
+              <div className="space-y-2">
+                {project.members?.map((member) => {
+                  const isSelf = member.user?._id === currentUserId;
+                  return (
+                    <div
+                      key={member._id}
+                      className="flex items-center gap-3 bg-[#0f172a] px-4 py-3 rounded-xl"
+                    >
+                      <img
+                        src={member.user?.avatar_url}
+                        alt="avatar"
+                        className="w-10 h-10 rounded-full shrink-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">
+                          {member.user?.username || "Unknown"}
+                        </p>
+                        <p className="text-xs text-gray-400">{member.role}</p>
+                      </div>
+
+                      {isOwner && !isSelf ? (
+                        <div className="flex items-center gap-2 shrink-0">
+                          <select
+                            value={member.role}
+                            onChange={(e) => handleRoleChange(member._id, e.target.value)}
+                            className="text-xs bg-[#1e293b] border border-[#334155] text-gray-300 rounded-lg px-2 py-1 outline-none cursor-pointer hover:border-indigo-500 transition"
+                          >
+                            <option value="member">member</option>
+                            <option value="owner">owner</option>
+                          </select>
+                          <button
+                            onClick={() => handleRemoveMember(member._id)}
+                            className="text-xs bg-red-500/10 hover:bg-red-500/25 text-red-400 px-2.5 py-1 rounded-lg transition"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ) : (
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full shrink-0 ${
+                            member.role === "owner"
+                              ? "bg-indigo-500/20 text-indigo-400"
+                              : "bg-gray-500/20 text-gray-300"
+                          }`}
+                        >
+                          {member.role}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          );
+        })()}
 
         {/* Invites */}
         <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
