@@ -322,7 +322,7 @@ const getProjectInvites = async (req ,res,next)=>{
   try {
     
     const {id} = req.user
-    const {projectId} = req.body
+    const {projectId} = req.query
 
     
     const project = await Project.findById(projectId)

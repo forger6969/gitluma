@@ -166,12 +166,10 @@ const ProjectDetails = () => {
 
   const fetchInvites = async () => {
     try {
-      const res = await api.get("/api/invite/invites", {
-        data: { projectId: id },
-      });
+      const res = await api.get(`/api/invite/invites?projectId=${id}`);
       setInvites(res.data.invites || []);
-    } catch {
-      // не owner/member — просто не показываем
+    } catch (err) {
+      console.error("fetchInvites error:", err?.response?.data || err);
     }
   };
 
@@ -333,11 +331,13 @@ const ProjectDetails = () => {
         </div>
 
         {/* Invites */}
-        {invites.length > 0 && (
-          <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
+        <div className="bg-[#1e293b] rounded-2xl p-6 shadow">
             <h2 className="text-xl font-semibold mb-4">
               Invites ({invites.length})
             </h2>
+            {invites.length === 0 ? (
+              <p className="text-gray-500 text-sm">No invites yet</p>
+            ) : (
             <div className="space-y-2">
               {invites.map((invite) => (
                 <div
@@ -371,8 +371,8 @@ const ProjectDetails = () => {
                 </div>
               ))}
             </div>
-          </div>
-        )}
+            )}
+        </div>
 
       </div>
     </div>
