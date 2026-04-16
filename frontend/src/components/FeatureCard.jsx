@@ -14,6 +14,6 @@ const FeatureCard = ({ title, desc, phase }) => {
         </div>
       </div>
     );
+
   };
-  
   export default FeatureCard;

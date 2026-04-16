@@ -5,41 +5,52 @@ const api = axios.create({
 })
 
 const refreshApi = axios.create({
-    baseURL:import.meta.env.VITE_API_URL
+    baseURL: import.meta.env.VITE_API_URL
 })
 
 api.interceptors.response.use(
-  async  (res) => res,
-   async (err) => {
+    async (res) => res,
+    async (err) => {
 
-     const originalReq = err.config
+        const originalReq = err.config
 
-    try {
+        if (err.response && err.response.status === 429) {
+            if (window.location.pathname !== "/too-many-requests") {
+                window.location.href = "/too-many-requests"
+            }
+            return Promise.reject(err)
+        }
+
+        try {
+            // 🔥 2. 401 HANDLER (refresh token)
             if (err.response?.status === 401 && !originalReq._retry) {
                 originalReq._retry = true
-            const refresh_token = localStorage.getItem("refresh_token")
-            const request = await api.post("/api/auth/refresh",{
-                refresh_token
-            } )
-const token = request.data.token
-localStorage.setItem("access_token" , token)
-console.log(token);
 
-originalReq.headers.Authorization = `Bearer ${token}`
+                const refresh_token = localStorage.getItem("refresh_token")
 
-return await api(originalReq)
+                // ❗ refreshApi ishlatamiz (loop bo‘lmasligi uchun)
+                const request = await refreshApi.post("/api/auth/refresh", {
+                    refresh_token
+                })
 
+                const token = request.data.token
 
+                localStorage.setItem("access_token", token)
+
+                originalReq.headers.Authorization = `Bearer ${token}`
+
+                return await api(originalReq)
+            }
+
+        } catch (error) {
+            localStorage.clear()
+            window.location = "/"
+            return Promise.reject(error)
         }
-    } catch (err) {
-        localStorage.clear()
-        window.location = "/"
-        return Promise.reject(err);
 
+        return Promise.reject(err)
     }
-        return Promise.reject(err);
-    }
-);
+)
 
 api.interceptors.request.use((config) => {
 
@@ -50,7 +61,6 @@ api.interceptors.request.use((config) => {
     }
 
     return config
-
 })
 
 export default api

@@ -24,7 +24,6 @@ let btnClick = () => {
 
     setActivities([...activities, newActivity]);
 
-    // clear inputs
     setName('');
     setTaskNumber('');
     setInfo('');

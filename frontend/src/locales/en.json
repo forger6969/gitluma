@@ -101,8 +101,41 @@
         "security_2_desc": "Secure login via GitHub",
       
         "security_3_title": "Cloud storage",
-        "security_3_desc": "Stored on reliable servers"
+        "security_3_desc": "Stored on reliable servers",
+        "hero_title": "GitLuma",
+        "hero_desc": "GitHub integrated platform",
       
+        "features": "Features",
+        "integrations": "Integrations",
+        "about": "About Project",
+      
+        "feature1": "GitHub Integration",
+        "feature2": "Real-time Tracking",
+        "feature3": "CI/CD Monitoring",
+      
+        "integr1": "GitHub API",
+        "integr2": "GitHub Actions",
+        "integr3": "OAuth",
+      
+        "goals": "Goals",
+        "advantages": "Advantages",
+        "integr1_desc": "Fetch repositories, commits and PR data via API",
+  "integr2_desc": "Run and monitor CI/CD pipelines",
+  "integr3_desc": "Secure authentication via GitHub",
+  "about": "About Project",
+  "about_desc": "Gitluma is a GitHub-integrated platform that helps automate and visualize team workflows.",
+
+  "goals": "Goals",
+  "goal1": "Make team workflow transparent",
+  "goal2": "Automate CI/CD processes",
+  "goal3": "Increase developer productivity",
+  "goal4": "Provide real-time monitoring",
+
+  "advantages": "Advantages",
+  "adv1": "Real-time tracking",
+  "adv2": "All-in-one platform",
+  "adv3": "Analytics and insights",
+  "adv4": "Scalability"
     
     
   

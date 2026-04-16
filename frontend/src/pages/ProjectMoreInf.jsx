@@ -106,17 +106,17 @@ console.log( "new commit", commits);
     Commits ({project.commits?.length})
   </h2>
 
-  <div className="space-y-3 max-h-[400px] overflow-y-auto">
+  <div className="space-y-3 max-h-[400px] hover:text-[#F4F6FB] overflow-y-auto">
     {[...(project.commits || [])].reverse().map((commit, index) => (
       <div
         key={index}
-        className="bg-[#F4F6FB] p-4 rounded-xl hover:text-[#F4F6FB] hover:bg-[#c8cad0] transition"
+        className="bg-[#F4F6FB] p-4 rounded-xl  hover:bg-[#c8cad0] transition"
       >
-        <p className="text-sm text-[#9AA0B4] font-medium">
+        <p className="text-sm text-[#9AA0B4]  font-medium">
           {commit.commit_message || "No message"}
         </p>
 
-        <div className="flex justify-between text-xs text-gray-400 mt-2">
+        <div className="flex justify-between text-xs  text-gray-400 mt-2">
           <span>
             {new Date(commit.createdAt).toLocaleString()}
           </span>
@@ -134,11 +134,11 @@ console.log( "new commit", commits);
     Members ({project.members?.length})
   </h2>
 
-  <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+  <div className="grid sm:grid-cols-2 md:grid-cols-3  gap-4">
     {project.members?.map((member, index) => (
       <div
         key={index}
-        className="flex items-center gap-3 bg-[#F4F6FB] p-3 rounded-xl hover:bg-[#c8cad0] transition"
+        className="flex items-center  gap-3 bg-[#F4F6FB] p-3 rounded-xl hover:bg-[#c8cad0] transition"
       >
         <img
           src={member.user?.avatar_url}
@@ -157,7 +157,7 @@ console.log( "new commit", commits);
 
         {/* Role badge */}
         <span
-          className={`text-xs px-2 py-1 rounded-full ${
+          className={`text-xs px-2 py-1  rounded-full ${
             member.role === "owner"
               ? "bg-indigo-500/20 text-indigo-400"
               : "bg-gray-500/20 text-gray-300"

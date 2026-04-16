@@ -2,7 +2,6 @@ const User = require("../models/user.model")
 const crypto = require("crypto")
 const axios = require("axios")
 const Project = require("../models/projects.model")
-const path = require("path")
 
 const createProject = async (req, res, next) => {
     try {
