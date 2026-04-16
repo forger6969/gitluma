@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { addNewCommit } from "../store/slices/projectCommitsSlice";
 import { getSocket } from "../socket/socket";
+import { useEffect } from "react";
 
 const useCommitsEvents = (projectId) => {
     const dispatch = useDispatch();

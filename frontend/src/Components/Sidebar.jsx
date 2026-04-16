@@ -14,7 +14,7 @@ const NAV = [
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 min-h-screen bg-white border-r border-[#D8DCE8] flex flex-col">
+    <aside className="w-67  min-h-screen bg-white border-r border-[#D8DCE8] flex flex-col">
 
       <div className="px-5 pt-6 pb-4 border-b border-[#D8DCE8]">
         <div className="flex items-center gap-3">

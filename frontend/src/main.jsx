@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { Provider } from 'react-redux'
-import { store } from './store/store.js'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -28,6 +27,8 @@ import ActFeed from './pages/ActFeed.jsx'
 
 
 import Info from './pages/Info.jsx'
+import store from './store/store.js'
+import { injectStore } from './api/api.js'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -50,7 +51,7 @@ const router = createBrowserRouter([
         path: "landing",
         element: <Landing />
       },
-     
+
       {
         path: "onboarding",
         element: <OnBoardWizard />
@@ -59,19 +60,19 @@ const router = createBrowserRouter([
         path: "/workSpace",
         element: <WorkSpace />
       },
-      
+
       {
         path: "/profile",
-        element: <Profile/>
+        element: <Profile />
       },
       {
         path: "*",
         element: <PageNotFound404 />
       },
-     
+
       {
-        path:"/info",
-        element:<Info/>
+        path: "/info",
+        element: <Info />
       }
     ],
   },
@@ -89,22 +90,20 @@ const router = createBrowserRouter([
           { index: true, element: <Home /> },
           { path: "projects", element: <Projekt /> },
           { path: "profile", element: <Profile /> },
-          {path:"project/:id", element:<ProjectMoreInf/>},
-          {path:"create" , element:<CreateNewproject/>},
+          { path: "project/:id", element: <ProjectMoreInf /> },
+          { path: "create", element: <CreateNewproject /> },
         ]
       }
     ],
   },
-  {
-    path: "/too-many-requests",
-    element: <div> <p>aloo</p> </div>
-  }
+
 ]);
+injectStore(store)
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
+        <RouterProvider router={router} />
     </Provider>
   </StrictMode>
 );
