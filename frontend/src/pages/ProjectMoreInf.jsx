@@ -50,6 +50,12 @@ const handleBlur = (e) => {
   e.target.style.borderColor = C.borderDef;
   e.target.style.boxShadow = "none";
 };
+  const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const commit = useCommitsEvents(project?._id)
+  const commits = useSelector((state)=> state.projectcommits.commits)
+  
+  
 
 /* ─────────────────────────────────────────────────────────────
    RoleDropdown – custom animated pill selector
