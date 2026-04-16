@@ -5,3 +5,5 @@ const router = express.Router()
 
 router.post("/invite/send" , userTokenMiddleware , inviteByUsername)
 router.get("/invite/accept" , acceptInvite)
+
+module.exports = router
