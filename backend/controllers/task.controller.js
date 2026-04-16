@@ -101,6 +101,24 @@ const assignTask = async (req, res, next) => {
   }
 };
 
+
+const getProjectTasks = async (req ,res ,next)=>{
+
+  try {
+    
+    const {id} = req.params
+
+    const tasks = await Task.find({project_id:id})
+
+res.json({success:true , tasks})
+
+  } catch (err) {
+    next(err)
+  }
+
+}
+
 module.exports = {
   assignTask,
+  getProjectTasks
 };
