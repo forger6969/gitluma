@@ -102,7 +102,7 @@ try {
 
  const {id} = req.user
 
- const projects = await Project.find({repo_owner_user:id})
+ const projects = await Project.find({"members.user":id})
 
  res.json({success:true , projects})
 
