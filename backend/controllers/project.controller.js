@@ -167,8 +167,9 @@ const removeMember = async (req, res, next) => {
             return res.status(400).json({ success: false, message: "Cannot remove yourself" })
         }
 
-        project.members.pull(memberId)
-        await project.save()
+        await Project.findByIdAndUpdate(projectId, {
+            $pull: { members: { _id: memberId } }
+        })
 
         res.json({ success: true, message: "Member removed" })
     } catch (err) {
