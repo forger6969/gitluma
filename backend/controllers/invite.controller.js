@@ -43,7 +43,7 @@ console.log("isMatch: " , project.repo_owner_user.toString() === user._id.toStri
 
         
 
-if (project.repo_owner_user !== user._id.toString()) {
+if (project.repo_owner_user.toString() !== user._id.toString()) {
   return res.status(403).json({success: false, message: "the project does not belong to you"})
 }
 

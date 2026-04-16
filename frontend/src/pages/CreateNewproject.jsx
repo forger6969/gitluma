@@ -230,10 +230,10 @@ const CreateNewproject = () => {
     try {
       setSubmitting(true);
 
+      console.log(selectedRepo);
+      
       await api.post("/api/project/create", {
-        fullname: selectedRepo,
-        name: projectName,
-        description,
+        fullname: selectedRepo
       });
 
       setProjectName("");
