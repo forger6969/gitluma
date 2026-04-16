@@ -804,11 +804,16 @@ const Cursor = () => (
   </>
 );
 
+// ── Step progress thresholds (fraction of timeline) ──────────────────────────
+const STEP_STARTS = [0, 0.10, 0.26, 0.40, 0.55, 0.67, 0.82];
+
 // ── Main component ────────────────────────────────────────────────────────────
 const ProductDemo = () => {
   const { t } = useTranslation();
   const sectionRef = useRef(null);
+  const tlRef      = useRef(null);
   const [activeStep, setActiveStep] = useState(0);
+  const [hovStep,    setHovStep]    = useState(null);
 
   useEffect(() => {
     const section = sectionRef.current;

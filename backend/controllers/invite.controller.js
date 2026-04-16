@@ -1,12 +1,16 @@
+require("dotenv").config()
 const User = require("../models/user.model")
 const axios = require("axios")
 const Project = require("../models/projects.model")
+const Invite = require("../models/invite.model")
+const jwt = require("jsonwebtoken")
+const crypto = require("crypto")
 
 const inviteByUsername = async (req , res ,next)=>{
 
     try {
         
-        const {username , projectId} = req.body
+        const {username , projectId , role} = req.body
         const {id} = req.user
 
         if (!username) {
@@ -20,15 +24,57 @@ const inviteByUsername = async (req , res ,next)=>{
         const invitedUser = await User.findOne({username})
         const user = await User.findById(id)
 
+        
+
         if (!invitedUser) {
             return res.status(404).json({success:false , message:"User not found"})
         }
 
         const project = await Project.findById(projectId)
 
+        console.log("project.repo_owner_user:", project.repo_owner_user.toString())
+console.log("user._id:", user._id.toString())
+console.log("equals result:", project.repo_owner_user.equals(user._id))
+console.log("isMatch: " , project.repo_owner_user.toString() === user._id.toString())
+
            if (!project) {
             return res.status(404).json({success:false , message:"Project not found"})
         }
+
+        
+
+if (project.repo_owner_user !== user._id.toString()) {
+  return res.status(403).json({success: false, message: "the project does not belong to you"})
+}
+
+        const alreadyInvited = await Invite.findOne({project:projectId , invitedUser:invitedUser._id , status:"pending"})
+
+if (alreadyInvited) {
+  return res.status(400).json({success:false , message:"User already invited"})
+}
+
+        const alreadyMember = project.members.some(m =>
+  m.user.equals(invitedUser._id)
+)
+
+if (alreadyMember) {
+  return res.status(400).json({success:false , message:"This user already member"})
+}
+
+
+
+        const tokenId = crypto.randomUUID().toString()
+        const token = jwt.sign({
+tokenId,
+        } ,process.env.JWT_INVITE_SECRET , {expiresIn:"7d"} )
+
+        const invite = await Invite.create({
+          project,
+          invitedUser,
+          inviteBy:user,
+          tokenId,
+          role
+        })
             
 const sendRequest = await axios.post(
   "https://api.brevo.com/v3/smtp/email",
@@ -138,7 +184,7 @@ const sendRequest = await axios.post(
                     <table width="100%" cellpadding="0" cellspacing="0">
                       <tr>
                         <td align="center">
-                          <a href=""
+                          <a href="${process.env.BACKEND_URL}/api/invite/accept?token=${token}"
                              style="display:inline-block;background:#E8654A;color:#ffffff;
                                     padding:14px 36px;border-radius:10px;
                                     text-decoration:none;font-weight:700;font-size:15px;
@@ -215,6 +261,63 @@ res.json({success:true, message:"User invited!"})
 }
 
 
+const acceptInvite = async (req , res, next)=>{
+
+
+  try {
+
+  const {token} = req.query
+
+  const decoded = jwt.verify(token , process.env.JWT_INVITE_SECRET)
+
+  const invite = await Invite.findOne({tokenId:decoded.tokenId})
+
+  if (!invite) {
+    return res.status(404).json({success:false , message:"Invite not found"})
+  }
+
+  if (invite.status !== "pending") {
+    return res.status(400).json({success:false , message:"invitation has already been used"});
+  }
+
+  const project = await Project.findById(invite.project)
+
+  if (!project) {
+    return res.status(404).json({success:false , message:"Project not found"})
+  }
+
+  const invitedUser = await User.findById(invite.invitedUser)
+
+  if (!invitedUser) {
+    return res.status(404).json({success:false , message:"User not found"})
+  }
+
+  const alreadyMember = project.members.some(m =>
+  m.user.equals(invitedUser._id)
+)
+
+if (alreadyMember) {
+  return res.redirect(`${process.env.FRONTEND_URL}/dashboard/project/${project._id}`)
+}
+
+  project.members.push({user:invitedUser._id , role:invite.role})
+
+  await project.save()
+
+  invite.status = "accepted"
+
+  await invite.save()
+    
+  res.redirect(`${process.env.FRONTEND_URL}/dashboard/project/${project._id}`)
+
+  } catch (err) {
+    next(err)
+  }
+
+}
+
+
 module.exports = {
-    inviteByUsername
+    inviteByUsername,
+    acceptInvite
 }
