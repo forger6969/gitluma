@@ -105,7 +105,7 @@ export default function Header() {
     <div className="fixed top-0 right-0 w-[83.35%] z-10">
 
       <div className="bg-[#FCFCFD] backdrop-blur-xl border-b border-[#E4E7F2]
-        px-6 py-3 flex items-center justify-between shadow-sm">
+        px-6 py-[12.6px] flex items-center justify-between shadow-sm">
 
         <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl w-[420px]
           bg-[#F4F6FB] focus-within:bg-white border border-transparent
@@ -171,7 +171,7 @@ export default function Header() {
             </div>
 
             {showProfileModal && (
-              <ProfileModal onClose={() => setShowProfileModal(false)} />
+                <ProfileModal user={u} onClose={() => setShowProfileModal(false)} />
             )}
           </div>
 

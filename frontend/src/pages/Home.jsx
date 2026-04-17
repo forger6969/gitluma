@@ -154,7 +154,7 @@ const Home = () => {
         whileTap={{ scale: 0.96 }}
         className="bg-gradient-to-r from-[#E8654A] to-[#FF8A65]
         hover:opacity-90 text-white text-sm font-semibold
-        px-5 py-2.5 rounded-xl shadow-md transition"
+        px-5 py-2.5 rounded-md shadow-md transition"
       >
         + Create Project
       </motion.button>
@@ -164,7 +164,7 @@ const Home = () => {
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.05 }}
-      className="bg-white/80 backdrop-blur-xl rounded-2xl p-6
+      className="bg-white/80 backdrop-blur-xl rounded-xl p-6
       border border-[#E6E9F2] shadow-sm"
     >
       <div className="flex items-center gap-5">
@@ -186,16 +186,16 @@ const Home = () => {
 
         <div className="flex gap-3">
 
-          <div className="bg-[#FFF3EE] px-5 py-3 rounded-xl text-center">
+          <div className="bg-[#FFF3EE] px-5 py-3 rounded-lg  text-center">
             <p className="text-[#E8654A] text-xl font-bold">
-              {u.public_repos ?? "—"}
+              {repos?.repos?.length ?? "—"}
             </p>
             <p className="text-[10px] text-[#7A8499] uppercase tracking-wider">
               Repos
             </p>
           </div>
 
-          <div className="bg-[#F1F3F9] px-5 py-3 rounded-xl text-center">
+          <div className="bg-[#F1F3F9] px-5 py-3 rounded-lg text-center">
             <p className="text-[#2B3141] text-xl font-bold">
               {u.followers ?? "—"}
             </p>
@@ -219,7 +219,7 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 + i * 0.07 }}
             whileHover={{ y: -4 }}
-            className="bg-white rounded-2xl p-5 border border-[#E6E9F2]
+            className="bg-white rounded-xl p-5 border border-[#E6E9F2]
             shadow-sm hover:shadow-md transition"
           >
             <div className="flex justify-between items-start">
@@ -259,15 +259,13 @@ const Home = () => {
       })}
     </div>
 
-    {/* BOTTOM GRID */}
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-      {/* TASKS */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
-        className="bg-white rounded-2xl p-5 border border-[#E6E9F2] shadow-sm"
+        className="bg-white rounded-xl p-5 border border-[#E6E9F2] shadow-sm"
       >
         <p className="text-xs font-semibold text-[#7A8499] mb-4 uppercase tracking-wider">
           Active Tasks
@@ -295,12 +293,11 @@ const Home = () => {
         ))}
       </motion.div>
 
-      {/* ACTIVITY */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-white rounded-2xl p-5 border border-[#E6E9F2] shadow-sm"
+        className="bg-white rounded-xl p-5 border border-[#E6E9F2] shadow-sm"
       >
         <p className="text-xs font-semibold text-[#7A8499] mb-4 uppercase tracking-wider">
           Recent Activity
