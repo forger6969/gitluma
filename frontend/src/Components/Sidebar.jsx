@@ -3,64 +3,62 @@ import { FaHome, FaTasks } from "react-icons/fa";
 import { GoProjectSymlink } from "react-icons/go";
 import { CgProfile } from "react-icons/cg";
 import { IoMdSettings } from "react-icons/io";
+import logo from "../assets/logo.png";
 
 const NAV = [
-  { path: "/dashboard",          label: "Dashboard", icon: <FaHome />           },
-  { path: "/dashboard/projects", label: "Projects",  icon: <GoProjectSymlink /> },
-  { path: "/dashboard/tasks",    label: "Tasks",     icon: <FaTasks />          },
-  { path: "/dashboard/profile",  label: "Profile",   icon: <CgProfile />        },
-  { path: "/dashboard/settings", label: "Settings",  icon: <IoMdSettings />     },
+  { path: "/dashboard", label: "Dashboard", icon: <FaHome /> },
+  { path: "/dashboard/projects", label: "Projects", icon: <GoProjectSymlink /> },
+  { path: "/dashboard/tasks", label: "Tasks", icon: <FaTasks /> },
+  { path: "/dashboard/profile", label: "Profile", icon: <CgProfile /> },
+  { path: "/dashboard/settings", label: "Settings", icon: <IoMdSettings /> },
 ];
 
 export default function Sidebar() {
   return (
-    <aside className="w-67  min-h-screen bg-white border-r border-[#D8DCE8] flex flex-col">
+    <aside className="w-64 min-h-screen  bg-white/80 backdrop-blur-xl border-r border-[#E4E7F2] flex flex-col shadow-sm">
 
-      <div className="px-5 pt-6 pb-4 border-b border-[#D8DCE8]">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#E8654A] flex items-center justify-center shrink-0">
-            <span className="text-white font-black text-sm leading-none">G</span>
-          </div>
-          <div>
-            <p className="text-[#2B3141] font-bold text-sm leading-none tracking-wide">GitLuma</p>
-            <p className="text-[10px] text-[#7A8499] uppercase tracking-widest mt-0.5 font-mono">
-              Monolith Dev
-            </p>
-          </div>
-        </div>
+      <div className="px-5 pt-6 pb-4 border-b border-[#E4E7F2]">
+        <img className="w-24 opacity-90" src={logo} alt="" />
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-0.5">
+      <nav className="flex-1 px-3 py-5 space-y-1">
         {NAV.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            end={item.path === "/dashboard"}
-          >
+          <NavLink key={item.path} to={item.path} end={item.path === "/dashboard"}>
             {({ isActive }) => (
-              <span
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors
-                  ${isActive
-                    ? "bg-[#E8654A]/10 border border-[#E8654A]/25 text-[#E8654A]"
-                    : "text-[#7A8499] hover:text-[#2B3141] hover:bg-[#EEF1F7] border border-transparent"
+              <div
+                className={`group relative flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-medium transition-all duration-200
+                ${isActive
+                    ? "bg-gradient-to-r from-[#E8654A]/15 to-transparent text-[#E8654A] shadow-sm"
+                    : "text-[#7A8499] hover:text-[#2B3141] hover:bg-[#F4F6FB]"
                   }`}
               >
-                <span className="text-base shrink-0">{item.icon}</span>
-                <span className="flex-1">{item.label}</span>
                 {isActive && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#E8654A] shrink-0" />
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-[#E8654A] rounded-r-full" />
                 )}
-              </span>
+
+                <span
+                  className={`text-lg transition-transform duration-200
+                  ${isActive ? "scale-110" : "group-hover:scale-105"}`}
+                >
+                  {item.icon}
+                </span>
+
+                <span className="flex-1">{item.label}</span>
+
+                {isActive && (
+                  <span className="w-2 h-2 rounded-full bg-[#E8654A]" />
+                )}
+              </div>
             )}
           </NavLink>
         ))}
       </nav>
 
-      {/* ── Bottom CTA ── */}
-      <div className="p-3 border-t border-[#D8DCE8]">
+      <div className="p-4 border-t border-[#E4E7F2]">
         <button
-          className="w-full py-2.5 rounded-lg bg-[#E8654A] hover:bg-[#D4553A] active:bg-[#BF4A31]
-                     text-white text-sm font-semibold transition-colors cursor-pointer border-none"
+          className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#E8654A] to-[#FF8A65]
+          hover:opacity-90 active:scale-[0.98] text-white text-sm font-semibold
+          transition-all shadow-md"
         >
           + New Task
         </button>

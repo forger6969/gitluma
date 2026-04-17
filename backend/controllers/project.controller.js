@@ -14,15 +14,13 @@ const createProject = async (req, res, next) => {
         if (!user) {
             return res.status(401).json({success:false , message:"User not found"})
         }
-        console.log(user);
-        
 
-        const projectCheck = await Project.findOne({ repo_fullname: fullname }).populate()
+        const projectCheck = await Project.findOne({ repo_fullname: fullname })
         console.log(projectCheck);
         
 
         if (projectCheck) {
-            return res.status(400).json({ success: false, message: "Проект с етим репозиторием уже создан" })
+            return res.status(400).json({ success: false, message: "A project with this repository already exists" })
         }
 
         const repo = await axios.get(`https://api.github.com/repos/${fullname}`,
@@ -69,10 +67,7 @@ const createProject = async (req, res, next) => {
             ]
         })
 
-        console.log(project);
-
         res.json(project)
-
 
     } catch (err) {
         next(err)
@@ -83,7 +78,7 @@ const createProject = async (req, res, next) => {
 const getProjectById = async (req , res , next)=>{
 
     try {
-        
+
         const {id} = req.params
 
         const project = await Project.findById(id).populate("repo_owner_user").populate("commits").populate("members.user")
@@ -95,7 +90,7 @@ const getProjectById = async (req , res , next)=>{
         res.json({success:true , project})
 
     } catch (err) {
-        
+        next(err)
     }
 
 }
@@ -104,10 +99,10 @@ const getProjectById = async (req , res , next)=>{
 const getMyProjects = async (req , res  , next)=>{
 
 try {
-    
+
  const {id} = req.user
 
- const projects = await Project.find({repo_owner_user:id})
+ const projects = await Project.find({"members.user":id})
 
  res.json({success:true , projects})
 

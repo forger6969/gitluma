@@ -178,7 +178,7 @@ const Profile = () => {
             <div className='mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
               <div className='flex items-center gap-3'>
                 <div className='flex h-8 w-8 items-center justify-center rounded-[9px] border border-white/6 bg-[#1A1E26] text-[13px]'>
-                  <img src={icon4} alt="" />
+                  <img src={icon4} alt="icon" />
                 </div>
                 <h2 className='text-[20px] font-semibold text-[#E7EBF5]'>Contribution Activity</h2>
               </div>

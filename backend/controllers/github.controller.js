@@ -6,9 +6,7 @@ const getActiveRepos = async (req , res, next)=>{
 try {
     
     const {id} = req.user
-    console.log(id);
-    
-    
+
     const user = await User.findById(id)
 
     if (!user) {

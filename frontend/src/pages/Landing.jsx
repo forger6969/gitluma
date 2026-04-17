@@ -4,33 +4,37 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-import HowItWorks from "../components/HowItWorks";
-import Footer from "../components/Footer";
-import FeaturesGrid from "../components/FeaturesGrid";
-import Testimonials from "../components/Testimonials";
-import FAQ from "../components/FAQ";
+import GitBranchAnimation from "../components/GitBranchAnimation";
+import ProductDemo from "../components/ProductDemo";
+import FeaturesSection from "../components/FeaturesSection";
+import HowItWorksSection from "../components/HowItWorksSection";
+import TestimonialsSection from "../components/TestimonialsSection";
+import PricingSection from "../components/PricingSection";
+import FAQSection from "../components/FAQSection";
 import CTA from "../components/CTA";
-import Integrations from "../components/Integrations";
-import Security from "../components/Security";
+import Footer from "../components/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Landing = () => {
   useEffect(() => {
-    const targets = gsap.utils.toArray("h1, h2, h3, p, li");
+    // Scroll-reveal for headings & paragraphs (skip elements inside git animation)
+    const targets = gsap.utils.toArray("h1, h2, h3, p, li").filter(
+      (el) => !el.closest(".git-no-reveal")
+    );
 
     targets.forEach((el) => {
       gsap.fromTo(
         el,
-        { opacity: 0, y: 40 },
+        { opacity: 0, y: 35 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
+          duration: 0.75,
           ease: "power3.out",
           scrollTrigger: {
             trigger: el,
-            start: "top 90%",
+            start: "top 91%",
             once: true,
           },
         }
@@ -43,15 +47,16 @@ const Landing = () => {
   }, []);
 
   return (
-    <div className="bg-[#EEF1F7] text-[#2B3141]">
+    <div style={{ background: "var(--gl-bg-page)", color: "var(--gl-body)" }}>
       <Navbar />
       <Hero />
-      <HowItWorks />
-      <FeaturesGrid />
-      <Testimonials />
-      <FAQ />
-      <Integrations />
-      <Security />
+      <GitBranchAnimation />
+      <ProductDemo />
+      <FeaturesSection />
+      <HowItWorksSection />
+      <TestimonialsSection />
+      <PricingSection />
+      <FAQSection />
       <CTA />
       <Footer />
     </div>

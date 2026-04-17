@@ -21,6 +21,7 @@ import Profile from './pages/Profile.jsx'
 import OnBoardWizard from './pages/OnBoardWizard.jsx';
 import PageNotFound404 from './pages/404pagenotfound.jsx';
 import './locales/i18n.js'
+import { ThemeProvider } from './context/ThemeContext.jsx'
 import ProjectMoreInf from './pages/ProjectMoreInf.jsx'
 import CreateNewproject from './pages/CreateNewproject.jsx';
 import ActFeed from './pages/ActFeed.jsx'
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
         element: <GithubCallbackPage />
       },
       {
-        index: true,
+        path:"/login",
         element: (
           <PublicRoute>
             <Login />
@@ -48,7 +49,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "landing",
+        index: true,
         element: <Landing />
       },
 
@@ -103,7 +104,9 @@ injectStore(store)
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
+      <ThemeProvider>
         <RouterProvider router={router} />
+      </ThemeProvider>
     </Provider>
   </StrictMode>
 );

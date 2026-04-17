@@ -34,6 +34,7 @@ extraReducers:(builder) =>{
     builder
     .addCase(getProjects.pending , (state)=>{
         state.loading = true
+        state.error = null
     })
 .addCase(getProjects.rejected , (state , action)=>{
     state.error = action.payload    
@@ -41,8 +42,11 @@ extraReducers:(builder) =>{
 })
 
 .addCase(getProjects.fulfilled , (state , action)=>{
-
-    state.projects = action.payload.projects
+    state.projects = Array.isArray(action.payload)
+        ? action.payload
+        : Array.isArray(action.payload?.projects)
+            ? action.payload.projects
+            : []
     state.loading = false
 })
 }

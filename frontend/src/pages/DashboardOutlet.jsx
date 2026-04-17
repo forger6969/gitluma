@@ -57,20 +57,20 @@ const DashboardOutlet = () => {
 
   if (!token) return <Navigate to="/" />;
   return (
-    <div className="flex bg-oq max-w-full max-h-full">
+    <div className="flex bg-[#F7F8FC] max-w-full max-h-full">
       <div className="max-h-screen ">
         <Sidebar />
       </div>
       <div className="flex-1 w-full max-h-screen overflow-y-auto custom-scroll">
         <Header />
         <div className="pt-18">
-          {/* <Outlet />            */}
           {active ? (
             <>
               <TooManyRequestsModal />
               <RateLimitSkeleton />
             </>
           ) : (
+            <Header/>,
             <Outlet />
           )}
         </div>
