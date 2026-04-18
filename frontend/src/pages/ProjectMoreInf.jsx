@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/api";
 import useCommitsEvents from "../hooks/useCommitsEvents";
+import useTaskEvents from "../hooks/useTaskEvents";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCommits } from "../store/slices/projectCommitsSlice";
-import { getSocket } from "../socket/socket";
-import { getTasks, putTask, addTask } from "../store/slices/taskSlice";
+import { getTasks, addTask } from "../store/slices/taskSlice";
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 const C = {
@@ -669,22 +669,12 @@ const ProjectDetails = () => {
     try { const res = await api.get(`/api/invite/invites?projectId=${id}`); setInvites(res.data.invites || []); }
     catch (err) { console.error(err); }
   };
+  useTaskEvents(project?._id);
+
   useEffect(() => {
     dispatch(clearCommits());
     fetchProject(); fetchInvites();
-
-    dispatch(getTasks(id))
-
-      const socket = getSocket()
-
-    if (!socket) {
-        return
-    }
-
-    socket.on("put_task" , (data)=>{
-        dispatch(putTask(data))
-    })
-
+    dispatch(getTasks(id));
     return () => dispatch(clearCommits());
   }, [id]);
 
