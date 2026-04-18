@@ -74,7 +74,7 @@ const assignTask = async (req, res, next) => {
 
     const key = generateTaskKey(findAssignedUser.username, project.taskCounter);
 
-    const task = await Task.create({
+    const createdTask = await Task.create({
       assigned_user,
       assigned_by: id,
       project_id,
@@ -84,6 +84,11 @@ const assignTask = async (req, res, next) => {
       priority,
       key,
     });
+
+    const task = await Task.findById(createdTask._id)
+      .populate("assigned_user", "username avatar_url email")
+      .populate("assigned_by", "username avatar_url")
+      .populate("completedAt_user.user", "username avatar_url");
 
     const notify = await Notification.create({
       title:"У вас новое задание!",
@@ -109,6 +114,9 @@ const getProjectTasks = async (req ,res ,next)=>{
     const {id} = req.params
 
     const tasks = await Task.find({project_id:id})
+      .populate("assigned_user", "username avatar_url email")
+      .populate("assigned_by", "username avatar_url")
+      .populate("completedAt_user.user", "username avatar_url")
 
 res.json({success:true , tasks})
 

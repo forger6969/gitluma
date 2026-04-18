@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { getSocket } from "../socket/socket";
 import { putTask } from "../store/slices/taskSlice";
 
-const useTaskEvents = (projectId) => {
+const useTaskEvents = (projectId, onUpdate) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -14,6 +14,7 @@ const useTaskEvents = (projectId) => {
 
     const handlePutTask = (data) => {
       dispatch(putTask(data));
+      onUpdate?.(data);
     };
 
     if (socket.connected) {

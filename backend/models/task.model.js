@@ -2,7 +2,7 @@ const { default: mongoose, Schema } = require("mongoose");
 
 const taskSchema = mongoose.Schema({
 
-    assigned_by:{type:Schema.Types.ObjectId},
+    assigned_by:{type:Schema.Types.ObjectId, ref:"User"},
     assigned_user:{type:Schema.Types.ObjectId , ref:"User"},
     project_id:{type:Schema.Types.ObjectId , ref:"Project"},
     task_name:{type:String , required:true},
