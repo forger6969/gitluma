@@ -92,6 +92,7 @@ async function githubWebhook(req, res, next) {
           if (isThere) {
             element.status = "done";
             element.completedAt = new Date();
+            element.linked_commit = commit._id;
 
             if (user) {
               element.completedAt_user.user = user._id;
@@ -100,9 +101,16 @@ async function githubWebhook(req, res, next) {
             }
 
             await element.save();
+            commit.task = element._id;
+            await commit.save();
 
+            const populatedTask = await Task.findById(element._id)
+              .populate("assigned_user", "username avatar_url email")
+              .populate("assigned_by", "username avatar_url")
+              .populate("completedAt_user.user", "username avatar_url email")
+              .populate("linked_commit", "commit_id commit_message author_username commit_date task");
 
-            putTask(project._id.toString() , element)
+            putTask(project._id.toString() , populatedTask)
           }
         }
         sendCommitToPorjectRoom(project._id.toString(), { commit });
@@ -123,7 +131,6 @@ async function githubWebhook(req, res, next) {
 module.exports = {
   githubWebhook,
 };
-
 
 
 
