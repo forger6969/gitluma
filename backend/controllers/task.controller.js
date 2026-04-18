@@ -126,7 +126,63 @@ res.json({success:true , tasks})
 
 }
 
+const updateTask = async (req, res, next) => {
+  try {
+    const { taskId } = req.params;
+    const { id } = req.user;
+    const { status, priority, task_name, task_describe, task_deadline } = req.body;
+
+    const task = await Task.findById(taskId);
+    if (!task) return res.status(404).json({ success: false, message: "Task not found" });
+
+    const project = await Project.findById(task.project_id);
+    if (!project) return res.status(404).json({ success: false, message: "Project not found" });
+
+    const isOwner = project.members.some((m) => m.user.equals(id) && m.role === "owner");
+    if (!isOwner) return res.status(403).json({ success: false, message: "Only project owner can update tasks" });
+
+    const VALID_STATUSES = ["todo", "in_progress", "done", "verified", "overdue"];
+    const VALID_PRIORITIES = ["low", "medium", "high"];
+
+    if (status !== undefined) {
+      if (!VALID_STATUSES.includes(status))
+        return res.status(400).json({ success: false, message: `Invalid status. Use: ${VALID_STATUSES.join(", ")}` });
+      task.status = status;
+      if (status === "done" || status === "verified") {
+        task.completedAt = task.completedAt || new Date();
+        task.completedAt_user = { user: id };
+      }
+    }
+
+    if (priority !== undefined) {
+      if (!VALID_PRIORITIES.includes(priority))
+        return res.status(400).json({ success: false, message: `Invalid priority. Use: ${VALID_PRIORITIES.join(", ")}` });
+      task.priority = priority;
+    }
+
+    if (task_name !== undefined) task.task_name = task_name;
+    if (task_describe !== undefined) task.task_describe = task_describe;
+    if (task_deadline !== undefined) {
+      const deadline = new Date(task_deadline);
+      if (isNaN(deadline)) return res.status(400).json({ success: false, message: "Invalid date" });
+      task.task_deadline = deadline;
+    }
+
+    await task.save();
+
+    const updated = await Task.findById(task._id)
+      .populate("assigned_user", "username avatar_url email")
+      .populate("assigned_by", "username avatar_url")
+      .populate("completedAt_user.user", "username avatar_url");
+
+    res.json({ success: true, task: updated });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   assignTask,
-  getProjectTasks
+  getProjectTasks,
+  updateTask,
 };
