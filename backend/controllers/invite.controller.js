@@ -43,7 +43,7 @@ console.log("isMatch: " , project.repo_owner_user.toString() === user._id.toStri
 
         
 
-if (project.repo_owner_user !== user._id.toString()) {
+if (project.repo_owner_user.toString() !== user._id.toString()) {
   return res.status(403).json({success: false, message: "the project does not belong to you"})
 }
 
@@ -317,7 +317,41 @@ if (alreadyMember) {
 }
 
 
+const getProjectInvites = async (req ,res,next)=>{
+
+  try {
+    
+    const {id} = req.user
+    const {projectId} = req.query
+
+    
+    const project = await Project.findById(projectId)
+    
+    if (!project) {
+      return res.status(404).json({success:false , message:"Project not found"})
+    }
+
+    const isMember = project.members.find((f)=> f.user.toString() === id)
+
+    if (!isMember) {
+      return res.status(403).json({success:false , message:"You do not have access to this project"})
+    }
+    
+    const invites = await Invite.find({project:projectId})
+      .populate("invitedUser", "username avatar_url")
+      .populate("inviteBy", "username")
+      
+    res.json({success:true , invites})
+
+  } catch (err) {
+    next(err)
+  }
+
+}
+
+
 module.exports = {
     inviteByUsername,
-    acceptInvite
+    acceptInvite,
+    getProjectInvites 
 }

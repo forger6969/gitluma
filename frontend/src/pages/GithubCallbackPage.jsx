@@ -53,6 +53,7 @@ const GithubCallbackPage = () => {
             <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center animate-scale">
               ✓
             </div>
+            
             <p className="text-lg font-medium">
               Успешно! Перенаправляем...
             </p>

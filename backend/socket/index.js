@@ -14,6 +14,7 @@ const initSocket = (io)=>{
 
         socket.on("project_join" , (projectid)=>{
             socket.join(projectid)
+            console.log(`socket ${socket.id} joined project room: ${projectid}`)
         })
     })
 
