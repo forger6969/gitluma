@@ -3,7 +3,7 @@ import api from "../../api/api";
 
 export const reposFetch = createAsyncThunk(
     "repos/reposFetch",
-    async(_, thunkAPI) => {
+    async (_, thunkAPI) => {
 
         try {
             const req = await api.get("/api/github/repos/actives")
@@ -22,7 +22,8 @@ export const reposFetch = createAsyncThunk(
 const initialState = {
     repos: [],
     loading: false,
-    error: null
+    error: null,
+    loaded: false
 }
 
 const repoSlice = createSlice({
@@ -36,6 +37,7 @@ const repoSlice = createSlice({
 
                 state.error = action.payload
                 state.loading = false
+                state.loaded = true
 
             })
             .addCase(reposFetch.pending, (state) => {
@@ -43,12 +45,12 @@ const repoSlice = createSlice({
                 state.loading = true
             })
 
-        .addCase(reposFetch.fulfilled, (state, action) => {
+            .addCase(reposFetch.fulfilled, (state, action) => {
 
-            state.loading = false
-            state.repos = action.payload
-            state.loaded = true
-        })
+                state.loading = false
+                state.repos = action.payload
+                state.loaded = true
+            })
 
     }
 })

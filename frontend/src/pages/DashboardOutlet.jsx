@@ -8,44 +8,74 @@ import { useSocketEvents } from "../hooks/useSocketEvents";
 import { getNotifications } from "../store/slices/notificationSlice";
 import api from "../api/api";
 import { getProjects } from "../store/slices/projectsSlice";
-
+import TooManyRequestsModal from "../Components/TooManyRequests"
+import RateLimitSkeleton from "../Components/RateLimitSkeleton";
+import { userFetch } from "../store/slices/userSlice";
+import { reposFetch } from "../store/slices/repoSlices";
 const DashboardOutlet = () => {
   const token = localStorage.getItem("access_token");
   const user = useSelector((state) => state.user.user);
-  const notifications = useSelector((state)=> state.notifications.notifications)
+  const notifications = useSelector((state) => state.notifications.notifications)
   const [socketReady, setSocketReady] = useState(false);
   const dispatch = useDispatch()
 
 
-useEffect(() => {
+  useEffect(() => {
     const userId = user?.user?._id || user?._id || localStorage.getItem("user_id");
     if (!userId) return;
 
     connectSocket(userId);
     setSocketReady(true);
-}, [user?._id, user?.user?._id]); 
+  }, [user?._id, user?.user?._id]);
 
-useEffect(()=>{
-  console.log(notifications);
-},[notifications])  
+  useEffect(() => {
+    dispatch(getProjects())
+  }, [dispatch])
 
-useEffect(()=>{
-dispatch(getProjects())
-},[])
+  const userState = useSelector((s) => s.user)
+  const reposState = useSelector((s) => s.repos)
+  const notificationsState = useSelector((s) => s.notifications)
+  const { active } = useSelector((s) => s.rateLimit)
+
+  useEffect(() => {
+    if (active) return
+    if (!userState?.loaded && !userState?.loading) dispatch(userFetch())
+    if (!reposState?.loaded && !reposState?.loading) dispatch(reposFetch())
+    if (!notificationsState?.loaded && !notificationsState?.loading) {
+      dispatch(getNotifications())
+    }
+  }, [
+    dispatch,
+    userState?.loaded, userState?.loading,
+    reposState?.loaded, reposState?.loading,
+    notificationsState?.loaded, notificationsState?.loading,
+    active
+  ])
 
 
   useSocketEvents(socketReady);
 
   if (!token) return <Navigate to="/" />;
   return (
-    <div className="flex bg-oq max-w-full max-h-full">
+    <div className="flex bg-[#F7F8FC] max-w-full max-h-full">
       <div className="max-h-screen ">
         <Sidebar />
       </div>
       <div className="flex-1 w-full max-h-screen overflow-y-auto custom-scroll">
         <Header />
-        <Outlet />
+        <div className="pt-18">
+          {active ? (
+            <>
+              <TooManyRequestsModal />
+              <RateLimitSkeleton />
+            </>
+          ) : (
+            <Header/>,
+            <Outlet />
+          )}
+        </div>
       </div>
+
     </div>
   );
 };

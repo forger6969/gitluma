@@ -9,6 +9,7 @@ export const getProjects = createAsyncThunk(
         try {
 
             const request = await api.get("/api/project/my")
+            
             return request.data
             
         } catch (err) {
