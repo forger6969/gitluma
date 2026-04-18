@@ -34,10 +34,7 @@ async function githubWebhook(req, res, next) {
       return res.status(401).json({ message: "Invalid signature" });
     }
 
-    console.log("GitHub event:", event);
-    console.log("Payload:", payload);
-
-if (event === "push") {
+    if (event === "push") {
  
   const user = await User.findOne({github_id:payload.sender.id})
   

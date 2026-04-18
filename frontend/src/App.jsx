@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchMe } from "./store/slices/authSlice";
-// import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 
-import { Outlet, useLocation } from "react-router-dom";
 
 const App = () => {
   const dispatch = useDispatch();

@@ -4,10 +4,8 @@ const initSocket = (io)=>{
 
     ioInstance = io
 
-
     io.on("connection" , (socket)=>{
         const userId = socket.handshake.query.userId
-        console.log("User connected:" , socket.id, "userId:", userId);
         socket.join(userId)
 
         socket.on("disconnect" , ()=>{
@@ -15,9 +13,6 @@ const initSocket = (io)=>{
         })
 
         socket.on("project_join" , (projectid)=>{
-console.log("User" , userId , "joined" , projectid , "room");
-
-            
             socket.join(projectid)
         })
     })
@@ -25,10 +20,7 @@ console.log("User" , userId , "joined" , projectid , "room");
 };
 
 const sendNotifyByID = (userid , data)=>{
-console.log(userid , data);
-
-ioInstance.to(userid).emit("notification" , data)
-
+    ioInstance.to(userid).emit("notification" , data)
 }
 
 const sendCommitToPorjectRoom = (projectid , data)=>{

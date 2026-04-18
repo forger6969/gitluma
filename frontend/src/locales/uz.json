@@ -91,6 +91,9 @@
     
       "integrations_title": "Integratsiyalar",
       "integrations_desc": "Sevimli vositalaringiz bilan ishlaydi",
+      "github_title": "GitHub integratsiyasi",
+      "github_desc": "Repositoryni ulang va commitlarni tasklar bilan avtomatik sinxronlang.",
+      "connect_github": "GitHub ulash",
     
       "security_title": "Xavfsizlik",
       "security_desc": "Ma’lumotlaringiz biz bilan himoyalangan",
@@ -149,7 +152,106 @@
         "integr2": "GitHub Actions",
         "integr3": "OAuth",
         "goals": "Maqsadlar",
-        "advantages": "Afzalliklar"
+        "advantages": "Afzalliklar",
       
+        "advantages": "Afzalliklar",
 
-  }
+        "title": "GitLuma",
+  "steps": [
+    {
+      "badge": "01 — boshlash",
+      "title": "GitHub OAuth ulash",
+      "desc": "GitHub orqali ro'yxatdan o'tish va repozitoriyalarni bog'lash",
+      "color": "bg-purple-100 text-purple-800"
+    },
+    {
+      "badge": "02 — kuzatish",
+      "title": "Commit va branch monitoring",
+      "desc": "Commitlar va PR larni real vaqtda kuzatish",
+      "color": "bg-teal-100 text-teal-800"
+    },
+    {
+      "badge": "03 — avtomatik",
+      "title": "CI/CD va workflow",
+      "desc": "Testlar avtomatik ishlaydi va loglar chiqadi",
+      "color": "bg-orange-100 text-orange-800"
+    },
+    {
+      "badge": "04 — tahlil",
+      "title": "Jamoa analitikasi",
+      "desc": "Faoliyat grafik va hisobotlarda ko‘rinadi",
+      "color": "bg-blue-100 text-blue-800"
+    }
+  ],
+      
+     "workspace": "Yangi loyiha",
+  "setup": "Loyihani tez sozlang",
+  "project": "LOYIHA",
+  "projectName": "Loyiha nomi",
+  "description": "Tavsif...",
+  "repository": "REPOZITORIYA",
+  "selectRepo": "Repo tanlash",
+  "changeRepo": "Repo o‘zgartirish",
+  "sync": "GitHub bilan bog‘lanadi",
+  "reset": "Tozalash",
+  "create": "Yaratish",
+  "creating": "Yaratilmoqda...",
+  "search": "Qidirish...",
+  "selectRepository": "Repo tanlang",
+  "loading": "Yuklanmoqda...",
+  "error": "Xatolik",
+  "noDescription": "Tavsif yo‘q",
+  "projectCreated": "Loyiha yaratildi 🚀",
+  "selectAlert": "Repo tanlang",
+
+  "hero_badge": "BETA 2.0 — Hozir mavjud",
+  "hero_h1": "Jamoangiz ishini",
+  "hero_h2": "boshqaring",
+  "hero_h3": "faqat kodni emas",
+  "hero_sub": "GitHub kod ko'rsatadi — GitLuma ish ko'rsatadi. Commitlar, topshiriqlar va jamoa bir joyda.",
+  "hero_github": "GitHub orqali kirish",
+  "stat_rt": "Real-vaqt",      "stat_rt_lbl": "WebSocket sync",
+  "stat_auto_v": "Avtomatik",  "stat_auto_lbl": "Webhook sozlash",
+  "stat_1c": "1-bosish",       "stat_1c_lbl": "GitHub ulash",
+
+  "git_badge": "QANDAY ISHLAYDI",
+  "git_h1": "Sizning yo'lingiz",
+  "git_h2": "Git grafik",
+  "git_sub": "GitHub ulang, commit qiling, jamoangizni o'stirng — hammasi bir joyda",
+  "git_n0": "GitHub kirish",     "git_n0s": "Bir bosish",
+  "git_n1": "Loyiha yaratish",   "git_n1s": "Repo tanlash",
+  "git_n2": "Webhook ulash",     "git_n2s": "Avtomatik sozlanadi",
+  "git_n3": "Commitlar keladi",  "git_n3s": "Real-vaqt",
+  "git_n4": "Jamoa taklif",      "git_n4s": "Email taklif",
+  "git_n5": "Topshiriqlar",      "git_n5s": "To'liq nazorat",
+  "git_main": "main branch",
+  "git_feat": "feature branch",
+
+  "feat_badge": "IMKONIYATLAR",
+  "feat_h2": "Jamoangizga kerak bo'lgan hamma narsa",
+  "feat_sub": "Tez ishlaydigan va aniq muloqot qiladigan jamoalar uchun",
+  "feat1_t": "Real-vaqt bildirishnomalar",
+  "feat1_d": "Yangi commitlar darhol ko'rinadi — sahifani yangilash shart emas.",
+  "feat2_t": "GitHub integratsiya",
+  "feat2_d": "Bir bosish bilan repository ulang. Webhooklar avtomatik sozlanadi.",
+  "feat3_t": "Jamoaviy ish",
+  "feat3_d": "A'zolarni taklif qiling, topshiriqlar tayinlang, birgalikda kuzating.",
+  "feat4_t": "Email takliflari",
+  "feat4_d": "Havola orqali taklif yuboring. A'zolar avtomatik qo'shiladi.",
+
+  "how_badge": "3 ODDIY QADAM",
+  "how_h2": "Bir necha daqiqada boshlang",
+  "how_sub": "Hech qanday murakkab sozlash yo'q — GitLuma hamma narsani sozlaydi",
+  "how1_t": "GitHub ulang",
+  "how1_d": "GitHub orqali kiring. GitLuma repositorylaringizni avtomatik sinxronlaydi.",
+  "how2_t": "Loyiha yarating",
+  "how2_d": "Repository tanlang va ish maydoni yarating. Webhooklar real-vaqtda sozlanadi.",
+  "how3_t": "Jamoani boshqaring",
+  "how3_d": "A'zolarni taklif qiling, topshiriqlar tayinlang, har bir commit haqida xabar oling.",
+  "how_cta": "GitHub bilan boshlash",
+
+  "cta_badge": "BOSHLASH",
+  "cta_h1": "Jamoangiz ishlarini boshqarishni",
+  "cta_h2": "bugun boshlang",
+  "cta_sub": "GitHub'ni soniyalarda ulang. Bepul."
+}

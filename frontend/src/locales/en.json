@@ -88,11 +88,14 @@
         "cta_desc": "Simplify teamwork with Gitluma.",
         "cta_button": "Get Started",
       
-        "integrations_title": "Integrations",
-        "integrations_desc": "Works with your favorite tools",
+    "integrations_title": "Integrations",
+    "integrations_desc": "Works with your favorite tools",
+    "github_title": "GitHub Integration",
+    "github_desc": "Connect your repository and sync commits with tasks automatically.",
+    "connect_github": "Connect GitHub",
       
         "security_title": "Security",
-        "security_desc": "Your data is सुरक्षित with us",
+        "security_desc": "Your data is  with us",
       
         "security_1_title": "End-to-end protection",
         "security_1_desc": "All data is fully encrypted",
@@ -102,6 +105,8 @@
       
         "security_3_title": "Cloud storage",
         "security_3_desc": "Stored on reliable servers",
+        "hero_title": "GitLuma",
+        "hero_desc": "GitHub integrated platform",
          "workspace": "New Workspace",
   "setup": "Setup your project quickly",
   "project": "PROJECT",
@@ -154,9 +159,85 @@
   "adv1": "Real-time tracking",
   "adv2": "All-in-one platform",
   "adv3": "Analytics and insights",
-  "adv4": "Scalability"
-    
+  "adv4": "Scalability",
     
   
-    
-  }
+    "title": "GitLuma",
+    "steps": [
+      {
+        "badge": "01 — start",
+        "title": "Connect GitHub OAuth",
+        "desc": "Sign in with GitHub and link repositories",
+        "color": "bg-purple-100 text-purple-800"
+      },
+      {
+        "badge": "02 — tracking",
+        "title": "Commit & branch monitoring",
+        "desc": "Track commits and PRs in real-time",
+        "color": "bg-teal-100 text-teal-800"
+      },
+      {
+        "badge": "03 — automation",
+        "title": "CI/CD & workflow",
+        "desc": "Automated testing with logs",
+        "color": "bg-orange-100 text-orange-800"
+      },
+      {
+        "badge": "04 — analytics",
+        "title": "Team analytics",
+        "desc": "Visual reports and performance stats",
+        "color": "bg-blue-100 text-blue-800"
+      }
+    ],
+
+  "hero_badge": "BETA 2.0 — Now Live",
+  "hero_h1": "Manage your team's",
+  "hero_h2": "development",
+  "hero_h3": "not just the code",
+  "hero_sub": "GitHub shows you code — GitLuma shows you the work. Commits, tasks and team in one place, synced in real time.",
+  "hero_github": "Continue with GitHub",
+  "stat_rt": "Real-time",    "stat_rt_lbl": "WebSocket sync",
+  "stat_auto_v": "Auto",     "stat_auto_lbl": "Webhook setup",
+  "stat_1c": "1-click",      "stat_1c_lbl": "GitHub connect",
+
+  "git_badge": "HOW IT WORKS",
+  "git_h1": "Your journey as a",
+  "git_h2": "Git graph",
+  "git_sub": "Connect GitHub, ship commits, grow your team — all in one flow",
+  "git_n0": "Auth via GitHub",  "git_n0s": "One-click sign in",
+  "git_n1": "Create Project",   "git_n1s": "Pick repository",
+  "git_n2": "Connect Webhook",  "git_n2s": "Auto-wired to GitHub",
+  "git_n3": "Commits Flow In",  "git_n3s": "Real-time events",
+  "git_n4": "Invite Team",      "git_n4s": "Email invitations",
+  "git_n5": "Manage Tasks",     "git_n5s": "Full control",
+  "git_main": "main branch",
+  "git_feat": "feature branch",
+
+  "feat_badge": "FEATURES",
+  "feat_h2": "Everything your team needs",
+  "feat_sub": "Built for teams who ship fast and communicate clearly",
+  "feat1_t": "Real-time Notifications",
+  "feat1_d": "New commits appear instantly — no refresh needed. Your team stays in sync via WebSockets.",
+  "feat2_t": "GitHub Integration",
+  "feat2_d": "Connect your repository with one click. Webhooks auto-configured and secured.",
+  "feat3_t": "Team Collaboration",
+  "feat3_d": "Invite members, assign tasks, track progress together in real time.",
+  "feat4_t": "Email Invitations",
+  "feat4_d": "Send invites with a link. Members click and are auto-added to the project.",
+
+  "how_badge": "3 SIMPLE STEPS",
+  "how_h2": "Get started in minutes",
+  "how_sub": "No configuration headaches — GitLuma handles the setup so you focus on shipping",
+  "how1_t": "Connect GitHub",
+  "how1_d": "Sign in with your GitHub account. GitLuma syncs your repositories automatically.",
+  "how2_t": "Create a Project",
+  "how2_d": "Choose a repository and create a workspace. Webhooks are auto-wired for real-time commits.",
+  "how3_t": "Manage Your Team",
+  "how3_d": "Invite teammates, assign tasks and get notified on every commit — from one dashboard.",
+  "how_cta": "Start with GitHub",
+
+  "cta_badge": "GET STARTED",
+  "cta_h1": "Start managing your team's",
+  "cta_h2": "development today",
+  "cta_sub": "Connect GitHub in seconds. Free to start."
+}
