@@ -2,6 +2,7 @@ const { generateTaskKey } = require("../utils/generate");
 const Project = require("../models/projects.model");
 const User = require("../models/user.model");
 const Task = require("../models/task.model");
+const Commit = require("../models/commit.model");
 const Notification = require("../models/notification.model");
 const { sendNotifyByID } = require("../socket");
 
@@ -130,7 +131,7 @@ const updateTask = async (req, res, next) => {
   try {
     const { taskId } = req.params;
     const { id } = req.user;
-    const { status, priority, task_name, task_describe, task_deadline } = req.body;
+    const { status, priority, task_name, task_describe, task_deadline, completed_by, commit_id } = req.body;
 
     const task = await Task.findById(taskId);
     if (!task) return res.status(404).json({ success: false, message: "Task not found" });
@@ -148,9 +149,20 @@ const updateTask = async (req, res, next) => {
       if (!VALID_STATUSES.includes(status))
         return res.status(400).json({ success: false, message: `Invalid status. Use: ${VALID_STATUSES.join(", ")}` });
       task.status = status;
+
       if (status === "done" || status === "verified") {
         task.completedAt = task.completedAt || new Date();
-        task.completedAt_user = { user: id };
+
+        // who actually did the task — can be any project member, defaults to owner
+        const doerId = completed_by || id;
+        const isMember = project.members.some((m) => m.user.equals(doerId));
+        if (!isMember) return res.status(400).json({ success: false, message: "completed_by user is not a project member" });
+        task.completed_by = doerId;
+        task.completedAt_user = { user: doerId };
+      }
+
+      if (status === "verified") {
+        task.verifiedAt = new Date();
       }
     }
 
@@ -168,14 +180,63 @@ const updateTask = async (req, res, next) => {
       task.task_deadline = deadline;
     }
 
+    // link a commit to this task
+    if (commit_id !== undefined) {
+      if (commit_id === null) {
+        // allow unlinking
+        if (task.linked_commit) {
+          await Commit.findByIdAndUpdate(task.linked_commit, { $unset: { task: 1 } });
+        }
+        task.linked_commit = null;
+      } else {
+        const commit = await Commit.findById(commit_id);
+        if (!commit) return res.status(404).json({ success: false, message: "Commit not found" });
+        if (!commit.project.equals(task.project_id))
+          return res.status(400).json({ success: false, message: "Commit does not belong to this project" });
+
+        // unlink previous commit if any
+        if (task.linked_commit && !task.linked_commit.equals(commit_id)) {
+          await Commit.findByIdAndUpdate(task.linked_commit, { $unset: { task: 1 } });
+        }
+
+        commit.task = task._id;
+        await commit.save();
+        task.linked_commit = commit._id;
+      }
+    }
+
     await task.save();
 
     const updated = await Task.findById(task._id)
       .populate("assigned_user", "username avatar_url email")
       .populate("assigned_by", "username avatar_url")
-      .populate("completedAt_user.user", "username avatar_url");
+      .populate("completed_by", "username avatar_url")
+      .populate("completedAt_user.user", "username avatar_url")
+      .populate("linked_commit", "commit_message commit_id author_username createdAt");
 
     res.json({ success: true, task: updated });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getProjectCommits = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const project = await Project.findById(id).select("members");
+    if (!project) return res.status(404).json({ success: false, message: "Project not found" });
+
+    const { id: userId } = req.user;
+    const isMember = project.members.some((m) => m.user.equals(userId));
+    if (!isMember) return res.status(403).json({ success: false, message: "Access denied" });
+
+    const commits = await Commit.find({ project: id })
+      .populate("commit_author", "username avatar_url")
+      .populate("task", "key task_name status")
+      .sort({ createdAt: -1 });
+
+    res.json({ success: true, commits });
   } catch (err) {
     next(err);
   }
@@ -185,4 +246,5 @@ module.exports = {
   assignTask,
   getProjectTasks,
   updateTask,
+  getProjectCommits,
 };
