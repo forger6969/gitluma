@@ -102,9 +102,11 @@ try {
 
  const {id} = req.user
 
- const projects = await Project.find({repo_owner_user:id})
+ const projects = await Project.find({"members.user":id})
 
  res.json({success:true , projects})
+
+ 
 
 } catch (err) {
     next(err)
@@ -113,8 +115,72 @@ try {
 }
 
 
+const updateMemberRole = async (req, res, next) => {
+    try {
+        const { projectId, memberId } = req.params
+        const { role } = req.body
+        const { id } = req.user
+
+        if (!["member", "owner"].includes(role)) {
+            return res.status(400).json({ success: false, message: "Invalid role" })
+        }
+
+        const project = await Project.findById(projectId)
+        if (!project) return res.status(404).json({ success: false, message: "Project not found" })
+
+        if (project.repo_owner_user.toString() !== id) {
+            return res.status(403).json({ success: false, message: "Only the owner can change roles" })
+        }
+
+        const member = project.members.id(memberId)
+        if (!member) return res.status(404).json({ success: false, message: "Member not found" })
+
+        if (member.user.toString() === id) {
+            return res.status(400).json({ success: false, message: "Cannot change your own role" })
+        }
+
+        member.role = role
+        await project.save()
+
+        res.json({ success: true, message: "Role updated" })
+    } catch (err) {
+        next(err)
+    }
+}
+
+const removeMember = async (req, res, next) => {
+    try {
+        const { projectId, memberId } = req.params
+        const { id } = req.user
+
+        const project = await Project.findById(projectId)
+        if (!project) return res.status(404).json({ success: false, message: "Project not found" })
+
+        if (project.repo_owner_user.toString() !== id) {
+            return res.status(403).json({ success: false, message: "Only the owner can remove members" })
+        }
+
+        const member = project.members.id(memberId)
+        if (!member) return res.status(404).json({ success: false, message: "Member not found" })
+
+        if (member.user.toString() === id) {
+            return res.status(400).json({ success: false, message: "Cannot remove yourself" })
+        }
+
+        await Project.findByIdAndUpdate(projectId, {
+            $pull: { members: { _id: memberId } }
+        })
+
+        res.json({ success: true, message: "Member removed" })
+    } catch (err) {
+        next(err)
+    }
+}
+
 module.exports = {
     createProject,
     getProjectById,
-    getMyProjects
+    getMyProjects,
+    updateMemberRole,
+    removeMember
 }

@@ -21,7 +21,8 @@ const projectSchema = mongoose.Schema({
             user: { type: Schema.Types.ObjectId, ref: "User" },
             role: { type: String, enum: ["member", "owner"] }
         }
-    ]
+    ],
+    taskCounter:{type:Number , default:0}
 })
 
 const Project = mongoose.model("Project", projectSchema)

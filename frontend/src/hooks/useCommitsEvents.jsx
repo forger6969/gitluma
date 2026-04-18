@@ -3,34 +3,39 @@ import { addNewCommit } from "../store/slices/projectCommitsSlice";
 import { getSocket } from "../socket/socket";
 import { useEffect } from "react";
 
-const logger = (message, data) => {
-    console.log(`[useCommitsEvents] ${message}`, data);
-};
-
 const useCommitsEvents = (projectId) => {
-        const dispatch = useDispatch();
-        const socket = getSocket();
-        
-        useEffect(() => {
-            if (!socket) {
-                logger("Socket not available", null);
-                return;
-            }
+    const dispatch = useDispatch();
 
-            const handleNewCommit = (data) => {
-                logger("New commit received", { projectId, commit: data.commit });
-                dispatch(addNewCommit(data.commit));
-            };
+  useEffect(() => {
+    if (!projectId) return;
 
-            logger("Joining project", projectId);
-            socket.emit("project_join", projectId);
-            socket.on("new_commit", handleNewCommit);
+    const socket = getSocket();
+    if (!socket) return;
 
-            return () => {
-                logger("Cleaning up listener", null);
-                socket.off("new_commit", handleNewCommit);
-            };
-        }, [socket, projectId, dispatch]);
+    const joinRoom = () => {
+      socket.emit("project_join", projectId);
+      console.log("Joined project room:", projectId);
+    };
+
+    // если уже подключён — заходим сразу, иначе ждём connect
+    if (socket.connected) {
+      joinRoom();
+    } else {
+      socket.once("connect", joinRoom);
+    }
+
+    const handleNewCommit = (data) => {
+      console.log("New commit received:", data);
+      dispatch(addNewCommit(data.commit));
+    };
+
+    socket.on("new_commit", handleNewCommit);
+
+    return () => {
+      socket.off("connect", joinRoom);
+      socket.off("new_commit", handleNewCommit);
+    };
+  }, [projectId]);
 };
 
 export default useCommitsEvents;
