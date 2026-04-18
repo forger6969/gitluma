@@ -101,8 +101,13 @@ async function githubWebhook(req, res, next) {
 
             await element.save();
 
+            const populatedTask = await element.populate([
+              { path: "assigned_user", select: "username avatar_url email" },
+              { path: "assigned_by", select: "username avatar_url" },
+              { path: "completedAt_user.user", select: "username avatar_url" },
+            ]);
 
-            putTask(project._id.toString() , element)
+            putTask(project._id.toString(), populatedTask)
           }
         }
         sendCommitToPorjectRoom(project._id.toString(), { commit });
