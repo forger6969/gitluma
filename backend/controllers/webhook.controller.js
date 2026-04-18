@@ -7,7 +7,6 @@ const { sendNotifyByID, sendCommitToPorjectRoom } = require("../socket");
 const Notification = require("../models/notification.model");
 const Task = require("../models/task.model");
 
-// Функция проверки подписи GitHub
 function verifySignature(req, secret) {
   const signature = req.headers["x-hub-signature-256"];
   if (!signature) return false;
@@ -39,7 +38,6 @@ async function githubWebhook(req, res, next) {
     }
 
     if (event === "push") {
-      // Ищем пользователя по GitHub ID
       const user = await User.findOne({ github_id: payload.sender.id });
 
       const savedCommits = [];
@@ -47,7 +45,6 @@ async function githubWebhook(req, res, next) {
         const existing = await Commit.findOne({ commit_id: c.id });
         if (existing) continue;
 
-        // Исправлено: имя переменной приведено к одному виду
         const newCommit = await Commit.create({
           commit_id: c.id,
           author_username: c.author.username || c.author.name,
@@ -70,7 +67,6 @@ async function githubWebhook(req, res, next) {
 
       await project.save();
 
-      // Создаем уведомление только если пользователь найден в системе
       let notification = null;
       if (user) {
         notification = await Notification.create({
@@ -82,7 +78,6 @@ async function githubWebhook(req, res, next) {
         });
       }
 
-      // Загружаем только активные задачи проекта
       const tasks = await Task.find({
         project_id: project._id,
         status: { $in: ["todo", "in_progress"] },
@@ -92,7 +87,6 @@ async function githubWebhook(req, res, next) {
         for (let index = 0; index < tasks.length; index++) {
           const element = tasks[index];
 
-          // Исправлено: обращаемся к commit_message (поле в модели Commit)
           const isThere = commit.commit_message.includes(element.key);
 
           if (isThere) {
@@ -102,18 +96,15 @@ async function githubWebhook(req, res, next) {
             if (user) {
               element.completedAt_user.user = user._id;
             } else {
-              // Исправлено: берем имя автора из объекта commit
               element.completedAt_user.github_username = commit.author_username;
             }
 
             await element.save();
           }
         }
-        // Отправляем информацию в сокет комнаты проекта
         sendCommitToPorjectRoom(project._id.toString(), { commit });
       }
 
-      // Отправляем личное уведомление пользователю
       if (user && notification) {
         sendNotifyByID(user._id.toString(), notification);
       }
