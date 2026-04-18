@@ -1,196 +1,14 @@
-// import React from "react";
-
-
-// const CreateNewproject = () => {
-
-//   return (
-//     <div>
-//       {/* <div className="min-h-screen bg-[#0b1220] text-white flex items-center justify-center">
-//         <div className="w-full max-w-6xl px-6 py-10">
-//           <p className="text-xs text-gray-400 mb-4 tracking-wide">
-//             DIRECTORY / PROJECTS /{" "}
-//             <span className="text-gray-300">INITIALIZE PROJECT</span>
-//           </p>
-
-//           <h1 className="text-4xl font-semibold mb-2">
-//             Architect New Workspace
-//           </h1>
-
-//           <p className="text-gray-400 mb-10 max-w-2xl">
-//             Define the core parameters and stack for your next monolith. Team
-//             access and repo syncing can be adjusted later.
-//           </p>
-
-//           <div className="grid md:grid-cols-2 gap-6">
-//             <div className="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 shadow-lg">
-//               <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
-//                 ⚙️ Project Identity
-//               </h2>
-
-//               <div className="mb-5">
-//                 <label className="text-xs text-gray-400 block mb-2">
-//                   PROJECT NAME
-//                 </label>
-//                 <input
-//                   type="text"
-//                   placeholder="e.g. Project Catalyst"
-//                   className="w-full bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//                 />
-//               </div>
-
-//               <div>
-//                 <label className="text-xs text-gray-400 block mb-2">
-//                   DESCRIPTION
-//                 </label>
-//                 <textarea
-//                   rows="4"
-//                   placeholder="Briefly describe the objective, scope, and target audience..."
-//                   className="w-full bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//                 ></textarea>
-//               </div>
-//             </div>
-
-//             <div className="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 shadow-lg">
-//               <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
-//                 {"</>"} Integration
-//               </h2>
-
-//               <div className="mb-4">
-//                 <label className="text-xs text-gray-400 block mb-2">
-//                   GITHUB REPOSITORY
-//                 </label>
-
-//                 <select className="w-full bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-//                   <option>Select a repository...</option>
-//                 </select>
-//               </div>
-
-//               <div className="bg-[#0b1220] border border-gray-700 rounded-lg p-4 text-sm text-gray-400 flex gap-3">
-//                 <span className="text-indigo-400">ℹ️</span>
-//                 <p>
-//                   Connecting a repository allows Kinetic to sync issue tracking
-//                   directly with your branch PRs and commits.
-//                 </p>
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="grid md:grid-cols-2 gap-6 mt-6">
-//             <div className="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 shadow-lg">
-//               <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
-//                 🧱 Tech Stack
-//               </h2>
-
-//               <div className="mb-4 relative">
-//                 <input
-//                   type="text"
-//                   placeholder="Search languages, frameworks, or tools..."
-//                   className="w-full bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3 text-sm pl-10 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//                 />
-//                 <span className="absolute left-3 top-3.5 text-gray-500">
-//                   🔍
-//                 </span>
-//               </div>
-
-//               <div className="flex flex-wrap gap-2">
-//                 {["React.js", "TypeScript", "PostgreSQL", "TailwindCSS"].map(
-//                   (tech) => (
-//                     <span
-//                       key={tech}
-//                       className="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-3 py-1 rounded-md text-xs flex items-center gap-2"
-//                     >
-//                       {tech}
-//                       <button className="text-indigo-300 hover:text-red-400">
-//                         ×
-//                       </button>
-//                     </span>
-//                   ),
-//                 )}
-
-//                 <button className="bg-gray-800 text-gray-400 px-3 py-1 rounded-md text-xs hover:bg-gray-700">
-//                   + Add More
-//                 </button>
-//               </div>
-//             </div>
-
-//             <div className="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 shadow-lg">
-//               <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
-//                 👥 Team Members
-//               </h2>
-
-//               <div className="mb-5 flex gap-2">
-//                 <input
-//                   type="text"
-//                   placeholder="Search members..."
-//                   className="flex-1 bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//                 />
-//                 <button className="bg-gray-800 border border-gray-700 px-4 rounded-lg hover:bg-gray-700">
-//                   ➕
-//                 </button>
-//               </div>
-
-//               <div className="space-y-3">
-//                 <div className="flex items-center justify-between bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3">
-//                   <div className="flex items-center gap-3">
-//                     <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-xs">
-//                       ED
-//                     </div>
-//                     <div>
-//                       <p className="text-sm">Erik Draven (You)</p>
-//                       <p className="text-xs text-gray-400">OWNER</p>
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 <div className="flex items-center justify-between bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3">
-//                   <div className="flex items-center gap-3">
-//                     <img
-//                       src="https://i.pravatar.cc/40?img=5"
-//                       alt="avatar"
-//                       className="w-8 h-8 rounded-full"
-//                     />
-//                     <div>
-//                       <p className="text-sm">Sarah Jenkins</p>
-//                       <p className="text-xs text-gray-400">TECH LEAD</p>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="mt-8 border-t border-gray-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-//             <button className="w-full md:w-auto bg-gradient-to-r from-indigo-500 to-purple-500 px-6 py-3 rounded-xl font-medium hover:opacity-90 transition">
-//               Initialize Project →
-//             </button>
-
-//             <button className="text-gray-400 hover:text-white text-sm">
-//               Save as Draft
-//             </button>
-//           </div>
-//         </div>
-//       </div> */}
-
-
-//     </div>
-//   );
-// };
-
-// export default CreateNewproject;
-
-
-
-
-
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { reposFetch } from "../store/slices/repoSlices";
 import api from "../api/api";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const CreateNewproject = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { repos = [], loading, error } = useSelector(
     (state) => state.repos || {}
@@ -199,7 +17,10 @@ const CreateNewproject = () => {
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedRepo, setSelectedRepo] = useState("");
+
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
+  const [formSuccess, setFormSuccess] = useState("");
 
   const [openRepoModal, setOpenRepoModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -211,59 +32,103 @@ const CreateNewproject = () => {
 
   const openModal = () => {
     setOpenRepoModal(true);
-    setTimeout(() => setShowModal(true), 10);
+    setTimeout(() => setShowModal(true), 0);
   };
 
   const closeModal = () => {
     setShowModal(false);
     setTimeout(() => setOpenRepoModal(false), 150);
+    setSearch("");
   };
 
+  // ✅ FIXED PART (IMPORTANT)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (submitting) return;
+
+    setFormError("");
+    setFormSuccess("");
+
     if (!selectedRepo) {
-      alert(t("selectAlert"));
+      setFormError(t("selectAlert"));
       return;
     }
 
     try {
       setSubmitting(true);
 
-      console.log(selectedRepo);
-      
-      await api.post("/api/project/create", {
-        fullname: selectedRepo
+      const res = await api.post("/api/project/create", {
+        fullname: selectedRepo,
       });
+
+      // 🔥 FIX: support both id and _id
+      const projectId = res?.data?.id || res?.data?._id;
 
       setProjectName("");
       setDescription("");
       setSelectedRepo("");
 
-      alert(t("projectCreated"));
+      setFormSuccess(t("projectCreated"));
+
+      if (projectId) {
+        // 🚀 instant redirect (no delay)
+        navigate(`/dashboard/project/${projectId}`);
+      } else {
+        setFormError("Project ID not returned from backend");
+      }
     } catch (err) {
-      console.error(err);
-      alert(t("error"));
+      const message =
+        err?.response?.data?.message || err?.message || "Unknown error";
+      setFormError(message);
     } finally {
       setSubmitting(false);
     }
   };
 
-  const filteredRepos = repos.filter((repo) =>
-    repo.full_name.toLowerCase().includes(search.toLowerCase())
+  const filteredRepos = (repos || []).filter((repo) =>
+    repo?.full_name?.toLowerCase?.().includes(search.toLowerCase())
   );
 
   return (
-    <div className="min-h-screen bg-[#EEF1F7] text-[#2B3141] flex justify-center py-14 px-6">
+    <div className="min-h-screen bg-[#F4F6FB] text-[#1A1F2E] flex justify-center py-14 px-6">
       <form onSubmit={handleSubmit} className="w-full max-w-4xl space-y-6">
+
+        {/* ERROR */}
+        {formError && (
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm flex justify-between items-center shadow-sm">
+            <span>{formError}</span>
+            <button
+              type="button"
+              onClick={() => setFormError("")}
+              className="opacity-50 hover:opacity-100 transition-opacity ml-3 flex-shrink-0"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        {/* SUCCESS */}
+        {formSuccess && (
+          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm flex justify-between items-center shadow-sm">
+            <span>{formSuccess}</span>
+            <button
+              type="button"
+              onClick={() => setFormSuccess("")}
+              className="opacity-50 hover:opacity-100 transition-opacity ml-3 flex-shrink-0"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        {/* HEADER */}
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-semibold text-[#010000]">
+            <h1 className="text-3xl font-bold tracking-tight text-[#1A1F2E]">
               {t("workspace")}
             </h1>
-            <p className="text-[#6B7280] mt-1 text-xs">
-              {t("setup")}
-            </p>
+            <p className="text-[#8A93A8] mt-1 text-xs">{t("setup")}</p>
           </div>
 
           <div className="flex gap-2">
@@ -272,7 +137,7 @@ const CreateNewproject = () => {
                 key={lng}
                 type="button"
                 onClick={() => i18n.changeLanguage(lng)}
-                className="px-2 py-1 text-xs rounded bg-[#2B3141] text-white"
+                className="px-3 py-1.5 text-xs rounded-lg bg-[#1A1F2E] text-white font-medium hover:bg-[#2B3141] transition-colors"
               >
                 {lng.toUpperCase()}
               </button>
@@ -280,39 +145,46 @@ const CreateNewproject = () => {
           </div>
         </div>
 
+        {/* FORM */}
         <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-white p-5 rounded-xl border space-y-4">
-            <h2 className="text-[11px] text-gray-500 tracking-widest">
-              {t("project")}
-            </h2>
+
+          {/* LEFT */}
+          <div className="bg-white p-5 rounded-2xl border border-[#E4E8F0] shadow-sm hover:shadow-md hover:border-[#C8D0E0] transition-all space-y-3">
+            <p className="text-[10px] font-bold text-[#8A93A8] uppercase tracking-widest">
+              Project Info
+            </p>
 
             <input
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
-              className="w-full p-2.5 text-sm rounded-md bg-gray-50 border"
+              className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#1A1F2E] placeholder-[#8A93A8] outline-none focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white transition-all"
               placeholder={t("projectName")}
             />
 
             <textarea
-              rows="3"
+              rows="4"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-2.5 text-sm rounded-md bg-gray-50 border"
+              className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#1A1F2E] placeholder-[#8A93A8] outline-none focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white transition-all resize-none"
               placeholder={t("description")}
             />
           </div>
 
-          <div className="bg-white p-5 rounded-xl border space-y-3">
-            <h2 className="text-[11px] text-gray-500 tracking-widest">
-              {t("repository")}
-            </h2>
+          {/* RIGHT */}
+          <div className="bg-white p-5 rounded-2xl border border-[#E4E8F0] shadow-sm hover:shadow-md hover:border-[#C8D0E0] transition-all space-y-3">
+            <p className="text-[10px] font-bold text-[#8A93A8] uppercase tracking-widest">
+              Repository
+            </p>
 
             {selectedRepo && (
-              <div className="flex justify-between bg-gray-100 border rounded px-3 py-2 text-sm">
-                <span className="truncate">{selectedRepo}</span>
+              <div className="flex justify-between items-center bg-[#EFF6FF] border border-[#BFDBFE] rounded-lg px-3.5 py-2.5 gap-2">
+                <span className="truncate text-[#3B7DD8] font-mono text-xs font-medium">
+                  {selectedRepo}
+                </span>
                 <button
                   type="button"
                   onClick={() => setSelectedRepo("")}
+                  className="text-[#8A93A8] hover:text-red-500 transition-colors flex-shrink-0 text-sm"
                 >
                   ✕
                 </button>
@@ -321,26 +193,36 @@ const CreateNewproject = () => {
 
             <div
               onClick={openModal}
-              className="w-full p-2.5 text-sm rounded-md bg-gray-50 border cursor-pointer"
+              className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#8A93A8] cursor-pointer hover:border-[#C8D0E0] hover:bg-white hover:text-[#1A1F2E] transition-all flex items-center gap-2"
             >
+              <svg
+                width="14" height="14" fill="none"
+                stroke="currentColor" strokeWidth="2"
+                viewBox="0 0 24 24" className="flex-shrink-0"
+              >
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+              </svg>
               {selectedRepo ? t("changeRepo") : t("selectRepo")}
             </div>
 
-            <p className="text-[11px] text-gray-400">
-              {t("sync")}
+            <p className="text-[11px] text-[#8A93A8] leading-relaxed">
+              Connect a GitHub repository to link commits and pull requests to your tasks.
             </p>
           </div>
         </div>
 
-        <div className="flex justify-between items-center pt-2">
+        {/* ACTIONS */}
+        <div className="flex justify-between items-center pt-1">
           <button
             type="button"
             onClick={() => {
               setProjectName("");
               setDescription("");
               setSelectedRepo("");
+              setFormError("");
+              setFormSuccess("");
             }}
-            className="text-sm text-gray-500"
+            className="text-sm text-[#8A93A8] hover:text-[#1A1F2E] transition-colors"
           >
             {t("reset")}
           </button>
@@ -348,39 +230,48 @@ const CreateNewproject = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="px-5 py-2 text-sm rounded-md bg-[#E8654A] text-white"
+            className="px-6 py-2.5 text-sm rounded-lg bg-[#E8654A] text-white font-semibold shadow-[0_4px_14px_rgba(232,101,74,0.35)] hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
           >
             {submitting ? t("creating") : t("create")}
           </button>
         </div>
       </form>
 
+      {/* MODAL */}
       {openRepoModal && (
         <div
           onClick={closeModal}
-          className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-150 ${
-            showModal ? "bg-black/40 opacity-100" : "bg-black/0 opacity-0"
+          className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-150 backdrop-blur-sm ${
+            showModal ? "bg-black/30" : "bg-black/0"
           }`}
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`w-[420px] max-h-[520px] bg-white rounded-xl p-4 transform transition-all duration-150 ${
+            className={`w-[440px] max-h-[540px] bg-white rounded-2xl p-5 border border-[#E4E8F0] shadow-2xl transition-all duration-150 flex flex-col ${
               showModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
           >
-            <div className="flex justify-between mb-3">
-              <h2>{t("selectRepository")}</h2>
-              <button onClick={closeModal}>✕</button>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-semibold text-[#1A1F2E] text-base">
+                {t("selectRepository")}
+              </h2>
+              <button
+                type="button"
+                onClick={closeModal}
+                className="text-[#8A93A8] hover:text-[#1A1F2E] text-lg transition-colors"
+              >
+                ✕
+              </button>
             </div>
 
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full p-2 border mb-3"
+              className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#1A1F2E] placeholder-[#8A93A8] outline-none focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white transition-all mb-3"
               placeholder={t("search")}
             />
 
-            <div className="space-y-2 max-h-[340px] overflow-y-auto">
+            <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
               {filteredRepos.map((repo) => (
                 <div
                   key={repo.id}
@@ -388,17 +279,23 @@ const CreateNewproject = () => {
                     setSelectedRepo(repo.full_name);
                     closeModal();
                   }}
-                  className="p-2 bg-gray-50 border rounded cursor-pointer"
+                  className="p-3 bg-[#F8F9FC] border border-[#E4E8F0] rounded-xl cursor-pointer hover:bg-[#FFF2EF] hover:border-[#E8654A]/30 transition-all"
                 >
-                  <p className="text-sm">{repo.full_name}</p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs font-mono text-[#3B7DD8] font-medium">
+                    {repo.full_name}
+                  </p>
+                  <p className="text-xs text-[#8A93A8] mt-0.5">
                     {repo.description || t("noDescription")}
                   </p>
                 </div>
               ))}
 
-              {loading && <p>Loading...</p>}
-              {error && <p>Error...</p>}
+              {loading && (
+                <p className="text-sm text-[#8A93A8] text-center py-4">Loading...</p>
+              )}
+              {error && (
+                <p className="text-sm text-red-500 text-center py-4">Error loading repos</p>
+              )}
             </div>
           </div>
         </div>

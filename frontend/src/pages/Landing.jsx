@@ -9,7 +9,7 @@ import ProductDemo from "../components/ProductDemo";
 import FeaturesSection from "../components/FeaturesSection";
 import HowItWorksSection from "../components/HowItWorksSection";
 import TestimonialsSection from "../components/TestimonialsSection";
-import PricingSection from "../components/PricingSection";
+
 import FAQSection from "../components/FAQSection";
 import CTA from "../components/CTA";
 import Footer from "../components/Footer";
@@ -55,7 +55,6 @@ const Landing = () => {
       <FeaturesSection />
       <HowItWorksSection />
       <TestimonialsSection />
-      <PricingSection />
       <FAQSection />
       <CTA />
       <Footer />
