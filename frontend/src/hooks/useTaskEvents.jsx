@@ -15,6 +15,7 @@ const useTaskEvents = (projectId, onUpdate) => {
     const handlePutTask = (data) => {
         console.log("putted task",data);
         
+
         
       dispatch(putTask(data));
       onUpdate?.(data);
