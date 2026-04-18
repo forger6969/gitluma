@@ -69,6 +69,8 @@ const CreateNewproject = () => {
       setDescription("");
       setSelectedRepo("");
 
+      
+
       setFormSuccess(t("projectCreated"));
 
       if (projectId) {
