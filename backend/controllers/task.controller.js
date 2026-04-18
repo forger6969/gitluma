@@ -27,7 +27,7 @@ const assignTask = async (req, res, next) => {
     const project = await Project.findByIdAndUpdate(
   project_id,
   { $inc: { taskCounter: 1 } },
-  { new: true }
+  { returnDocument: "after" }
 );
 
     if (!project) {
