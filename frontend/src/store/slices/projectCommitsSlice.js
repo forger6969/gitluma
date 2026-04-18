@@ -12,12 +12,9 @@ const projectCommitsSlice = createSlice({
     reducers: {
         addNewCommit: (state, action) => {
             state.commits.unshift(action.payload)
-        },
-        clearCommits: (state) => {
-            state.commits = []
         }
     }
 })
 
-export const { addNewCommit, clearCommits } = projectCommitsSlice.actions
+export const { addNewCommit } = projectCommitsSlice.actions
 export default projectCommitsSlice.reducer

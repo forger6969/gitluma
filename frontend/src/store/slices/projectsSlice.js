@@ -9,6 +9,7 @@ export const getProjects = createAsyncThunk(
         try {
 
             const request = await api.get("/api/project/my")
+            console.log(request);
             
             return request.data
             
@@ -34,7 +35,6 @@ extraReducers:(builder) =>{
     builder
     .addCase(getProjects.pending , (state)=>{
         state.loading = true
-        state.error = null
     })
 .addCase(getProjects.rejected , (state , action)=>{
     state.error = action.payload    
@@ -42,11 +42,8 @@ extraReducers:(builder) =>{
 })
 
 .addCase(getProjects.fulfilled , (state , action)=>{
-    state.projects = Array.isArray(action.payload)
-        ? action.payload
-        : Array.isArray(action.payload?.projects)
-            ? action.payload.projects
-            : []
+
+    state.projects = action.payload.projects
     state.loading = false
 })
 }

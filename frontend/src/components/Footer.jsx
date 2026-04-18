@@ -30,15 +30,15 @@ const Footer = () => {
   const COLUMNS = [
     {
       title: "Product",
-      links: ["Features", "Integrations", "Pricing", "Changelog", "Roadmap"],
+      links: ["Features", "Integrations",  "Changelog", "Roadmap"],
     },
     {
       title: "Developers",
-      links: ["Documentation", "API Reference", "CLI Tool", "GitHub App", "Webhooks"],
+      links: ["Documentation", "GitHub App",],
     },
     {
       title: t("company"),
-      links: ["About", "Blog", "Careers", "Contact", "Privacy"],
+      links: ["About",],
     },
   ];
 

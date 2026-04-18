@@ -6,7 +6,7 @@ export const fetchMe = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await api.get("/api/user/me");
-      localStorage.setItem("id", res.data.user._id)
+      localStorage.setItem("id" , res.data.user._id)
       return res.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response?.data || err.message);
@@ -19,7 +19,6 @@ const initialState = {
   isAuth: !!localStorage.getItem("access_token"),
   loading: false,
   error: null,
-  loaded: false
 };
 
 const authSlice = createSlice({
@@ -44,7 +43,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         state.isAuth = true;
-        state.loaded = true;
+        state.loaded = true   
       })
       .addCase(fetchMe.rejected, (state) => {
         state.loading = false;

@@ -1,10 +1,4 @@
 import axios from "axios"
-import { startRateLimit } from "../store/slices/rateLimitSlice"
-
-let injectedStore = null
-export const injectStore = (store) => {
-    injectedStore = store
-}
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL
@@ -21,21 +15,20 @@ api.interceptors.response.use(
         const originalReq = err.config
 
         if (err.response && err.response.status === 429) {
-            const retryAfter = err.response?.headers?.["retry-after"]
-            const retryAfterSeconds = Number(retryAfter)
-            const retryAfterMs = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
-                ? retryAfterSeconds * 1000
-                : 30000
-            injectedStore?.dispatch?.(startRateLimit({ retryAfterMs }))
+            if (window.location.pathname !== "/too-many-requests") {
+                window.location.href = "/too-many-requests"
+            }
             return Promise.reject(err)
         }
 
         try {
+            // 🔥 2. 401 HANDLER (refresh token)
             if (err.response?.status === 401 && !originalReq._retry) {
                 originalReq._retry = true
 
                 const refresh_token = localStorage.getItem("refresh_token")
 
+                // ❗ refreshApi ishlatamiz (loop bo‘lmasligi uchun)
                 const request = await refreshApi.post("/api/auth/refresh", {
                     refresh_token
                 })
