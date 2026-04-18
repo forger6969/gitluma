@@ -242,9 +242,37 @@ const getProjectCommits = async (req, res, next) => {
   }
 };
 
+const KANBAN_COLUMNS = ["todo", "in_progress", "done", "verified", "overdue"];
+
+const getMyTasks = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+
+    const tasks = await Task.find({ assigned_user: id })
+      .populate("assigned_user", "username avatar_url email")
+      .populate("assigned_by", "username avatar_url")
+      .populate("completed_by", "username avatar_url")
+      .populate("completedAt_user.user", "username avatar_url")
+      .populate("linked_commit", "commit_message commit_id author_username createdAt")
+      .populate("project_id", "repo_name repo_fullname default_branch")
+      .sort({ createdAt: -1 });
+
+    // group by status for kanban
+    const kanban = KANBAN_COLUMNS.reduce((acc, col) => {
+      acc[col] = tasks.filter((t) => t.status === col);
+      return acc;
+    }, {});
+
+    res.json({ success: true, tasks, kanban });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   assignTask,
   getProjectTasks,
   updateTask,
   getProjectCommits,
+  getMyTasks,
 };
