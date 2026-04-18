@@ -10,6 +10,7 @@ const NAV = [
   { path: "/dashboard/tasks",    label: "Tasks",     icon: <FaTasks />          },
   { path: "/dashboard/profile",  label: "Profile",   icon: <CgProfile />        },
   { path: "/dashboard/settings", label: "Settings",  icon: <IoMdSettings />     },
+  { path: "/dashboard/project/:id", label: "Repos",  icon: <IoMdSettings />     },
 ];
 
 export default function Sidebar() {
