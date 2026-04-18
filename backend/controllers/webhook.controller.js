@@ -3,7 +3,7 @@ const axios = require("axios");
 const Project = require("../models/projects.model");
 const Commit = require("../models/commit.model");
 const User = require("../models/user.model");
-const { sendNotifyByID, sendCommitToPorjectRoom } = require("../socket");
+const { sendNotifyByID, sendCommitToPorjectRoom, putTask } = require("../socket");
 const Notification = require("../models/notification.model");
 const Task = require("../models/task.model");
 
@@ -100,6 +100,8 @@ async function githubWebhook(req, res, next) {
             }
 
             await element.save();
+
+            putTask(project._id.toString() , element)
           }
         }
         sendCommitToPorjectRoom(project._id.toString(), { commit });

@@ -4,6 +4,8 @@ import api from "../api/api";
 import useCommitsEvents from "../hooks/useCommitsEvents";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCommits } from "../store/slices/projectCommitsSlice";
+import { getSocket } from "../socket/socket";
+import { getTasks, putTask, addTask } from "../store/slices/taskSlice";
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 const C = {
@@ -652,11 +654,11 @@ const ProjectDetails = () => {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
   const [invites, setInvites] = useState([]);
-  const [tasks, setTasks] = useState([]);
   const dispatch = useDispatch();
   const currentUser = useSelector((s) => s.user.user);
   const currentUserId = currentUser?.user?._id || currentUser?._id;
   const socketCommits = useSelector((s) => s.projectcommits.commits);
+  const tasks = useSelector((state) => state.tasks.tasks)
   useCommitsEvents(project?._id);
 
   const fetchProject = async () => {
@@ -667,14 +669,22 @@ const ProjectDetails = () => {
     try { const res = await api.get(`/api/invite/invites?projectId=${id}`); setInvites(res.data.invites || []); }
     catch (err) { console.error(err); }
   };
-  const fetchTasks = async () => {
-    try { const res = await api.get(`/api/task/project/${id}`); setTasks(res.data.tasks || []); }
-    catch { /* silent */ }
-  };
-
   useEffect(() => {
     dispatch(clearCommits());
-    fetchProject(); fetchInvites(); fetchTasks();
+    fetchProject(); fetchInvites();
+
+    dispatch(getTasks(id))
+
+      const socket = getSocket()
+
+    if (!socket) {
+        return
+    }
+
+    socket.on("put_task" , (data)=>{
+        dispatch(putTask(data))
+    })
+
     return () => dispatch(clearCommits());
   }, [id]);
 
@@ -730,7 +740,7 @@ const ProjectDetails = () => {
         <AssignTaskModal
           projectId={project._id} members={project.members}
           onClose={() => setAssignOpen(false)}
-          onAssigned={(task) => setTasks((prev) => [task, ...prev])}
+          onAssigned={(task) => dispatch(addTask(task))}
         />
       )}
 
