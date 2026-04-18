@@ -1,13 +1,46 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjects } from "../store/slices/projectsSlice";
 
 const Projekt = () => {
   const dispatch = useDispatch();
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const projects = useSelector((state)=> state.projects.projects)
   const loading = useSelector((state) => state.projects.loading);
   const error = useSelector((state) => state.projects.error);
+
+  const theme = isDarkMode
+    ? {
+        pageBg: "#16181d",
+        panelBg: "#20242c",
+        softBg: "#2a303a",
+        cardBorder: "rgba(154, 160, 180, 0.18)",
+        dashedBorder: "rgba(154, 160, 180, 0.24)",
+        heading: "#f5f7fb",
+        text: "#d7dceb",
+        muted: "#9aa3ba",
+        pillBg: "#2f3642",
+        shadow: "0 18px 48px rgba(0, 0, 0, 0.28)",
+        hoverShadow: "0 24px 60px rgba(0, 0, 0, 0.4)",
+        errorBorder: "rgba(232,101,74,0.34)",
+        errorBg: "rgba(232,101,74,0.14)",
+      }
+    : {
+        pageBg: "var(--color-frost-bg)",
+        panelBg: "var(--color-white)",
+        softBg: "var(--color-frost-bg)",
+        cardBorder: "rgba(43,49,65,0.1)",
+        dashedBorder: "rgba(43,49,65,0.18)",
+        heading: "var(--color-git-charcoal)",
+        text: "var(--color-git-charcoal)",
+        muted: "var(--color-git-charcoal-soft)",
+        pillBg: "var(--color-frost-hover)",
+        shadow: "0 18px 48px rgba(43,49,65,0.12)",
+        hoverShadow: "0 24px 60px rgba(43,49,65,0.2)",
+        errorBorder: "rgba(232,101,74,0.28)",
+        errorBg: "rgba(232,101,74,0.1)",
+      };
 
   useEffect(() => {
     dispatch(getProjects());
@@ -15,7 +48,10 @@ const Projekt = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-[91vh] items-center justify-center bg-[var(--color-frost-bg)] text-[var(--color-git-charcoal)]">
+      <div
+        className="flex min-h-[91vh] items-center justify-center"
+        style={{ backgroundColor: theme.pageBg, color: theme.text }}
+      >
         Loading projects...
       </div>
     );
@@ -23,8 +59,18 @@ const Projekt = () => {
 
   if (error) {
     return (
-      <div className="flex min-h-[91vh] items-center justify-center bg-[var(--color-frost-bg)] px-6">
-        <div className="w-full max-w-md rounded-2xl border border-[color:rgba(232,101,74,0.28)] bg-[color:rgba(232,101,74,0.1)] p-6 text-center text-[var(--color-git-charcoal)]">
+      <div
+        className="flex min-h-[91vh] items-center justify-center px-6"
+        style={{ backgroundColor: theme.pageBg }}
+      >
+        <div
+          className="w-full max-w-md rounded-2xl border p-6 text-center"
+          style={{
+            borderColor: theme.errorBorder,
+            backgroundColor: theme.errorBg,
+            color: theme.text,
+          }}
+        >
           {error}
         </div>
       </div>
@@ -32,23 +78,58 @@ const Projekt = () => {
   }
 
   return (
-    <div className="min-h-[91vh] bg-[var(--color-frost-bg)] px-6 py-8 md:px-10">
+    <div
+      className="min-h-[91vh] px-6 py-8 transition-colors duration-300 md:px-10"
+      style={{ backgroundColor: theme.pageBg }}
+    >
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black text-[var(--color-git-charcoal)]">Projects</h1>
-            <p className="mt-2 text-sm text-[var(--color-git-charcoal-soft)]">
+            <h1 className="text-3xl font-black" style={{ color: theme.heading }}>
+              Projects
+            </h1>
+            <p className="mt-2 text-sm" style={{ color: theme.muted }}>
               Redux store ichidan kelayotgan barcha loyihalar shu yerda
               render qilindi.
             </p>
           </div>
-          <div className="rounded-xl border border-[color:rgba(43,49,65,0.12)] bg-[var(--color-white)] px-4 py-2 text-sm text-[var(--color-git-charcoal)] shadow-[0_10px_30px_rgba(43,49,65,0.08)]">
-            Total: {projects?.length || 0}
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setIsDarkMode((prev) => !prev)}
+              className="rounded-xl px-4 py-2 text-sm font-semibold transition"
+              style={{
+                backgroundColor: theme.panelBg,
+                color: theme.text,
+                border: `1px solid ${theme.cardBorder}`,
+                boxShadow: "0 10px 30px rgba(43,49,65,0.08)",
+              }}
+            >
+              {isDarkMode ? "Light mode" : "Dark mode"}
+            </button>
+            <div
+              className="rounded-xl px-4 py-2 text-sm"
+              style={{
+                border: `1px solid ${theme.cardBorder}`,
+                backgroundColor: theme.panelBg,
+                color: theme.text,
+                boxShadow: "0 10px 30px rgba(43,49,65,0.08)",
+              }}
+            >
+              Total: {projects?.length || 0}
+            </div>
           </div>
         </div>
 
         {!projects?.length ? (
-          <div className="rounded-3xl border border-dashed border-[color:rgba(43,49,65,0.18)] bg-[var(--color-white)] px-6 py-16 text-center text-[var(--color-git-charcoal-soft)]">
+          <div
+            className="rounded-3xl border border-dashed px-6 py-16 text-center"
+            style={{
+              borderColor: theme.dashedBorder,
+              backgroundColor: theme.panelBg,
+              color: theme.muted,
+            }}
+          >
             Hozircha project topilmadi.
           </div>
         ) : (
@@ -56,18 +137,32 @@ const Projekt = () => {
             {projects.map((project) => (
               <div
                 key={project._id}
-                className="rounded-3xl border border-[color:rgba(43,49,65,0.1)] bg-[var(--color-white)] p-6 shadow-[0_18px_48px_rgba(43,49,65,0.12)] transition-shadow duration-300 hover:shadow-[0_24px_60px_rgba(43,49,65,0.2)]"
+                className="rounded-3xl border p-6 transition-shadow duration-300"
+                style={{
+                  borderColor: theme.cardBorder,
+                  backgroundColor: theme.panelBg,
+                  boxShadow: theme.shadow,
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = theme.hoverShadow;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = theme.shadow;
+                }}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h2 className="text-xl font-bold text-[var(--color-git-charcoal)]">
+                    <h2 className="text-xl font-bold" style={{ color: theme.heading }}>
                       {project.repo_name}
                     </h2>
-                    <p className="mt-1 break-all text-sm text-[var(--color-git-charcoal-soft)]">
+                    <p className="mt-1 break-all text-sm" style={{ color: theme.muted }}>
                       {project.repo_fullname}
                     </p>
                   </div>
-                  <span className="rounded-full bg-[var(--color-frost-hover)] px-3 py-1 text-xs font-semibold text-[var(--color-git-charcoal)]">
+                  <span
+                    className="rounded-full px-3 py-1 text-xs font-semibold"
+                    style={{ backgroundColor: theme.pillBg, color: theme.text }}
+                  >
                     {project.default_branch || "no-branch"}
                   </span>
                 </div>
@@ -76,24 +171,32 @@ const Projekt = () => {
                   <InfoCard
                     title="Members"
                     value={project.members?.length || 0}
+                    theme={theme}
                   />
                   <InfoCard
                     title="Commits"
                     value={project.commits?.length || 0}
+                    theme={theme}
                   />
                 </div>
 
-                <div className="mt-5 rounded-2xl bg-[var(--color-frost-bg)] p-4">
-                  <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-git-charcoal-muted)]">
+                <div
+                  className="mt-5 rounded-2xl p-4"
+                  style={{ backgroundColor: theme.softBg }}
+                >
+                  <p
+                    className="text-xs uppercase tracking-[0.2em]"
+                    style={{ color: theme.muted }}
+                  >
                     Repository owner
                   </p>
-                  <p className="mt-2 text-sm font-medium text-[var(--color-git-charcoal)]">
+                  <p className="mt-2 text-sm font-medium" style={{ color: theme.text }}>
                     {project.repo_owner}
                   </p>
                 </div>
 
                 <div className="mt-6 flex items-center justify-between">
-                  <p className="text-xs text-[var(--color-git-charcoal-soft)]">
+                  <p className="text-xs" style={{ color: theme.muted }}>
                     ID: {project.repo_id}
                   </p>
                   <Link
@@ -112,13 +215,21 @@ const Projekt = () => {
   );
 };
 
-const InfoCard = ({ title, value }) => {
+const InfoCard = ({ title, value, theme }) => {
   return (
-    <div className="rounded-2xl bg-[var(--color-frost-bg)] p-4">
-      <p className="text-xs uppercase tracking-[0.2em] text-[var(--color-git-charcoal-muted)]">
+    <div
+      className="rounded-2xl p-4"
+      style={{ backgroundColor: theme.softBg }}
+    >
+      <p
+        className="text-xs uppercase tracking-[0.2em]"
+        style={{ color: theme.muted }}
+      >
         {title}
       </p>
-      <p className="mt-2 text-2xl font-bold text-[var(--color-git-charcoal)]">{value}</p>
+      <p className="mt-2 text-2xl font-bold" style={{ color: theme.heading }}>
+        {value}
+      </p>
     </div>
   );
 };
