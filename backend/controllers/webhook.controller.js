@@ -6,13 +6,13 @@ const User = require("../models/user.model");
 const { sendNotifyByID, sendCommitToPorjectRoom } = require("../socket");
 const Notification = require("../models/notification.model");
 const Task = require("../models/task.model");
-// функция проверки подписи GitHub
+
+// Функция проверки подписи GitHub
 function verifySignature(req, secret) {
   const signature = req.headers["x-hub-signature-256"];
   if (!signature) return false;
   const hmac = crypto.createHmac("sha256", secret);
-  const digest =
-    "sha256=" + hmac.update(JSON.stringify(req.body)).digest("hex");
+  const digest = "sha256=" + hmac.update(JSON.stringify(req.body)).digest("hex");
   return signature === digest;
 }
 
@@ -39,6 +39,7 @@ async function githubWebhook(req, res, next) {
     }
 
     if (event === "push") {
+      // Ищем пользователя по GitHub ID
       const user = await User.findOne({ github_id: payload.sender.id });
 
       const savedCommits = [];
@@ -46,7 +47,8 @@ async function githubWebhook(req, res, next) {
         const existing = await Commit.findOne({ commit_id: c.id });
         if (existing) continue;
 
-        const commitSave = await Commit.create({
+        // Исправлено: имя переменной приведено к одному виду
+        const newCommit = await Commit.create({
           commit_id: c.id,
           author_username: c.author.username || c.author.name,
           author_github_id: payload.sender.id,
@@ -58,8 +60,8 @@ async function githubWebhook(req, res, next) {
           commit_date: c.timestamp,
         });
 
-        project.commits.push(commit._id);
-        savedCommits.push(commit);
+        project.commits.push(newCommit._id);
+        savedCommits.push(newCommit);
       }
 
       if (savedCommits.length === 0) {
@@ -68,50 +70,58 @@ async function githubWebhook(req, res, next) {
 
       await project.save();
 
-      const notfication = await Notification.create({
-        title: "Новый коммит!",
-        text: `В проекте ${project.repo_name} новые коммиты! нажмите чтобы посмотреть`,
-        redirect_url: `${process.env.FRONTEND_URL}/dashboard/project/${project._id}`,
-        user: user._id,
-        type: "commit",
-      });
+      // Создаем уведомление только если пользователь найден в системе
+      let notification = null;
+      if (user) {
+        notification = await Notification.create({
+          title: "Новый коммит!",
+          text: `В проекте ${project.repo_name} новые коммиты! Нажмите, чтобы посмотреть`,
+          redirect_url: `${process.env.FRONTEND_URL}/dashboard/project/${project._id}`,
+          user: user._id,
+          type: "commit",
+        });
+      }
 
+      // Загружаем только активные задачи проекта
       const tasks = await Task.find({
         project_id: project._id,
-        status: "todo",
+        status: { $in: ["todo", "in_progress"] },
       });
 
       for (const commit of savedCommits) {
         for (let index = 0; index < tasks.length; index++) {
           const element = tasks[index];
 
-          const isThere = commit.message.includes(element.key);
+          // Исправлено: обращаемся к commit_message (поле в модели Commit)
+          const isThere = commit.commit_message.includes(element.key);
 
           if (isThere) {
-            tasks[index].status = "done";
+            element.status = "done";
+            element.completedAt = new Date();
 
             if (user) {
               element.completedAt_user.user = user._id;
             } else {
-              element.completedAt_user.github_username =
-                commit.author.username || commit.author.name;
+              // Исправлено: берем имя автора из объекта commit
+              element.completedAt_user.github_username = commit.author_username;
             }
-
-            element.completedAt = new Date();
 
             await element.save();
           }
         }
+        // Отправляем информацию в сокет комнаты проекта
+        sendCommitToPorjectRoom(project._id.toString(), { commit });
       }
 
-      if (user) {
-        sendNotifyByID(user._id.toString(), notfication);
+      // Отправляем личное уведомление пользователю
+      if (user && notification) {
+        sendNotifyByID(user._id.toString(), notification);
       }
     }
 
     res.status(200).json({ success: true });
   } catch (err) {
-    console.error(err);
+    console.error("Webhook Error:", err);
     next(err);
   }
 }
@@ -119,5 +129,3 @@ async function githubWebhook(req, res, next) {
 module.exports = {
   githubWebhook,
 };
-
-
