@@ -46,7 +46,7 @@ async function githubWebhook(req, res, next) {
         const existing = await Commit.findOne({ commit_id: c.id });
         if (existing) continue;
 
-        const commit = await Commit.create({
+        const commitSave = await Commit.create({
           commit_id: c.id,
           author_username: c.author.username || c.author.name,
           author_github_id: payload.sender.id,
@@ -94,7 +94,7 @@ async function githubWebhook(req, res, next) {
               element.completedAt_user.user = user._id;
             } else {
               element.completedAt_user.github_username =
-                commit.author_username;
+                commit.author.username || commit.author.name;
             }
 
             element.completedAt = new Date();
@@ -119,4 +119,3 @@ async function githubWebhook(req, res, next) {
 module.exports = {
   githubWebhook,
 };
-
