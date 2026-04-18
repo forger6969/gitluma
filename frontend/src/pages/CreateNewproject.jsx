@@ -26,7 +26,6 @@ const CreateNewproject = () => {
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
 
-  // ✅ FIX: useEffect import kerak edi (endi ishlaydi)
   useEffect(() => {
     dispatch(reposFetch());
   }, [dispatch]);
@@ -42,7 +41,7 @@ const CreateNewproject = () => {
     setSearch("");
   };
 
-  // ✅ FIXED HANDLE SUBMIT
+  // ✅ FIXED PART (IMPORTANT)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -51,49 +50,38 @@ const CreateNewproject = () => {
     setFormError("");
     setFormSuccess("");
 
-    // ❗ validation
     if (!selectedRepo) {
-      setFormError(t("selectAlert") || "Repo tanlanmagan");
+      setFormError(t("selectAlert"));
       return;
     }
 
     try {
       setSubmitting(true);
 
-      // 🔥 backendga toza data yuborilmoqda
-      const payload = {
+      const res = await api.post("/api/project/create", {
         fullname: selectedRepo,
-        name: projectName,
-        description: description,
-      };
+      });
 
-      console.log("SEND PAYLOAD:", payload);
-
-      const res = await api.post("/api/project/create", payload);
-
+      // 🔥 FIX: support both id and _id
       const projectId = res?.data?.id || res?.data?._id;
 
-      if (!projectId) {
-        setFormError("Project ID backenddan qaytmadi");
-        return;
-      }
-
-      setFormSuccess(t("projectCreated") || "Created!");
-
-      // reset
       setProjectName("");
       setDescription("");
       setSelectedRepo("");
 
-      // 🚀 redirect
-      navigate(`/dashboard/project/${projectId}`);
+      
+
+      setFormSuccess(t("projectCreated"));
+
+      if (projectId) {
+        // 🚀 instant redirect (no delay)
+        navigate(`/dashboard/project/${projectId}`);
+      } else {
+        setFormError("Project ID not returned from backend");
+      }
     } catch (err) {
       const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Unknown error";
-
-      console.error("CREATE ERROR:", err);
+        err?.response?.data?.message || err?.message || "Unknown error";
       setFormError(message);
     } finally {
       setSubmitting(false);
@@ -115,7 +103,7 @@ const CreateNewproject = () => {
             <button
               type="button"
               onClick={() => setFormError("")}
-              className="ml-3 opacity-50 hover:opacity-100 transition-opacity flex-shrink-0"
+              className="opacity-50 hover:opacity-100 transition-opacity ml-3 flex-shrink-0"
             >
               ✕
             </button>
@@ -129,7 +117,7 @@ const CreateNewproject = () => {
             <button
               type="button"
               onClick={() => setFormSuccess("")}
-              className="ml-3 opacity-50 hover:opacity-100 transition-opacity flex-shrink-0"
+              className="opacity-50 hover:opacity-100 transition-opacity ml-3 flex-shrink-0"
             >
               ✕
             </button>
@@ -142,7 +130,7 @@ const CreateNewproject = () => {
             <h1 className="text-3xl font-bold tracking-tight text-[#1A1F2E]">
               {t("workspace")}
             </h1>
-            <p className="text-[#8A93A8] text-xs mt-1">{t("setup")}</p>
+            <p className="text-[#8A93A8] mt-1 text-xs">{t("setup")}</p>
           </div>
 
           <div className="flex gap-2">
@@ -163,79 +151,65 @@ const CreateNewproject = () => {
         <div className="grid md:grid-cols-2 gap-4">
 
           {/* LEFT */}
-          <div className="bg-white p-6 rounded-2xl border border-[#E4E8F0] shadow-sm hover:shadow-md hover:border-[#C8D0E0] transition-all space-y-4">
+          <div className="bg-white p-5 rounded-2xl border border-[#E4E8F0] shadow-sm hover:shadow-md hover:border-[#C8D0E0] transition-all space-y-3">
             <p className="text-[10px] font-bold text-[#8A93A8] uppercase tracking-widest">
               Project Info
             </p>
 
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-[#6B7280]">
-                {t("projectName")}
-              </label>
-              <input
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#1A1F2E] placeholder-[#B0B8C8] outline-none focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white transition-all"
-                placeholder={t("projectName")}
-              />
-            </div>
+            <input
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#1A1F2E] placeholder-[#8A93A8] outline-none focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white transition-all"
+              placeholder={t("projectName")}
+            />
 
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-[#6B7280]">
-                {t("description")}
-              </label>
-              <textarea
-                rows="4"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#1A1F2E] placeholder-[#B0B8C8] outline-none focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white transition-all resize-none"
-                placeholder={t("description")}
-              />
-            </div>
+            <textarea
+              rows="4"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#1A1F2E] placeholder-[#8A93A8] outline-none focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white transition-all resize-none"
+              placeholder={t("description")}
+            />
           </div>
 
           {/* RIGHT */}
-          <div className="bg-white p-6 rounded-2xl border border-[#E4E8F0] shadow-sm hover:shadow-md hover:border-[#C8D0E0] transition-all space-y-4">
+          <div className="bg-white p-5 rounded-2xl border border-[#E4E8F0] shadow-sm hover:shadow-md hover:border-[#C8D0E0] transition-all space-y-3">
             <p className="text-[10px] font-bold text-[#8A93A8] uppercase tracking-widest">
               Repository
             </p>
 
             {selectedRepo && (
-              <div className="flex justify-between items-center bg-[#EFF6FF] border border-[#BFDBFE] rounded-xl px-3.5 py-2.5 gap-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <svg width="13" height="13" fill="none" stroke="#3B7DD8" strokeWidth="2" viewBox="0 0 24 24" className="flex-shrink-0">
-                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                  </svg>
-                  <span className="truncate text-[#3B7DD8] font-mono text-xs font-medium">
-                    {selectedRepo}
-                  </span>
-                </div>
+              <div className="flex justify-between items-center bg-[#EFF6FF] border border-[#BFDBFE] rounded-lg px-3.5 py-2.5 gap-2">
+                <span className="truncate text-[#3B7DD8] font-mono text-xs font-medium">
+                  {selectedRepo}
+                </span>
                 <button
                   type="button"
                   onClick={() => setSelectedRepo("")}
-                  className="text-[#8A93A8] hover:text-red-400 transition-colors flex-shrink-0 text-sm"
+                  className="text-[#8A93A8] hover:text-red-500 transition-colors flex-shrink-0 text-sm"
                 >
                   ✕
                 </button>
               </div>
             )}
 
-            <button
-              type="button"
+            <div
               onClick={openModal}
-              className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F8F9FC] border border-[#E4E8F0] text-[#8A93A8] cursor-pointer hover:border-[#E8654A]/40 hover:bg-[#FFF2EF] hover:text-[#E8654A] transition-all flex items-center gap-2 font-medium"
+              className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#8A93A8] cursor-pointer hover:border-[#C8D0E0] hover:bg-white hover:text-[#1A1F2E] transition-all flex items-center gap-2"
             >
-              <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" className="flex-shrink-0">
+              <svg
+                width="14" height="14" fill="none"
+                stroke="currentColor" strokeWidth="2"
+                viewBox="0 0 24 24" className="flex-shrink-0"
+              >
                 <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
               </svg>
-              {selectedRepo ? t("changeRepo") || "Change repo" : t("selectRepo") || "Select repo"}
-            </button>
-
-            <div className="bg-[#F8F9FC] rounded-xl p-3.5 border border-[#E4E8F0]">
-              <p className="text-[11px] text-[#8A93A8] leading-relaxed">
-                🔗 Connect a GitHub repository to link commits and pull requests directly to your project tasks.
-              </p>
+              {selectedRepo ? t("changeRepo") : t("selectRepo")}
             </div>
+
+            <p className="text-[11px] text-[#8A93A8] leading-relaxed">
+              Connect a GitHub repository to link commits and pull requests to your tasks.
+            </p>
           </div>
         </div>
 
@@ -250,36 +224,17 @@ const CreateNewproject = () => {
               setFormError("");
               setFormSuccess("");
             }}
-            className="text-sm text-[#8A93A8] hover:text-[#1A1F2E] transition-colors flex items-center gap-1.5"
+            className="text-sm text-[#8A93A8] hover:text-[#1A1F2E] transition-colors"
           >
-            <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-              <path d="M3 3v5h5"/>
-            </svg>
-            {t("reset") || "Reset"}
+            {t("reset")}
           </button>
 
           <button
             type="submit"
             disabled={submitting}
-            className="px-7 py-2.5 text-sm rounded-xl bg-[#E8654A] text-white font-semibold shadow-[0_4px_14px_rgba(232,101,74,0.35)] hover:shadow-[0_6px_20px_rgba(232,101,74,0.45)] hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex items-center gap-2"
+            className="px-6 py-2.5 text-sm rounded-lg bg-[#E8654A] text-white font-semibold shadow-[0_4px_14px_rgba(232,101,74,0.35)] hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
           >
-            {submitting ? (
-              <>
-                <svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                </svg>
-                {t("creating") || "Creating..."}
-              </>
-            ) : (
-              <>
-                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
-                {t("create") || "Create"}
-              </>
-            )}
+            {submitting ? t("creating") : t("create")}
           </button>
         </div>
       </form>
@@ -289,51 +244,36 @@ const CreateNewproject = () => {
         <div
           onClick={closeModal}
           className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-150 backdrop-blur-sm ${
-            showModal ? "bg-black/25" : "bg-black/0"
+            showModal ? "bg-black/30" : "bg-black/0"
           }`}
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`w-[460px] max-h-[560px] bg-white rounded-2xl border border-[#E4E8F0] shadow-2xl transition-all duration-150 flex flex-col overflow-hidden ${
+            className={`w-[440px] max-h-[540px] bg-white rounded-2xl p-5 border border-[#E4E8F0] shadow-2xl transition-all duration-150 flex flex-col ${
               showModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
           >
-            {/* Modal Header */}
-            <div className="flex justify-between items-center px-5 py-4 border-b border-[#E4E8F0]">
-              <div className="flex items-center gap-2">
-                <svg width="15" height="15" fill="none" stroke="#E8654A" strokeWidth="2" viewBox="0 0 24 24">
-                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                </svg>
-                <h2 className="font-semibold text-[#1A1F2E] text-sm">
-                  {t("selectRepository") || "Select Repository"}
-                </h2>
-              </div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-semibold text-[#1A1F2E] text-base">
+                {t("selectRepository")}
+              </h2>
               <button
                 type="button"
                 onClick={closeModal}
-                className="w-7 h-7 flex items-center justify-center rounded-lg text-[#8A93A8] hover:text-[#1A1F2E] hover:bg-[#F4F6FB] transition-all text-base"
+                className="text-[#8A93A8] hover:text-[#1A1F2E] text-lg transition-colors"
               >
                 ✕
               </button>
             </div>
 
-            {/* Search */}
-            <div className="px-5 py-3 border-b border-[#E4E8F0]">
-              <div className="relative">
-                <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8A93A8]" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
-                </svg>
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#1A1F2E] placeholder-[#B0B8C8] outline-none focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white transition-all"
-                  placeholder={t("search") || "Search repos..."}
-                />
-              </div>
-            </div>
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#1A1F2E] placeholder-[#8A93A8] outline-none focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white transition-all mb-3"
+              placeholder={t("search")}
+            />
 
-            {/* Repo List */}
-            <div className="overflow-y-auto flex-1 p-3 space-y-1.5">
+            <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
               {filteredRepos.map((repo) => (
                 <div
                   key={repo.id}
@@ -341,47 +281,22 @@ const CreateNewproject = () => {
                     setSelectedRepo(repo.full_name);
                     closeModal();
                   }}
-                  className="flex items-start gap-3 p-3 rounded-xl cursor-pointer hover:bg-[#FFF2EF] hover:border-[#E8654A]/20 border border-transparent transition-all group"
+                  className="p-3 bg-[#F8F9FC] border border-[#E4E8F0] rounded-xl cursor-pointer hover:bg-[#FFF2EF] hover:border-[#E8654A]/30 transition-all"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-[#F4F6FB] border border-[#E4E8F0] flex items-center justify-center flex-shrink-0 group-hover:bg-[#FFE8E2] group-hover:border-[#E8654A]/20 transition-all">
-                    <svg width="13" height="13" fill="none" stroke="#8A93A8" strokeWidth="2" viewBox="0 0 24 24" className="group-hover:stroke-[#E8654A] transition-colors">
-                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                    </svg>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-mono font-semibold text-[#3B7DD8] group-hover:text-[#E8654A] transition-colors truncate">
-                      {repo.full_name}
-                    </p>
-                    <p className="text-xs text-[#8A93A8] mt-0.5 truncate">
-                      {repo.description || t("noDescription") || "No description"}
-                    </p>
-                  </div>
+                  <p className="text-xs font-mono text-[#3B7DD8] font-medium">
+                    {repo.full_name}
+                  </p>
+                  <p className="text-xs text-[#8A93A8] mt-0.5">
+                    {repo.description || t("noDescription")}
+                  </p>
                 </div>
               ))}
 
               {loading && (
-                <div className="flex items-center justify-center gap-2 py-8 text-[#8A93A8]">
-                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                  </svg>
-                  <span className="text-sm">Loading repos...</span>
-                </div>
+                <p className="text-sm text-[#8A93A8] text-center py-4">Loading...</p>
               )}
-
               {error && (
-                <div className="flex items-center justify-center gap-2 py-8 text-red-400">
-                  <span className="text-sm">Error loading repos</span>
-                </div>
-              )}
-
-              {!loading && !error && filteredRepos.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-8 text-[#8A93A8]">
-                  <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" className="mb-2 opacity-40">
-                    <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
-                  </svg>
-                  <span className="text-sm">No repos found</span>
-                </div>
+                <p className="text-sm text-red-500 text-center py-4">Error loading repos</p>
               )}
             </div>
           </div>
