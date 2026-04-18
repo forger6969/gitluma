@@ -16,7 +16,7 @@ const App = () => {
     if (token && location.pathname !== "/too-many-requests") {
       dispatch(fetchMe());
     }
-  }, [location.pathname]);
+  }, [dispatch, location.pathname]);
 
   return (
     <div className="bg-oq">
@@ -27,5 +27,4 @@ const App = () => {
 };
 
 export default App;
-
 
