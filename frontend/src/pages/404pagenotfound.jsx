@@ -44,7 +44,7 @@ export default function PageNotFound404() {
           продолжай миссию.
         </p>
         <Link
-          to="/"
+          to="/dashboard"
           className="mt-8 rounded-full border px-6 py-3 text-sm font-semibold transition page-404-home-link"
         >
           Вернуться на главную
