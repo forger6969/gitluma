@@ -2,6 +2,8 @@
     "platform": "Platform",
     "documentation": "Documentation",
     "changelog": "Changelog",
+
+    
     
     "hero_title": "Manage tasks",
     "commits": "commits",
