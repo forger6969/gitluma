@@ -6,6 +6,13 @@ const Commit = require("../models/commit.model");
 const Notification = require("../models/notification.model");
 const { sendNotifyByID } = require("../socket");
 
+const getPopulatedTaskById = (taskId) =>
+  Task.findById(taskId)
+    .populate("assigned_user", "username avatar_url email")
+    .populate("assigned_by", "username avatar_url")
+    .populate("completedAt_user.user", "username avatar_url email")
+    .populate("linked_commit", "commit_id commit_message author_username commit_date task");
+
 const assignTask = async (req, res, next) => {
   try {
     const {
@@ -86,10 +93,7 @@ const assignTask = async (req, res, next) => {
       key,
     });
 
-    const task = await Task.findById(createdTask._id)
-      .populate("assigned_user", "username avatar_url email")
-      .populate("assigned_by", "username avatar_url")
-      .populate("completedAt_user.user", "username avatar_url");
+    const task = await getPopulatedTaskById(createdTask._id);
 
     const notify = await Notification.create({
       title:"У вас новое задание!",
@@ -117,7 +121,8 @@ const getProjectTasks = async (req ,res ,next)=>{
     const tasks = await Task.find({project_id:id})
       .populate("assigned_user", "username avatar_url email")
       .populate("assigned_by", "username avatar_url")
-      .populate("completedAt_user.user", "username avatar_url")
+      .populate("completedAt_user.user", "username avatar_url email")
+      .populate("linked_commit", "commit_id commit_message author_username commit_date task")
 
 res.json({success:true , tasks})
 
@@ -126,6 +131,20 @@ res.json({success:true , tasks})
   }
 
 }
+
+const getProjectTaskCommits = async (req, res, next) => {
+  try {
+    const { projectId } = req.params;
+
+    const commits = await Commit.find({ project: projectId })
+      .sort({ commit_date: -1, createdAt: -1 })
+      .populate("task", "task_name key status");
+
+    res.json({ success: true, commits });
+  } catch (err) {
+    next(err);
+  }
+};
 
 const updateTask = async (req, res, next) => {
   try {
@@ -144,6 +163,25 @@ const updateTask = async (req, res, next) => {
 
     const VALID_STATUSES = ["todo", "in_progress", "done", "verified", "overdue"];
     const VALID_PRIORITIES = ["low", "medium", "high"];
+    const completionStatuses = ["done", "verified"];
+    const previousLinkedCommitId = task.linked_commit?.toString() || null;
+
+    let linkedCommit = null;
+    if (commit_id !== undefined && commit_id !== null && commit_id !== "") {
+      linkedCommit = await Commit.findById(commit_id);
+
+      if (!linkedCommit) {
+        return res.status(404).json({ success: false, message: "Commit not found" });
+      }
+
+      if (linkedCommit.project.toString() !== project._id.toString()) {
+        return res.status(400).json({ success: false, message: "Commit does not belong to this project" });
+      }
+
+      if (linkedCommit.task && linkedCommit.task.toString() !== task._id.toString()) {
+        return res.status(400).json({ success: false, message: "Commit is already attached to another task" });
+      }
+    }
 
     if (status !== undefined) {
       if (!VALID_STATUSES.includes(status))
@@ -272,6 +310,7 @@ const getMyTasks = async (req, res, next) => {
 module.exports = {
   assignTask,
   getProjectTasks,
+  getProjectTaskCommits,
   updateTask,
   getProjectCommits,
   getMyTasks,

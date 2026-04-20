@@ -92,6 +92,7 @@ async function githubWebhook(req, res, next) {
           if (isThere) {
             element.status = "done";
             element.completedAt = new Date();
+            element.linked_commit = commit._id;
 
             if (user) {
               element.completedAt_user.user = user._id;
@@ -100,6 +101,8 @@ async function githubWebhook(req, res, next) {
             }
 
             await element.save();
+            commit.task = element._id;
+            await commit.save();
 
             const populatedTask = await element.populate([
               { path: "assigned_user", select: "username avatar_url email" },
@@ -128,7 +131,6 @@ async function githubWebhook(req, res, next) {
 module.exports = {
   githubWebhook,
 };
-
 
 
 
