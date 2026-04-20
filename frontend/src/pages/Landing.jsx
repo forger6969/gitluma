@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-import GitBranchAnimation from "../Components/GitBranchAnimation";
+import GitBranchAnimation from "../components/GitBranchAnimation";
 import ProductDemo from "../components/ProductDemo";
 import FeaturesSection from "../components/FeaturesSection";
 import HowItWorksSection from "../components/HowItWorksSection";
@@ -12,16 +12,16 @@ import TestimonialsSection from "../components/TestimonialsSection";
 
 import FAQSection from "../components/FAQSection";
 import CTA from "../components/CTA";
-import Footer from "../Components/Footer";
+import Footer from "../components/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Landing = () => {
   useEffect(() => {
     // Scroll-reveal for headings & paragraphs (skip elements inside git animation)
-    const targets = gsap.utils.toArray("h1, h2, h3, p, li").filter(
-      (el) => !el.closest(".git-no-reveal")
-    );
+    const targets = gsap.utils
+      .toArray("h1, h2, h3, p, li")
+      .filter((el) => !el.closest(".git-no-reveal"));
 
     targets.forEach((el) => {
       gsap.fromTo(
@@ -37,7 +37,7 @@ const Landing = () => {
             start: "top 91%",
             once: true,
           },
-        }
+        },
       );
     });
 
