@@ -253,5 +253,34 @@
   "cta_badge": "BOSHLASH",
   "cta_h1": "Jamoangiz ishlarini boshqarishni",
   "cta_h2": "bugun boshlang",
-  "cta_sub": "GitHub'ni soniyalarda ulang. Bepul."
+  "cta_sub": "GitHub'ni soniyalarda ulang. Bepul.",
+  "faq": {
+    "title": "Ko‘p so‘raladigan savollar",
+    "subtitle": "GitLuma haqida bilishingiz kerak bo‘lgan hamma narsa.",
+    "contact": "Bog‘lanish",
+
+    "q1": "GitLuma GitHub bilan qanday ulanadi?",
+    "a1": "OAuth 2.0 orqali ulanadi — 1 klik.",
+
+    "q2": "Commit push bo‘lsa nima bo‘ladi?",
+    "a2": "Webhook orqali signal keladi va task yangilanadi.",
+
+    "q3": "Kod saqlanadimi?",
+    "a3": "Yo‘q, faqat metadata.",
+
+    "q4": "Private repo ishlaydimi?",
+    "a4": "Ha, to‘liq ishlaydi.",
+
+    "q5": "Task ID qanday ishlaydi?",
+    "a5": "GLM-1 format ishlatiladi.",
+
+    "q6": "Team qo‘shish mumkinmi?",
+    "a6": "Ha, email orqali.",
+
+    "q7": "Pro va Team farqi?",
+    "a7": "Team ko‘proq imkoniyat beradi.",
+
+    "q8": "Self-host bormi?",
+    "a8": "Keyinroq chiqadi."
+  }
 }
