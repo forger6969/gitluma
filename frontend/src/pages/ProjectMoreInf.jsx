@@ -2,8 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/api";
 import useCommitsEvents from "../hooks/useCommitsEvents";
+import useTaskEvents from "../hooks/useTaskEvents";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCommits } from "../store/slices/projectCommitsSlice";
+import { getTasks, addTask } from "../store/slices/taskSlice";
 
 // ─── Theme-aware Design Tokens ────────────────────────────────────────────────
 const getColors = (isDark) => ({
@@ -284,6 +286,196 @@ const InviteModal = ({ projectId, members = [], onClose, C }) => {
 };
 
 /* ─────────────────────────────────────────────────────────────
+   Toast
+   ───────────────────────────────────────────────────────────── */
+const TOAST_ICONS = {
+  commit: (
+    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="3" /><line x1="3" y1="12" x2="9" y2="12" /><line x1="15" y1="12" x2="21" y2="12" />
+    </svg>
+  ),
+  task: (
+    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  ),
+};
+
+const TOAST_ACCENT = {
+  commit: { border: C.coral,   bg: C.coralBg,   icon: C.coral,   bar: C.coral   },
+  task:   { border: C.success, bg: C.successBg, icon: C.success, bar: C.success },
+};
+
+const Toast = ({ toast, onDismiss }) => {
+  const [visible, setVisible] = useState(false);
+  const accent = TOAST_ACCENT[toast.type] || TOAST_ACCENT.commit;
+
+  useEffect(() => {
+    requestAnimationFrame(() => setVisible(true));
+    const t = setTimeout(() => { setVisible(false); setTimeout(() => onDismiss(toast.id), 300); }, 4500);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <div
+      style={{
+        backgroundColor: C.cardBg,
+        border: `1px solid ${accent.border}`,
+        borderRadius: "14px",
+        boxShadow: "0 8px 28px rgba(43,49,65,0.16)",
+        padding: "12px 14px",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "10px",
+        minWidth: "300px",
+        maxWidth: "360px",
+        position: "relative",
+        overflow: "hidden",
+        transition: "opacity 0.3s, transform 0.3s",
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateX(0)" : "translateX(24px)",
+      }}
+    >
+      <div style={{
+        width: "30px", height: "30px", borderRadius: "8px", flexShrink: 0,
+        backgroundColor: accent.bg, color: accent.icon,
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}>
+        {TOAST_ICONS[toast.type]}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontSize: "12px", fontWeight: 700, color: C.heading, marginBottom: "2px" }}>{toast.title}</p>
+        <p style={{ fontSize: "11px", color: C.muted, lineHeight: 1.4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{toast.body}</p>
+      </div>
+      <button onClick={() => { setVisible(false); setTimeout(() => onDismiss(toast.id), 300); }}
+        style={{ color: C.placeholder, flexShrink: 0, lineHeight: 1, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12" /></svg>
+      </button>
+      <div style={{
+        position: "absolute", bottom: 0, left: 0,
+        height: "3px", width: "100%", backgroundColor: accent.bar, opacity: 0.35, borderRadius: "0 0 14px 14px",
+      }} />
+    </div>
+  );
+};
+
+const ToastContainer = ({ toasts, onDismiss }) => (
+  <div style={{ position: "fixed", bottom: "24px", right: "24px", zIndex: 100, display: "flex", flexDirection: "column", gap: "10px", alignItems: "flex-end" }}>
+    {toasts.map((t) => <Toast key={t.id} toast={t} onDismiss={onDismiss} />)}
+  </div>
+);
+
+/* ─────────────────────────────────────────────────────────────
+   TaskDetailModal
+   ───────────────────────────────────────────────────────────── */
+const TaskDetailModal = ({ task, onClose }) => {
+  const pri = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium;
+  const col = KANBAN_COLUMNS.find((c) => c.key === task.status);
+  const deadline = task.task_deadline ? new Date(task.task_deadline) : null;
+  const isOverdue = task.status === "overdue";
+  const completedBy = task.completedAt_user?.user?.username || task.completedAt_user?.github_username;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
+      style={{ backgroundColor: "rgba(43,49,65,0.75)" }} onClick={onClose}>
+      <div className="rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
+        style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderDef}` }}
+        onClick={(e) => e.stopPropagation()}>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b"
+          style={{ borderColor: C.borderSubtle, backgroundColor: C.inputBg }}>
+          <div className="flex items-center gap-2.5">
+            <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg"
+              style={{ backgroundColor: C.coralBg, color: C.coral }}>{task.key}</span>
+            <h2 className="text-sm font-semibold truncate" style={{ color: C.heading }}>{task.task_name}</h2>
+          </div>
+          <button onClick={onClose}
+            className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-gray-100"
+            style={{ color: C.muted }}>
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+          </button>
+        </div>
+
+        <div className="p-6 space-y-5">
+          {/* Badges row */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full"
+              style={{ backgroundColor: pri.bg, color: pri.color }}>{pri.label} priority</span>
+            {col && (
+              <span className="flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full"
+                style={{ backgroundColor: col.bgColor || C.inputBg, color: col.color }}>
+                {col.icon}{col.label}
+              </span>
+            )}
+          </div>
+
+          {/* Description */}
+          {task.task_describe && (
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: C.placeholder }}>Description</p>
+              <p className="text-sm leading-relaxed" style={{ color: C.body }}>{task.task_describe}</p>
+            </div>
+          )}
+
+          {/* Meta grid */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Assigned to */}
+            <div className="rounded-xl p-3" style={{ backgroundColor: C.inputBg }}>
+              <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: C.placeholder }}>Assigned to</p>
+              {task.assigned_user ? (
+                <div className="flex items-center gap-2">
+                  <img src={task.assigned_user.avatar_url} alt="" className="w-7 h-7 rounded-lg object-cover" />
+                  <p className="text-sm font-medium truncate" style={{ color: C.heading }}>{task.assigned_user.username}</p>
+                </div>
+              ) : <p className="text-sm" style={{ color: C.placeholder }}>—</p>}
+            </div>
+
+            {/* Deadline */}
+            <div className="rounded-xl p-3" style={{ backgroundColor: C.inputBg }}>
+              <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: C.placeholder }}>Deadline</p>
+              {deadline ? (
+                <div className="flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 shrink-0" style={{ color: isOverdue ? C.danger : C.muted }}
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  <p className="text-sm font-medium" style={{ color: isOverdue ? C.danger : C.heading }}>
+                    {deadline.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                  </p>
+                </div>
+              ) : <p className="text-sm" style={{ color: C.placeholder }}>—</p>}
+            </div>
+          </div>
+
+          {/* Completed info */}
+          {task.completedAt && (
+            <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl"
+              style={{ backgroundColor: C.successBg, border: `1px solid rgba(34,176,125,0.2)` }}>
+              <svg className="w-4 h-4 shrink-0" style={{ color: C.success }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <div>
+                <p className="text-xs font-semibold" style={{ color: C.success }}>
+                  Completed {new Date(task.completedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                  {completedBy && ` by ${completedBy}`}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Created */}
+          <p className="text-xs" style={{ color: C.placeholder }}>
+            Created {new Date(task.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────────────────────
    AssignTaskModal
    ───────────────────────────────────────────────────────────── */
 const PRIORITIES = ["low", "medium", "high"];
@@ -482,8 +674,7 @@ const getPriorityConfig = (C) => ({
 });
 
 /* ── KanbanCard ── */
-const KanbanCard = ({ task, C }) => {
-  const PRIORITY_CONFIG = getPriorityConfig(C);
+const KanbanCard = ({ task, onClick }) => {
   const pri = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium;
   const isOverdue = task.status === "overdue";
   const deadline = task.task_deadline ? new Date(task.task_deadline) : null;
@@ -494,12 +685,13 @@ const KanbanCard = ({ task, C }) => {
   return (
     <div
       className="rounded-xl p-3"
+      onClick={onClick}
       style={{
         backgroundColor: C.cardBg,
         border: `1px solid ${isOverdue ? "rgba(224,61,61,0.25)" : C.borderSubtle}`,
         boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
         transition: "box-shadow 0.15s, transform 0.15s",
-        cursor: "default",
+        cursor: "pointer",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,0,0,0.2)";
@@ -612,7 +804,7 @@ const KanbanBoard = ({ tasks, onAssign, isCurrOwner, C }) => {
                     <p className="text-xs mt-2 font-medium" style={{ color: col.color }}>Empty</p>
                   </div>
                 ) : (
-                  colTasks.map((task) => <KanbanCard key={task._id} task={task} C={C} />)
+                  colTasks.map((task) => <KanbanCard key={task._id} task={task} onClick={() => onTaskClick(task)} />)
                 )}
               </div>
             </div>
@@ -658,6 +850,15 @@ const StatCard = ({ title, value, icon, C }) => (
 /* ─────────────────────────────────────────────────────────────
    Main Page
    ───────────────────────────────────────────────────────────── */
+const STATUS_FILTERS = [
+  { key: "all", label: "All" },
+  { key: "todo", label: "To Do" },
+  { key: "in_progress", label: "In Progress" },
+  { key: "done", label: "Done" },
+  { key: "verified", label: "Verified" },
+  { key: "overdue", label: "Overdue" },
+];
+
 const ProjectDetails = () => {
   const { id } = useParams();
   const [project, setProject] = useState(null);
@@ -665,7 +866,12 @@ const ProjectDetails = () => {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
   const [invites, setInvites] = useState([]);
-  const [tasks, setTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [taskFilter, setTaskFilter] = useState("all");
+  const [toasts, setToasts] = useState([]);
+  const toastIdRef = useRef(0);
+  const prevCommitCountRef = useRef(0);
+
   const dispatch = useDispatch();
   const currentUser = useSelector((s) => s.user.user);
   const currentUserId = currentUser?.user?._id || currentUser?._id;
@@ -675,8 +881,26 @@ const ProjectDetails = () => {
   const mode = useSelector((state) => state.theme.mode);
   const isDark = mode === "dark";
   const C = getColors(isDark);
+  const tasks = useSelector((state) => state.tasks.tasks);
+
+  const addToast = (type, title, body) => {
+    const toast = { id: ++toastIdRef.current, type, title, body };
+    setToasts((prev) => [...prev, toast]);
+  };
+  const dismissToast = (toastId) => setToasts((prev) => prev.filter((t) => t.id !== toastId));
 
   useCommitsEvents(project?._id);
+  useTaskEvents(project?._id, (task) => {
+    addToast("task", `Task ${task.key} updated`, `"${task.task_name}" is now ${task.status.replace("_", " ")}`);
+  });
+
+  useEffect(() => {
+    if (socketCommits.length > prevCommitCountRef.current && prevCommitCountRef.current > 0) {
+      const latest = socketCommits[0];
+      addToast("commit", "New commit pushed", latest?.commit_message || "No message");
+    }
+    prevCommitCountRef.current = socketCommits.length;
+  }, [socketCommits.length]);
 
   const inputBase = {
     backgroundColor: C.inputBg,
@@ -694,14 +918,11 @@ const ProjectDetails = () => {
     try { const res = await api.get(`/api/invite/invites?projectId=${id}`); setInvites(res.data.invites || []); }
     catch (err) { console.error(err); }
   };
-  const fetchTasks = async () => {
-    try { const res = await api.get(`/api/task/project/${id}`); setTasks(res.data.tasks || []); }
-    catch { /* silent */ }
-  };
 
   useEffect(() => {
     dispatch(clearCommits());
-    fetchProject(); fetchInvites(); fetchTasks();
+    fetchProject(); fetchInvites();
+    dispatch(getTasks(id));
     return () => dispatch(clearCommits());
   }, [id]);
 
@@ -750,9 +971,11 @@ const ProjectDetails = () => {
 
   const PRIORITY_CONFIG = getPriorityConfig(C);
   const KANBAN_COLUMNS = getKanbanColumns(C);
+  const filteredTasks = taskFilter === "all" ? tasks : tasks.filter((t) => t.status === taskFilter);
 
   return (
     <div className="min-h-screen p-6 md:p-8" style={{ backgroundColor: C.pageBg }}>
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
       {inviteOpen && (
         <InviteModal projectId={project._id} members={project.members} onClose={() => setInviteOpen(false)} C={C} />
       )}
@@ -760,9 +983,11 @@ const ProjectDetails = () => {
         <AssignTaskModal
           projectId={project._id} members={project.members}
           onClose={() => setAssignOpen(false)}
-          onAssigned={(task) => setTasks((prev) => [task, ...prev])}
-          C={C}
+          onAssigned={(task) => dispatch(addTask(task))}
         />
+      )}
+      {selectedTask && (
+        <TaskDetailModal task={selectedTask} onClose={() => setSelectedTask(null)} />
       )}
 
       <div className="max-w-7xl mx-auto space-y-5">
@@ -1003,7 +1228,27 @@ const ProjectDetails = () => {
                   </button>
                 )}
               </div>
-              {tasks.length === 0 ? (
+
+              {/* Filter tabs */}
+              <div className="flex gap-1.5 flex-wrap mb-4">
+                {STATUS_FILTERS.map((f) => {
+                  const count = f.key === "all" ? tasks.length : tasks.filter((t) => t.status === f.key).length;
+                  const active = taskFilter === f.key;
+                  return (
+                    <button key={f.key} onClick={() => setTaskFilter(f.key)}
+                      className="text-xs font-semibold px-2.5 py-1 rounded-lg transition-all"
+                      style={{
+                        backgroundColor: active ? C.coral : C.inputBg,
+                        color: active ? "#fff" : C.muted,
+                        border: `1px solid ${active ? C.coral : C.borderSubtle}`,
+                      }}>
+                      {f.label} {count > 0 && <span style={{ opacity: active ? 0.8 : 0.6 }}>·{count}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {filteredTasks.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2.5"
                     style={{ backgroundColor: C.inputBg }}>
@@ -1011,24 +1256,27 @@ const ProjectDetails = () => {
                       <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
                     </svg>
                   </div>
-                  <p className="text-sm font-medium" style={{ color: C.muted }}>No tasks yet</p>
-                  <p className="text-xs mt-0.5" style={{ color: C.placeholder }}>Assign a task to get started</p>
+                  <p className="text-sm font-medium" style={{ color: C.muted }}>
+                    {taskFilter === "all" ? "No tasks yet" : `No ${taskFilter.replace("_", " ")} tasks`}
+                  </p>
+                  {taskFilter === "all" && <p className="text-xs mt-0.5" style={{ color: C.placeholder }}>Assign a task to get started</p>}
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {tasks.map((task) => {
+                  {filteredTasks.map((task) => {
                     const pri = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium;
                     const col = KANBAN_COLUMNS.find((c) => c.key === task.status);
                     return (
                       <div key={task._id} className="p-3.5 rounded-xl transition-colors"
-                        style={{ border: `1px solid ${C.borderSubtle}` }}
+                        style={{ border: `1px solid ${C.borderSubtle}`, cursor: "pointer" }}
+                        onClick={() => setSelectedTask(task)}
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = C.inputBg}
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}>
                         <div className="flex items-start gap-3">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="text-xs font-mono font-semibold px-1.5 py-0.5 rounded"
-                                style={{ backgroundColor: C.inputBg, color: C.placeholder }}>{task.key}</span>
+                                style={{ backgroundColor: C.coralSubtle, color: C.coral }}>{task.key}</span>
                               <p className="text-sm font-semibold truncate" style={{ color: C.heading }}>{task.task_name}</p>
                             </div>
                             {task.task_describe && (
@@ -1068,6 +1316,7 @@ const ProjectDetails = () => {
           onAssign={() => setAssignOpen(true)}
           isCurrOwner={isCurrOwner}
           C={C}
+          onTaskClick={setSelectedTask}
         />
 
       </div>

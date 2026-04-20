@@ -2,6 +2,8 @@
     "platform": "Platform",
     "documentation": "Documentation",
     "changelog": "Changelog",
+
+    
     
     "hero_title": "Manage tasks",
     "commits": "commits",
@@ -126,6 +128,8 @@
   "noDescription": "No description",
   "projectCreated": "Project created 🚀",
   "selectAlert": "Select a repository",
+        "hero_title": "GitLuma",
+        "hero_desc": "GitHub integrated platform",
       
         "features": "Features",
         "integrations": "Integrations",

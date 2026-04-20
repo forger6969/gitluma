@@ -5,6 +5,7 @@ import authReducer from "./slices/authSlice";
 import notificationSlice from './slices/notificationSlice'
 import projectSlice from './slices/projectsSlice'
 import projectCommitsSlice from './slices/projectCommitsSlice'
+import tasksSlice from './slices/taskSlice'
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
         repos: reposSlice,
         notifications:notificationSlice,
         projects:projectSlice,
-        projectcommits:projectCommitsSlice
+        projectcommits:projectCommitsSlice,
+        tasks:tasksSlice
     }
 })
