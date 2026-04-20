@@ -2,28 +2,26 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import api from "../api/api";
 import useCommitsEvents from "../hooks/useCommitsEvents";
-import useTaskEvents from "../hooks/useTaskEvents";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCommits } from "../store/slices/projectCommitsSlice";
-import { getTasks, addTask } from "../store/slices/taskSlice";
 
-// ─── Theme-aware Design Tokens ────────────────────────────────────────────────
-const getColors = (isDark) => ({
+// ─── Design Tokens ────────────────────────────────────────────────────────────
+const C = {
   coral:        "#E8654A",
   coralHover:   "#D4512F",
   coralActive:  "#C04020",
-  coralBg:      isDark ? "rgba(232,101,74,0.15)" : "#FCEDE9",
+  coralBg:      "#FCEDE9",
   coralSubtle:  "rgba(232,101,74,0.1)",
-  charcoal:     isDark ? "#0D1017" : "#2B3141",
-  pageBg:       isDark ? "#0D1117" : "#EEF1F7",
-  cardBg:       isDark ? "#12151E" : "#FFFFFF",
-  inputBg:      isDark ? "#1A1F2E" : "#F4F6FB",
-  heading:      isDark ? "#F0F2F8" : "#181D2A",
-  body:         isDark ? "#C8CFDF" : "#2B3141",
-  muted:        isDark ? "#7D87A0" : "#5C6480",
-  placeholder:  isDark ? "#4E566A" : "#9AA0B4",
-  borderSubtle: isDark ? "#1F2535" : "#E2E5EE",
-  borderDef:    isDark ? "#2B3141" : "#C8CDD9",
+  charcoal:     "#2B3141",
+  pageBg:       "#EEF1F7",
+  cardBg:       "#FFFFFF",
+  inputBg:      "#F4F6FB",
+  heading:      "#181D2A",
+  body:         "#2B3141",
+  muted:        "#5C6480",
+  placeholder:  "#9AA0B4",
+  borderSubtle: "#E2E5EE",
+  borderDef:    "#C8CDD9",
   success:      "#22B07D",
   successBg:    "rgba(34,176,125,0.1)",
   warning:      "#D4890A",
@@ -32,7 +30,24 @@ const getColors = (isDark) => ({
   dangerBg:     "rgba(224,61,61,0.1)",
   info:         "#3A7EE8",
   infoBg:       "rgba(58,126,232,0.1)",
-});
+};
+
+/* ── Shared input helpers ── */
+const inputBase = {
+  backgroundColor: C.inputBg,
+  border: `1.5px solid ${C.borderDef}`,
+  color: C.heading,
+  borderRadius: "12px",
+  fontFamily: "inherit",
+};
+const handleFocus = (e) => {
+  e.target.style.borderColor = C.coral;
+  e.target.style.boxShadow = "0 0 0 3px rgba(232,101,74,0.12)";
+};
+const handleBlur = (e) => {
+  e.target.style.borderColor = C.borderDef;
+  e.target.style.boxShadow = "none";
+};
 
 /* ─────────────────────────────────────────────────────────────
    RoleDropdown – custom animated pill selector
@@ -59,7 +74,7 @@ const ROLE_OPTIONS = [
   },
 ];
 
-const RoleDropdown = ({ value, onChange, C }) => {
+const RoleDropdown = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -106,7 +121,7 @@ const RoleDropdown = ({ value, onChange, C }) => {
           style={{
             backgroundColor: C.cardBg,
             border: `1px solid ${C.borderDef}`,
-            boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
+            boxShadow: "0 8px 24px rgba(43,49,65,0.14)",
             minWidth: "130px",
           }}
         >
@@ -146,29 +161,13 @@ const RoleDropdown = ({ value, onChange, C }) => {
 /* ─────────────────────────────────────────────────────────────
    InviteModal
    ───────────────────────────────────────────────────────────── */
-const InviteModal = ({ projectId, members = [], onClose, C }) => {
+const InviteModal = ({ projectId, members = [], onClose }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
   const [sending, setSending] = useState(null);
   const [feedback, setFeedback] = useState({});
   const debounceRef = useRef(null);
-
-  const inputBase = {
-    backgroundColor: C.inputBg,
-    border: `1.5px solid ${C.borderDef}`,
-    color: C.heading,
-    borderRadius: "12px",
-    fontFamily: "inherit",
-  };
-  const handleFocus = (e) => {
-    e.target.style.borderColor = C.coral;
-    e.target.style.boxShadow = "0 0 0 3px rgba(232,101,74,0.12)";
-  };
-  const handleBlur = (e) => {
-    e.target.style.borderColor = C.borderDef;
-    e.target.style.boxShadow = "none";
-  };
 
   useEffect(() => {
     if (query.length < 2) { setResults([]); return; }
@@ -196,7 +195,7 @@ const InviteModal = ({ projectId, members = [], onClose, C }) => {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
-      style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
+      style={{ backgroundColor: "rgba(43,49,65,0.75)" }}
       onClick={onClose}
     >
       <div
@@ -216,10 +215,8 @@ const InviteModal = ({ projectId, members = [], onClose, C }) => {
             <h2 className="text-sm font-semibold" style={{ color: C.heading }}>Invite member</h2>
           </div>
           <button onClick={onClose}
-            className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-            style={{ color: C.muted }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = C.inputBg}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}>
+            className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-gray-100"
+            style={{ color: C.muted }}>
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
           </button>
         </div>
@@ -286,201 +283,11 @@ const InviteModal = ({ projectId, members = [], onClose, C }) => {
 };
 
 /* ─────────────────────────────────────────────────────────────
-   Toast
-   ───────────────────────────────────────────────────────────── */
-const TOAST_ICONS = {
-  commit: (
-    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="12" cy="12" r="3" /><line x1="3" y1="12" x2="9" y2="12" /><line x1="15" y1="12" x2="21" y2="12" />
-    </svg>
-  ),
-  task: (
-    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  ),
-};
-
-const TOAST_ACCENT = {
-  commit: { border: C.coral,   bg: C.coralBg,   icon: C.coral,   bar: C.coral   },
-  task:   { border: C.success, bg: C.successBg, icon: C.success, bar: C.success },
-};
-
-const Toast = ({ toast, onDismiss }) => {
-  const [visible, setVisible] = useState(false);
-  const accent = TOAST_ACCENT[toast.type] || TOAST_ACCENT.commit;
-
-  useEffect(() => {
-    requestAnimationFrame(() => setVisible(true));
-    const t = setTimeout(() => { setVisible(false); setTimeout(() => onDismiss(toast.id), 300); }, 4500);
-    return () => clearTimeout(t);
-  }, []);
-
-  return (
-    <div
-      style={{
-        backgroundColor: C.cardBg,
-        border: `1px solid ${accent.border}`,
-        borderRadius: "14px",
-        boxShadow: "0 8px 28px rgba(43,49,65,0.16)",
-        padding: "12px 14px",
-        display: "flex",
-        alignItems: "flex-start",
-        gap: "10px",
-        minWidth: "300px",
-        maxWidth: "360px",
-        position: "relative",
-        overflow: "hidden",
-        transition: "opacity 0.3s, transform 0.3s",
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateX(0)" : "translateX(24px)",
-      }}
-    >
-      <div style={{
-        width: "30px", height: "30px", borderRadius: "8px", flexShrink: 0,
-        backgroundColor: accent.bg, color: accent.icon,
-        display: "flex", alignItems: "center", justifyContent: "center",
-      }}>
-        {TOAST_ICONS[toast.type]}
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{ fontSize: "12px", fontWeight: 700, color: C.heading, marginBottom: "2px" }}>{toast.title}</p>
-        <p style={{ fontSize: "11px", color: C.muted, lineHeight: 1.4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{toast.body}</p>
-      </div>
-      <button onClick={() => { setVisible(false); setTimeout(() => onDismiss(toast.id), 300); }}
-        style={{ color: C.placeholder, flexShrink: 0, lineHeight: 1, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12" /></svg>
-      </button>
-      <div style={{
-        position: "absolute", bottom: 0, left: 0,
-        height: "3px", width: "100%", backgroundColor: accent.bar, opacity: 0.35, borderRadius: "0 0 14px 14px",
-      }} />
-    </div>
-  );
-};
-
-const ToastContainer = ({ toasts, onDismiss }) => (
-  <div style={{ position: "fixed", bottom: "24px", right: "24px", zIndex: 100, display: "flex", flexDirection: "column", gap: "10px", alignItems: "flex-end" }}>
-    {toasts.map((t) => <Toast key={t.id} toast={t} onDismiss={onDismiss} />)}
-  </div>
-);
-
-/* ─────────────────────────────────────────────────────────────
-   TaskDetailModal
-   ───────────────────────────────────────────────────────────── */
-const TaskDetailModal = ({ task, onClose }) => {
-  const pri = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium;
-  const col = KANBAN_COLUMNS.find((c) => c.key === task.status);
-  const deadline = task.task_deadline ? new Date(task.task_deadline) : null;
-  const isOverdue = task.status === "overdue";
-  const completedBy = task.completedAt_user?.user?.username || task.completedAt_user?.github_username;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
-      style={{ backgroundColor: "rgba(43,49,65,0.75)" }} onClick={onClose}>
-      <div className="rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
-        style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderDef}` }}
-        onClick={(e) => e.stopPropagation()}>
-
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b"
-          style={{ borderColor: C.borderSubtle, backgroundColor: C.inputBg }}>
-          <div className="flex items-center gap-2.5">
-            <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg"
-              style={{ backgroundColor: C.coralBg, color: C.coral }}>{task.key}</span>
-            <h2 className="text-sm font-semibold truncate" style={{ color: C.heading }}>{task.task_name}</h2>
-          </div>
-          <button onClick={onClose}
-            className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-gray-100"
-            style={{ color: C.muted }}>
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
-          </button>
-        </div>
-
-        <div className="p-6 space-y-5">
-          {/* Badges row */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full"
-              style={{ backgroundColor: pri.bg, color: pri.color }}>{pri.label} priority</span>
-            {col && (
-              <span className="flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full"
-                style={{ backgroundColor: col.bgColor || C.inputBg, color: col.color }}>
-                {col.icon}{col.label}
-              </span>
-            )}
-          </div>
-
-          {/* Description */}
-          {task.task_describe && (
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: C.placeholder }}>Description</p>
-              <p className="text-sm leading-relaxed" style={{ color: C.body }}>{task.task_describe}</p>
-            </div>
-          )}
-
-          {/* Meta grid */}
-          <div className="grid grid-cols-2 gap-3">
-            {/* Assigned to */}
-            <div className="rounded-xl p-3" style={{ backgroundColor: C.inputBg }}>
-              <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: C.placeholder }}>Assigned to</p>
-              {task.assigned_user ? (
-                <div className="flex items-center gap-2">
-                  <img src={task.assigned_user.avatar_url} alt="" className="w-7 h-7 rounded-lg object-cover" />
-                  <p className="text-sm font-medium truncate" style={{ color: C.heading }}>{task.assigned_user.username}</p>
-                </div>
-              ) : <p className="text-sm" style={{ color: C.placeholder }}>—</p>}
-            </div>
-
-            {/* Deadline */}
-            <div className="rounded-xl p-3" style={{ backgroundColor: C.inputBg }}>
-              <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: C.placeholder }}>Deadline</p>
-              {deadline ? (
-                <div className="flex items-center gap-1.5">
-                  <svg className="w-3.5 h-3.5 shrink-0" style={{ color: isOverdue ? C.danger : C.muted }}
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-                  </svg>
-                  <p className="text-sm font-medium" style={{ color: isOverdue ? C.danger : C.heading }}>
-                    {deadline.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
-                  </p>
-                </div>
-              ) : <p className="text-sm" style={{ color: C.placeholder }}>—</p>}
-            </div>
-          </div>
-
-          {/* Completed info */}
-          {task.completedAt && (
-            <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl"
-              style={{ backgroundColor: C.successBg, border: `1px solid rgba(34,176,125,0.2)` }}>
-              <svg className="w-4 h-4 shrink-0" style={{ color: C.success }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-              <div>
-                <p className="text-xs font-semibold" style={{ color: C.success }}>
-                  Completed {new Date(task.completedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-                  {completedBy && ` by ${completedBy}`}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Created */}
-          <p className="text-xs" style={{ color: C.placeholder }}>
-            Created {new Date(task.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-/* ─────────────────────────────────────────────────────────────
    AssignTaskModal
    ───────────────────────────────────────────────────────────── */
 const PRIORITIES = ["low", "medium", "high"];
 
-const AssignTaskModal = ({ projectId, members = [], onClose, onAssigned, C }) => {
+const AssignTaskModal = ({ projectId, members = [], onClose, onAssigned }) => {
   const [form, setForm] = useState({
     task_name: "", task_describe: "", task_deadline: "", assigned_user: "", priority: "medium",
   });
@@ -488,22 +295,6 @@ const AssignTaskModal = ({ projectId, members = [], onClose, onAssigned, C }) =>
   const [error, setError] = useState("");
   const set = (f) => (e) => setForm((p) => ({ ...p, [f]: e.target.value }));
   const nonOwnerMembers = members.filter((m) => m.role !== "owner");
-
-  const inputBase = {
-    backgroundColor: C.inputBg,
-    border: `1.5px solid ${C.borderDef}`,
-    color: C.heading,
-    borderRadius: "12px",
-    fontFamily: "inherit",
-  };
-  const handleFocus = (e) => {
-    e.target.style.borderColor = C.coral;
-    e.target.style.boxShadow = "0 0 0 3px rgba(232,101,74,0.12)";
-  };
-  const handleBlur = (e) => {
-    e.target.style.borderColor = C.borderDef;
-    e.target.style.boxShadow = "none";
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setError("");
@@ -519,7 +310,7 @@ const AssignTaskModal = ({ projectId, members = [], onClose, onAssigned, C }) =>
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
-      style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
+      style={{ backgroundColor: "rgba(43,49,65,0.75)" }}
       onClick={onClose}
     >
       <div
@@ -538,10 +329,8 @@ const AssignTaskModal = ({ projectId, members = [], onClose, onAssigned, C }) =>
             <h2 className="text-sm font-semibold" style={{ color: C.heading }}>Assign Task</h2>
           </div>
           <button onClick={onClose}
-            className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-            style={{ color: C.muted }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = C.inputBg}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}>
+            className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-gray-100"
+            style={{ color: C.muted }}>
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
           </button>
         </div>
@@ -570,14 +359,14 @@ const AssignTaskModal = ({ projectId, members = [], onClose, onAssigned, C }) =>
               </label>
               <input required type="datetime-local" value={form.task_deadline} onChange={set("task_deadline")}
                 className="w-full px-3 py-2.5 text-sm outline-none transition-all"
-                style={{ ...inputBase, colorScheme: "dark" }} onFocus={handleFocus} onBlur={handleBlur} />
+                style={inputBase} onFocus={handleFocus} onBlur={handleBlur} />
             </div>
             <div>
               <label className="text-xs font-medium mb-1.5 block" style={{ color: C.muted }}>Priority</label>
               <select value={form.priority} onChange={set("priority")}
                 className="w-full px-3 py-2.5 text-sm outline-none transition-all cursor-pointer"
                 style={inputBase} onFocus={handleFocus} onBlur={handleBlur}>
-                {PRIORITIES.map((p) => <option key={p} value={p} style={{ backgroundColor: C.inputBg, color: C.heading }}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>)}
+                {PRIORITIES.map((p) => <option key={p} value={p}>{p.charAt(0).toUpperCase() + p.slice(1)}</option>)}
               </select>
             </div>
           </div>
@@ -588,9 +377,9 @@ const AssignTaskModal = ({ projectId, members = [], onClose, onAssigned, C }) =>
             <select value={form.assigned_user} onChange={set("assigned_user")}
               className="w-full px-3 py-2.5 text-sm outline-none transition-all cursor-pointer"
               style={inputBase} onFocus={handleFocus} onBlur={handleBlur}>
-              <option value="" style={{ backgroundColor: C.inputBg, color: C.heading }}>— Select member —</option>
+              <option value="">— Select member —</option>
               {nonOwnerMembers.map((m) => (
-                <option key={m._id} value={m.user?._id} style={{ backgroundColor: C.inputBg, color: C.heading }}>{m.user?.username}</option>
+                <option key={m._id} value={m.user?._id}>{m.user?.username}</option>
               ))}
             </select>
           </div>
@@ -619,10 +408,10 @@ const AssignTaskModal = ({ projectId, members = [], onClose, onAssigned, C }) =>
 /* ─────────────────────────────────────────────────────────────
    Kanban config
    ───────────────────────────────────────────────────────────── */
-const getKanbanColumns = (C) => [
+const KANBAN_COLUMNS = [
   {
     key: "todo", label: "To Do",
-    color: C.muted, bgColor: C.inputBg, borderColor: C.borderDef,
+    color: C.muted, bgColor: "#F0F2F7", borderColor: C.borderDef,
     icon: (
       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" />
@@ -631,7 +420,7 @@ const getKanbanColumns = (C) => [
   },
   {
     key: "in_progress", label: "In Progress",
-    color: "#3A7EE8", bgColor: "rgba(58,126,232,0.07)", borderColor: "rgba(58,126,232,0.2)",
+    color: C.info, bgColor: "rgba(58,126,232,0.05)", borderColor: "rgba(58,126,232,0.2)",
     icon: (
       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 1 1-.49-4.5" />
@@ -640,7 +429,7 @@ const getKanbanColumns = (C) => [
   },
   {
     key: "done", label: "Done",
-    color: "#22B07D", bgColor: "rgba(34,176,125,0.07)", borderColor: "rgba(34,176,125,0.2)",
+    color: C.success, bgColor: "rgba(34,176,125,0.05)", borderColor: "rgba(34,176,125,0.2)",
     icon: (
       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <polyline points="20 6 9 17 4 12" />
@@ -649,7 +438,7 @@ const getKanbanColumns = (C) => [
   },
   {
     key: "verified", label: "Verified",
-    color: "#E8654A", bgColor: "rgba(232,101,74,0.07)", borderColor: "rgba(232,101,74,0.2)",
+    color: C.coral, bgColor: "rgba(232,101,74,0.05)", borderColor: "rgba(232,101,74,0.2)",
     icon: (
       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
@@ -658,7 +447,7 @@ const getKanbanColumns = (C) => [
   },
   {
     key: "overdue", label: "Overdue",
-    color: "#E03D3D", bgColor: "rgba(224,61,61,0.07)", borderColor: "rgba(224,61,61,0.2)",
+    color: C.danger, bgColor: "rgba(224,61,61,0.05)", borderColor: "rgba(224,61,61,0.2)",
     icon: (
       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
@@ -667,14 +456,14 @@ const getKanbanColumns = (C) => [
   },
 ];
 
-const getPriorityConfig = (C) => ({
+const PRIORITY_CONFIG = {
   high:   { color: C.danger,   bg: C.dangerBg,   label: "High" },
   medium: { color: C.warning,  bg: C.warningBg,  label: "Med" },
   low:    { color: C.success,  bg: C.successBg,  label: "Low" },
-});
+};
 
 /* ── KanbanCard ── */
-const KanbanCard = ({ task, onClick }) => {
+const KanbanCard = ({ task }) => {
   const pri = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium;
   const isOverdue = task.status === "overdue";
   const deadline = task.task_deadline ? new Date(task.task_deadline) : null;
@@ -685,23 +474,23 @@ const KanbanCard = ({ task, onClick }) => {
   return (
     <div
       className="rounded-xl p-3"
-      onClick={onClick}
       style={{
         backgroundColor: C.cardBg,
         border: `1px solid ${isOverdue ? "rgba(224,61,61,0.25)" : C.borderSubtle}`,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        boxShadow: "0 1px 3px rgba(43,49,65,0.05)",
         transition: "box-shadow 0.15s, transform 0.15s",
-        cursor: "pointer",
+        cursor: "default",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = "0 4px 14px rgba(0,0,0,0.2)";
+        e.currentTarget.style.boxShadow = "0 4px 14px rgba(43,49,65,0.12)";
         e.currentTarget.style.transform = "translateY(-1px)";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+        e.currentTarget.style.boxShadow = "0 1px 3px rgba(43,49,65,0.05)";
         e.currentTarget.style.transform = "none";
       }}
     >
+      {/* Key + priority */}
       <div className="flex items-center justify-between mb-2 gap-1">
         <span className="text-xs font-mono font-semibold px-1.5 py-0.5 rounded shrink-0"
           style={{ backgroundColor: C.inputBg, color: C.placeholder }}>
@@ -712,14 +501,17 @@ const KanbanCard = ({ task, onClick }) => {
           {pri.label}
         </span>
       </div>
+      {/* Title */}
       <p className="text-sm font-semibold leading-snug mb-1" style={{ color: C.heading }}>
         {task.task_name}
       </p>
+      {/* Description */}
       {task.task_describe && (
         <p className="text-xs leading-relaxed line-clamp-2 mb-2" style={{ color: C.muted }}>
           {task.task_describe}
         </p>
       )}
+      {/* Deadline */}
       {deadlineStr && (
         <div className="flex items-center gap-1 pt-2" style={{ borderTop: `1px solid ${C.borderSubtle}` }}>
           <svg className="w-3 h-3 shrink-0" style={{ color: isOverdue ? C.danger : C.placeholder }}
@@ -738,8 +530,7 @@ const KanbanCard = ({ task, onClick }) => {
 };
 
 /* ── KanbanBoard ── */
-const KanbanBoard = ({ tasks, onAssign, isCurrOwner, C }) => {
-  const KANBAN_COLUMNS = getKanbanColumns(C);
+const KanbanBoard = ({ tasks, onAssign, isCurrOwner }) => {
   const grouped = KANBAN_COLUMNS.reduce((acc, col) => {
     acc[col.key] = tasks.filter((t) => t.status === col.key);
     return acc;
@@ -747,7 +538,8 @@ const KanbanBoard = ({ tasks, onAssign, isCurrOwner, C }) => {
 
   return (
     <div className="rounded-2xl p-6"
-      style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
+      style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, boxShadow: "0 1px 3px rgba(43,49,65,0.06)" }}>
+      {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: C.coralBg }}>
@@ -773,6 +565,7 @@ const KanbanBoard = ({ tasks, onAssign, isCurrOwner, C }) => {
         )}
       </div>
 
+      {/* Column grid */}
       <div className="grid grid-cols-5 gap-3">
         {KANBAN_COLUMNS.map((col) => {
           const colTasks = grouped[col.key] || [];
@@ -783,6 +576,7 @@ const KanbanBoard = ({ tasks, onAssign, isCurrOwner, C }) => {
                 backgroundColor: col.bgColor,
                 minHeight: "300px",
               }}>
+              {/* Column header */}
               <div className="flex items-center gap-2 px-3 py-2.5 shrink-0"
                 style={{ borderBottom: `1px solid ${col.borderColor}` }}>
                 <div className="flex items-center justify-center shrink-0" style={{ color: col.color }}>
@@ -793,18 +587,19 @@ const KanbanBoard = ({ tasks, onAssign, isCurrOwner, C }) => {
                 </span>
                 <span
                   className="text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: "rgba(128,128,128,0.15)", color: col.color }}>
+                  style={{ backgroundColor: "rgba(255,255,255,0.8)", color: col.color }}>
                   {colTasks.length}
                 </span>
               </div>
+              {/* Cards */}
               <div className="flex-1 p-2 space-y-2 overflow-y-auto" style={{ maxHeight: "400px" }}>
                 {colTasks.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full py-8 opacity-40">
+                  <div className="flex flex-col items-center justify-center h-full py-8 opacity-50">
                     <div style={{ color: col.color }}>{col.icon}</div>
                     <p className="text-xs mt-2 font-medium" style={{ color: col.color }}>Empty</p>
                   </div>
                 ) : (
-                  colTasks.map((task) => <KanbanCard key={task._id} task={task} onClick={() => onTaskClick(task)} />)
+                  colTasks.map((task) => <KanbanCard key={task._id} task={task} />)
                 )}
               </div>
             </div>
@@ -818,14 +613,14 @@ const KanbanBoard = ({ tasks, onAssign, isCurrOwner, C }) => {
 /* ─────────────────────────────────────────────────────────────
    Shared layout primitives
    ───────────────────────────────────────────────────────────── */
-const Section = ({ children, C }) => (
+const Section = ({ children }) => (
   <div className="rounded-2xl p-6"
-    style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
+    style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, boxShadow: "0 1px 3px rgba(43,49,65,0.06)" }}>
     {children}
   </div>
 );
 
-const SectionTitle = ({ children, count, C }) => (
+const SectionTitle = ({ children, count }) => (
   <div className="flex items-center gap-2.5 mb-5">
     <h2 className="text-base font-semibold" style={{ color: C.heading }}>{children}</h2>
     {count !== undefined && (
@@ -835,9 +630,9 @@ const SectionTitle = ({ children, count, C }) => (
   </div>
 );
 
-const StatCard = ({ title, value, icon, C }) => (
+const StatCard = ({ title, value, icon }) => (
   <div className="rounded-2xl p-5 flex items-center gap-4"
-    style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
+    style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, boxShadow: "0 1px 3px rgba(43,49,65,0.06)" }}>
     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
       style={{ backgroundColor: C.coralBg }}>{icon}</div>
     <div>
@@ -850,15 +645,6 @@ const StatCard = ({ title, value, icon, C }) => (
 /* ─────────────────────────────────────────────────────────────
    Main Page
    ───────────────────────────────────────────────────────────── */
-const STATUS_FILTERS = [
-  { key: "all", label: "All" },
-  { key: "todo", label: "To Do" },
-  { key: "in_progress", label: "In Progress" },
-  { key: "done", label: "Done" },
-  { key: "verified", label: "Verified" },
-  { key: "overdue", label: "Overdue" },
-];
-
 const ProjectDetails = () => {
   const { id } = useParams();
   const [project, setProject] = useState(null);
@@ -866,49 +652,12 @@ const ProjectDetails = () => {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
   const [invites, setInvites] = useState([]);
-  const [selectedTask, setSelectedTask] = useState(null);
-  const [taskFilter, setTaskFilter] = useState("all");
-  const [toasts, setToasts] = useState([]);
-  const toastIdRef = useRef(0);
-  const prevCommitCountRef = useRef(0);
-
+  const [tasks, setTasks] = useState([]);
   const dispatch = useDispatch();
   const currentUser = useSelector((s) => s.user.user);
   const currentUserId = currentUser?.user?._id || currentUser?._id;
   const socketCommits = useSelector((s) => s.projectcommits.commits);
-
-  // ── Theme ──
-  const mode = useSelector((state) => state.theme.mode);
-  const isDark = mode === "dark";
-  const C = getColors(isDark);
-  const tasks = useSelector((state) => state.tasks.tasks);
-
-  const addToast = (type, title, body) => {
-    const toast = { id: ++toastIdRef.current, type, title, body };
-    setToasts((prev) => [...prev, toast]);
-  };
-  const dismissToast = (toastId) => setToasts((prev) => prev.filter((t) => t.id !== toastId));
-
   useCommitsEvents(project?._id);
-  useTaskEvents(project?._id, (task) => {
-    addToast("task", `Task ${task.key} updated`, `"${task.task_name}" is now ${task.status.replace("_", " ")}`);
-  });
-
-  useEffect(() => {
-    if (socketCommits.length > prevCommitCountRef.current && prevCommitCountRef.current > 0) {
-      const latest = socketCommits[0];
-      addToast("commit", "New commit pushed", latest?.commit_message || "No message");
-    }
-    prevCommitCountRef.current = socketCommits.length;
-  }, [socketCommits.length]);
-
-  const inputBase = {
-    backgroundColor: C.inputBg,
-    border: `1.5px solid ${C.borderDef}`,
-    color: C.heading,
-    borderRadius: "12px",
-    fontFamily: "inherit",
-  };
 
   const fetchProject = async () => {
     try { const res = await api.get(`/api/project/${id}`); setProject(res.data.project); }
@@ -918,11 +667,14 @@ const ProjectDetails = () => {
     try { const res = await api.get(`/api/invite/invites?projectId=${id}`); setInvites(res.data.invites || []); }
     catch (err) { console.error(err); }
   };
+  const fetchTasks = async () => {
+    try { const res = await api.get(`/api/task/project/${id}`); setTasks(res.data.tasks || []); }
+    catch { /* silent */ }
+  };
 
   useEffect(() => {
     dispatch(clearCommits());
-    fetchProject(); fetchInvites();
-    dispatch(getTasks(id));
+    fetchProject(); fetchInvites(); fetchTasks();
     return () => dispatch(clearCommits());
   }, [id]);
 
@@ -969,36 +721,24 @@ const ProjectDetails = () => {
     || project.repo_owner_user?.toString() === currentUserId;
   const allCommits = [...socketCommits, ...[...(project.commits || [])].reverse()];
 
-  const PRIORITY_CONFIG = getPriorityConfig(C);
-  const KANBAN_COLUMNS = getKanbanColumns(C);
-  const filteredTasks = taskFilter === "all" ? tasks : tasks.filter((t) => t.status === taskFilter);
-
   return (
     <div className="min-h-screen p-6 md:p-8" style={{ backgroundColor: C.pageBg }}>
-      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
       {inviteOpen && (
-        <InviteModal projectId={project._id} members={project.members} onClose={() => setInviteOpen(false)} C={C} />
+        <InviteModal projectId={project._id} members={project.members} onClose={() => setInviteOpen(false)} />
       )}
       {assignOpen && (
         <AssignTaskModal
           projectId={project._id} members={project.members}
           onClose={() => setAssignOpen(false)}
-          onAssigned={(task) => dispatch(addTask(task))}
+          onAssigned={(task) => setTasks((prev) => [task, ...prev])}
         />
-      )}
-      {selectedTask && (
-        <TaskDetailModal task={selectedTask} onClose={() => setSelectedTask(null)} />
       )}
 
       <div className="max-w-7xl mx-auto space-y-5">
 
         {/* ── Hero Header ── */}
         <div className="rounded-2xl overflow-hidden"
-          style={{
-            backgroundColor: isDark ? "#0D1117" : C.charcoal,
-            border: isDark ? `1px solid ${C.borderDef}` : "none",
-            boxShadow: "0 4px 24px rgba(0,0,0,0.2)",
-          }}>
+          style={{ backgroundColor: C.charcoal, boxShadow: "0 4px 24px rgba(43,49,65,0.18)" }}>
           <div className="h-1" style={{ background: `linear-gradient(90deg, ${C.coral} 0%, #F5A87A 100%)` }} />
           <div className="flex items-center gap-5 px-6 py-5">
             <div className="relative shrink-0">
@@ -1006,23 +746,19 @@ const ProjectDetails = () => {
                 className="w-14 h-14 rounded-xl object-cover"
                 style={{ border: "2px solid rgba(232,101,74,0.4)" }} />
               <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2"
-                style={{ backgroundColor: C.success, borderColor: isDark ? "#0D1117" : C.charcoal }} />
+                style={{ backgroundColor: C.success, borderColor: C.charcoal }} />
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-bold truncate" style={{ color: isDark ? C.heading : "#fff" }}>{project.repo_name}</h1>
-              <p className="text-sm mt-0.5 truncate" style={{ color: isDark ? C.muted : C.placeholder }}>{project.repo_full_name}</p>
+              <h1 className="text-xl font-bold truncate" style={{ color: "#fff" }}>{project.repo_name}</h1>
+              <p className="text-sm mt-0.5 truncate" style={{ color: C.placeholder }}>{project.repo_full_name}</p>
             </div>
             <div className="flex items-center gap-2.5 shrink-0">
               {isCurrOwner && (
                 <button onClick={() => setAssignOpen(true)}
                   className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl transition-all"
-                  style={{
-                    backgroundColor: isDark ? C.inputBg : "rgba(255,255,255,0.08)",
-                    color: isDark ? C.body : "#fff",
-                    border: `1px solid ${isDark ? C.borderDef : "rgba(255,255,255,0.12)"}`,
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = isDark ? C.borderDef : "rgba(255,255,255,0.14)"}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = isDark ? C.inputBg : "rgba(255,255,255,0.08)"}>
+                  style={{ backgroundColor: "rgba(255,255,255,0.08)", color: "#fff", border: "1px solid rgba(255,255,255,0.12)" }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.14)"}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.08)"}>
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
                   </svg>
@@ -1046,11 +782,11 @@ const ProjectDetails = () => {
 
         {/* ── Stat Cards ── */}
         <div className="grid grid-cols-3 gap-4">
-          <StatCard title="Branch" value={project.default_branch} C={C}
+          <StatCard title="Branch" value={project.default_branch}
             icon={<svg className="w-5 h-5" style={{ color: C.coral }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="6" y1="3" x2="6" y2="15" /><circle cx="18" cy="6" r="3" /><circle cx="6" cy="18" r="3" /><path d="M18 9a9 9 0 0 1-9 9" /></svg>} />
-          <StatCard title="Commits" value={allCommits.length} C={C}
+          <StatCard title="Commits" value={allCommits.length}
             icon={<svg className="w-5 h-5" style={{ color: C.coral }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3" /><line x1="3" y1="12" x2="9" y2="12" /><line x1="15" y1="12" x2="21" y2="12" /></svg>} />
-          <StatCard title="Visibility" value={project.visibility} C={C}
+          <StatCard title="Visibility" value={project.visibility}
             icon={<svg className="w-5 h-5" style={{ color: C.coral }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>} />
         </div>
 
@@ -1061,8 +797,8 @@ const ProjectDetails = () => {
           <div className="md:col-span-2 space-y-5">
 
             {/* Owner */}
-            <Section C={C}>
-              <SectionTitle C={C}>Owner</SectionTitle>
+            <Section>
+              <SectionTitle>Owner</SectionTitle>
               <div className="flex items-center gap-3 p-3 rounded-xl" style={{ backgroundColor: C.inputBg }}>
                 <img src={project.repo_owner_user?.avatar_url} alt="" className="w-11 h-11 rounded-xl object-cover" />
                 <div className="min-w-0">
@@ -1075,8 +811,8 @@ const ProjectDetails = () => {
             </Section>
 
             {/* Members */}
-            <Section C={C}>
-              <SectionTitle count={project.members?.length} C={C}>Members</SectionTitle>
+            <Section>
+              <SectionTitle count={project.members?.length}>Members</SectionTitle>
               <div className="space-y-2">
                 {project.members?.map((member) => {
                   const isSelf = member.user?._id === currentUserId;
@@ -1094,10 +830,10 @@ const ProjectDetails = () => {
                       </div>
                       {isOwner && !isSelf ? (
                         <div className="flex items-center gap-1.5 shrink-0">
+                          {/* ← Custom role dropdown */}
                           <RoleDropdown
                             value={member.role}
                             onChange={(role) => handleRoleChange(member._id, role)}
-                            C={C}
                           />
                           <button
                             onClick={() => handleRemoveMember(member._id)}
@@ -1123,8 +859,8 @@ const ProjectDetails = () => {
             </Section>
 
             {/* Invites */}
-            <Section C={C}>
-              <SectionTitle count={invites.length} C={C}>Invites</SectionTitle>
+            <Section>
+              <SectionTitle count={invites.length}>Invites</SectionTitle>
               {invites.length === 0 ? (
                 <div className="text-center py-6">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center mx-auto mb-2"
@@ -1173,8 +909,8 @@ const ProjectDetails = () => {
           <div className="md:col-span-3 space-y-5">
 
             {/* Commits */}
-            <Section C={C}>
-              <SectionTitle count={allCommits.length} C={C}>Commits</SectionTitle>
+            <Section>
+              <SectionTitle count={allCommits.length}>Commits</SectionTitle>
               <div className="space-y-2 max-h-80 overflow-y-auto -mr-1 pr-1">
                 {allCommits.length === 0 ? (
                   <p className="text-sm text-center py-6" style={{ color: C.placeholder }}>No commits yet</p>
@@ -1183,8 +919,8 @@ const ProjectDetails = () => {
                   return (
                     <div key={commit._id || index} className="p-3.5 rounded-xl transition-colors"
                       style={isNew
-                        ? { backgroundColor: "rgba(232,101,74,0.08)", border: "1px solid rgba(232,101,74,0.2)" }
-                        : { backgroundColor: C.inputBg, border: `1px solid ${C.borderSubtle}` }}>
+                        ? { backgroundColor: "rgba(232,101,74,0.06)", border: "1px solid rgba(232,101,74,0.2)" }
+                        : { backgroundColor: C.inputBg, border: "1px solid transparent" }}>
                       {isNew && (
                         <div className="flex items-center gap-1.5 mb-1.5">
                           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: C.coral }} />
@@ -1208,7 +944,7 @@ const ProjectDetails = () => {
             </Section>
 
             {/* Tasks list */}
-            <Section C={C}>
+            <Section>
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2.5">
                   <h2 className="text-base font-semibold" style={{ color: C.heading }}>Tasks</h2>
@@ -1228,27 +964,7 @@ const ProjectDetails = () => {
                   </button>
                 )}
               </div>
-
-              {/* Filter tabs */}
-              <div className="flex gap-1.5 flex-wrap mb-4">
-                {STATUS_FILTERS.map((f) => {
-                  const count = f.key === "all" ? tasks.length : tasks.filter((t) => t.status === f.key).length;
-                  const active = taskFilter === f.key;
-                  return (
-                    <button key={f.key} onClick={() => setTaskFilter(f.key)}
-                      className="text-xs font-semibold px-2.5 py-1 rounded-lg transition-all"
-                      style={{
-                        backgroundColor: active ? C.coral : C.inputBg,
-                        color: active ? "#fff" : C.muted,
-                        border: `1px solid ${active ? C.coral : C.borderSubtle}`,
-                      }}>
-                      {f.label} {count > 0 && <span style={{ opacity: active ? 0.8 : 0.6 }}>·{count}</span>}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {filteredTasks.length === 0 ? (
+              {tasks.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2.5"
                     style={{ backgroundColor: C.inputBg }}>
@@ -1256,27 +972,24 @@ const ProjectDetails = () => {
                       <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
                     </svg>
                   </div>
-                  <p className="text-sm font-medium" style={{ color: C.muted }}>
-                    {taskFilter === "all" ? "No tasks yet" : `No ${taskFilter.replace("_", " ")} tasks`}
-                  </p>
-                  {taskFilter === "all" && <p className="text-xs mt-0.5" style={{ color: C.placeholder }}>Assign a task to get started</p>}
+                  <p className="text-sm font-medium" style={{ color: C.muted }}>No tasks yet</p>
+                  <p className="text-xs mt-0.5" style={{ color: C.placeholder }}>Assign a task to get started</p>
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {filteredTasks.map((task) => {
+                  {tasks.map((task) => {
                     const pri = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium;
                     const col = KANBAN_COLUMNS.find((c) => c.key === task.status);
                     return (
                       <div key={task._id} className="p-3.5 rounded-xl transition-colors"
-                        style={{ border: `1px solid ${C.borderSubtle}`, cursor: "pointer" }}
-                        onClick={() => setSelectedTask(task)}
+                        style={{ border: `1px solid ${C.borderSubtle}` }}
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = C.inputBg}
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}>
                         <div className="flex items-start gap-3">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="text-xs font-mono font-semibold px-1.5 py-0.5 rounded"
-                                style={{ backgroundColor: C.coralSubtle, color: C.coral }}>{task.key}</span>
+                                style={{ backgroundColor: C.inputBg, color: C.placeholder }}>{task.key}</span>
                               <p className="text-sm font-semibold truncate" style={{ color: C.heading }}>{task.task_name}</p>
                             </div>
                             {task.task_describe && (
@@ -1315,8 +1028,6 @@ const ProjectDetails = () => {
           tasks={tasks}
           onAssign={() => setAssignOpen(true)}
           isCurrOwner={isCurrOwner}
-          C={C}
-          onTaskClick={setSelectedTask}
         />
 
       </div>
