@@ -16,8 +16,9 @@ const DashboardOutlet = () => {
   const [socketReady, setSocketReady] = useState(false);
   const dispatch = useDispatch()
 
-
-useEffect(() => {
+  const { mode } = useSelector((s) => s.theme);
+  const d = mode === "dark";
+  useEffect(() => {
     const userId = user?.user?._id || user?._id || localStorage.getItem("user_id");
     if (!userId) return;
 
@@ -38,7 +39,7 @@ dispatch(getProjects())
 
   if (!token) return <Navigate to="/" />;
   return (
-    <div className="flex bg-oq max-w-full max-h-full">
+    <div className={`flex max-w-full max-h-full ${d ? 'bg-[#0B0F19]' : 'bg-[#F7F8FC]'}`}>
       <div className="max-h-screen ">
         <Sidebar />
       </div>

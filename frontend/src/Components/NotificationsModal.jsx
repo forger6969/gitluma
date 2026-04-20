@@ -2,16 +2,39 @@ import { useEffect, useRef, useState } from "react"
 import {
   Bell, CheckCheck, X, ChevronDown,
   Info, AlertTriangle, XCircle, CheckCircle, GitCommit
-} from "lucide-react"
+} from "lucide-react";
+import { useSelector } from "react-redux";
 
+/* TYPES (dark + light) */
 const TYPE = {
-  info:    { Icon: Info,          iconBg: "#1e3a8a", iconColor: "#93c5fd", badgeBg: "#1e3a8a", badgeColor: "#93c5fd" },
-  warning: { Icon: AlertTriangle, iconBg: "#78350f", iconColor: "#fcd34d", badgeBg: "#78350f", badgeColor: "#fcd34d" },
-  error:   { Icon: XCircle,       iconBg: "#7f1d1d", iconColor: "#fca5a5", badgeBg: "#7f1d1d", badgeColor: "#fca5a5" },
-  success: { Icon: CheckCircle,   iconBg: "#14532d", iconColor: "#86efac", badgeBg: "#14532d", badgeColor: "#86efac" },
-  commit:  { Icon: GitCommit,     iconBg: "#4c1d95", iconColor: "#d8b4fe", badgeBg: "#4c1d95", badgeColor: "#d8b4fe" },
-}
+  info: {
+    Icon: Info,
+    light: { color: "text-blue-600", bg: "bg-blue-100" },
+    dark: { color: "text-blue-400", bg: "bg-blue-900/30" }
+  },
+  warning: {
+    Icon: AlertTriangle,
+    light: { color: "text-yellow-600", bg: "bg-yellow-100" },
+    dark: { color: "text-yellow-400", bg: "bg-yellow-900/30" }
+  },
+  error: {
+    Icon: XCircle,
+    light: { color: "text-red-600", bg: "bg-red-100" },
+    dark: { color: "text-red-400", bg: "bg-red-900/30" }
+  },
+  success: {
+    Icon: CheckCircle,
+    light: { color: "text-green-600", bg: "bg-green-100" },
+    dark: { color: "text-green-400", bg: "bg-green-900/30" }
+  },
+  commit: {
+    Icon: GitCommit,
+    light: { color: "text-[#2B3141]", bg: "bg-[#EEF1F7]" },
+    dark: { color: "text-[#C8CDD9]", bg: "bg-[#2B3141]" }
+  }
+};
 
+/* TIME */
 const timeAgo = (d) => {
   if (!d) return ""
   const s = Math.floor((Date.now() - new Date(d)) / 1000)
@@ -21,57 +44,52 @@ const timeAgo = (d) => {
   return `${Math.floor(s / 86400)}k oldin`
 }
 
-function NotifItem({ n, isUnread }) {
-  const [open, setOpen] = useState(false)
-  const cfg = TYPE[n?.type] || TYPE.info
-  const { Icon } = cfg
-  const hasExtra = n?.additional_data?.length > 0
+/* ITEM */
+function NotifItem({ n, isUnread, d }) {
+  const [open, setOpen] = useState(false);
+
+  const cfg = TYPE[n?.type] || TYPE.info;
+  const theme = d ? cfg.dark : cfg.light;
+  const { Icon } = cfg;
+
+  const hasExtra = n?.additional_data?.length > 0;
 
   return (
     <div
       onClick={() => hasExtra && setOpen(p => !p)}
-      style={{
-        borderBottom: "1px solid #0f172a",
-        cursor: hasExtra ? "pointer" : "default",
-        background: isUnread ? "rgba(59,130,246,0.05)" : "transparent",
-        transition: "background 0.15s"
-      }}
+      className={`px-4 py-3 cursor-pointer transition
+        ${isUnread
+          ? (d ? "bg-[#E8654A]/10" : "bg-[#E8654A]/5")
+          : (d ? "hover:bg-[#161B27]" : "hover:bg-[#F4F6FB]")}`}
     >
-      <div style={{ display: "flex", gap: 10, padding: "11px 16px", alignItems: "flex-start" }}>
-        {/* Icon */}
-        <div style={{
-          width: 32, height: 32, borderRadius: 8, flexShrink: 0,
-          background: cfg.iconBg, color: cfg.iconColor,
-          display: "flex", alignItems: "center", justifyContent: "center"
-        }}>
-          <Icon size={14} color={cfg.iconColor} />
+      <div className="flex gap-3">
+
+        {/* ICON */}
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${theme.bg}`}>
+          <Icon className={`w-4 h-4 ${theme.color}`} />
         </div>
 
-        {/* Content */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{
-            margin: 0, fontSize: 12, lineHeight: 1.4,
-            fontWeight: isUnread ? 600 : 400,
-            color: isUnread ? "#f1f5f9" : "#94a3b8"
-          }}>
+        {/* CONTENT */}
+        <div className="flex-1 min-w-0">
+          <p className={`text-sm ${isUnread
+              ? (d ? "text-[#EEF1F7] font-semibold" : "text-[#2B3141] font-semibold")
+              : (d ? "text-[#5C6480]" : "text-[#7A8499]")}`}>
             {n.title}
           </p>
           {n.text && (
-            <p style={{ margin: "2px 0 5px", fontSize: 11, color: "#6b7280", lineHeight: 1.4 }}>
+            <p className={`text-xs mt-0.5 line-clamp-2 ${d ? "text-[#5C6480]" : "text-gray-400"}`}>
               {n.text}
             </p>
           )}
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
-            <span style={{
-              display: "inline-flex", alignItems: "center", gap: 3,
-              fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".06em",
-              padding: "1px 7px", borderRadius: 999,
-              background: cfg.badgeBg, color: cfg.badgeColor
-            }}>
-              <Icon size={9} color={cfg.badgeColor} />
+
+          <div className="flex items-center gap-2 mt-2">
+            <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${theme.bg} ${theme.color}`}>
               {n.type}
             </span>
-            <span style={{ fontSize: 10, color: "#374151" }}>{timeAgo(n.createdAt)}</span>
+
+            <span className={`text-[10px] ${d ? "text-[#5C6480]" : "text-gray-400"}`}>
+              {timeAgo(n.createdAt)}
+            </span>
           </div>
         </div>
 
@@ -82,12 +100,7 @@ function NotifItem({ n, isUnread }) {
           )}
           {hasExtra && (
             <ChevronDown
-              size={13}
-              color="#4b5563"
-              style={{
-                transition: "transform 0.2s",
-                transform: open ? "rotate(180deg)" : "rotate(0deg)"
-              }}
+              className={`w-4 h-4 ${d ? "text-[#5C6480]" : "text-gray-400"} transition ${open ? "rotate-180" : ""}`}
             />
           )}
         </div>
@@ -95,25 +108,20 @@ function NotifItem({ n, isUnread }) {
 
       {/* Accordion */}
       {open && hasExtra && (
-        <div style={{ background: "#080d18", padding: "8px 16px 12px 58px" }}>
-          <p style={{
-            margin: "0 0 6px", fontSize: 9, fontWeight: 700,
-            textTransform: "uppercase", letterSpacing: ".07em", color: "#374151"
-          }}>
-            Qo'shimcha ma'lumotlar
-          </p>
-          <div style={{ borderRadius: 8, overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)" }}>
-            {n.additional_data.map((item, i) => (
-              <div key={i} style={{
-                display: "flex", justifyContent: "space-between",
-                padding: "6px 10px", fontSize: 11,
-                background: i % 2 === 0 ? "rgba(255,255,255,0.04)" : "transparent"
-              }}>
-                <span style={{ color: "#9ca3af", fontWeight: 500 }}>{item.key}</span>
-                <span style={{ color: "#e2e8f0", marginLeft: 12, fontFamily: "monospace" }}>{item.value}</span>
-              </div>
-            ))}
-          </div>
+        <div className={`mt-3 ml-12 rounded-xl p-3 border
+          ${d ? "bg-[#0E1118] border-[#2B3141]" : "bg-[#F4F6FB] border-[#E6E9F2]"}`}>
+
+          {n.additional_data.map((item, i) => (
+            <div key={i} className="flex justify-between text-xs py-1">
+              <span className={d ? "text-[#5C6480]" : "text-gray-500"}>
+                {item.key}
+              </span>
+              <span className={`font-mono ${d ? "text-[#EEF1F7]" : "text-[#2B3141]"}`}>
+                {item.value}
+              </span>
+            </div>
+          ))}
+
           {n.redirect_url && (
             <a href={n.redirect_url} style={{
               display: "inline-flex", marginTop: 8, gap: 4,
@@ -129,7 +137,8 @@ function NotifItem({ n, isUnread }) {
 }
 
 export default function NotificationsModal({ notifications = [], loading, onClose }) {
-  const ref = useRef()
+  const ref = useRef();
+  const d = useSelector(s => s.theme.mode) === "dark";
 
   useEffect(() => {
     const h = (e) => { if (ref.current && !ref.current.contains(e.target)) onClose() }
@@ -141,21 +150,25 @@ export default function NotificationsModal({ notifications = [], loading, onClos
   const read   = notifications.filter(n => n && n.read)
 
   return (
-    <div ref={ref} style={{
-      position: "absolute", right: 0, top: 48, zIndex: 50,
-      width: 370, background: "#0f1724",
-      border: "1px solid #1e293b",
-      borderRadius: 16, overflow: "hidden",
-      boxShadow: "0 20px 50px rgba(0,0,0,0.5)"
-    }}>
-      {/* Header */}
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "12px 16px", borderBottom: "1px solid #1e293b"
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Bell size={15} color="#60a5fa" />
-          <span style={{ color: "#f1f5f9", fontWeight: 600, fontSize: 13 }}>Notifications</span>
+    <div
+      ref={ref}
+      className={`absolute right-0 top-12 w-[380px] z-50
+        backdrop-blur-xl border rounded-2xl shadow-xl overflow-hidden
+        ${d
+          ? "bg-[#0E1118]/90 border-[#2B3141]"
+          : "bg-white/90 border-[#E6E9F2]"}`}
+    >
+
+      {/* HEADER */}
+      <div className={`flex items-center justify-between px-4 py-3 border-b
+        ${d ? "border-[#2B3141]" : "border-[#EEF1F7]"}`}>
+
+        <div className="flex items-center gap-2">
+          <Bell className="w-4 h-4 text-[#E8654A]" />
+          <p className={`text-sm font-semibold ${d ? "text-[#EEF1F7]" : "text-[#2B3141]"}`}>
+            Notifications
+          </p>
+
           {unread.length > 0 && (
             <span style={{
               background: "#1d4ed8", color: "#bfdbfe",
@@ -165,46 +178,39 @@ export default function NotificationsModal({ notifications = [], loading, onClos
             </span>
           )}
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <button style={{
-            background: "none", border: "none", cursor: "pointer",
-            color: "#6b7280", fontSize: 11,
-            display: "flex", alignItems: "center", gap: 4
-          }}>
-            <CheckCheck size={13} /> Mark all read
+
+        <div className="flex items-center gap-3">
+          <button className={`text-xs flex items-center gap-1 transition
+            ${d ? "text-[#5C6480] hover:text-white" : "text-gray-500 hover:text-[#2B3141]"}`}>
+            <CheckCheck className="w-4 h-4" />
+            Mark all
           </button>
-          <button
-            onClick={onClose}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7280", display: "flex" }}
-          >
-            <X size={15} />
+
+          <button onClick={onClose}>
+            <X className={`w-4 h-4 transition ${d ? "text-[#5C6480] hover:text-white" : "text-gray-400 hover:text-black"}`} />
           </button>
         </div>
       </div>
 
-      {/* List */}
-      <div style={{ maxHeight: 440, overflowY: "auto" }}>
+      {/* LIST */}
+      <div className="max-h-[420px] overflow-y-auto">
+
         {loading ? (
           <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
             {[1, 2, 3].map(i => (
-              <div key={i} style={{ display: "flex", gap: 10 }}>
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: "#1f2937", flexShrink: 0 }} />
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8, paddingTop: 4 }}>
-                  <div style={{ height: 11, background: "#1f2937", borderRadius: 6, width: "70%" }} />
-                  <div style={{ height: 11, background: "#1f2937", borderRadius: 6, width: "45%" }} />
+              <div key={i} className="flex gap-3 animate-pulse">
+                <div className={`w-9 h-9 rounded-xl ${d ? "bg-[#2B3141]" : "bg-gray-200"}`} />
+                <div className="flex-1 space-y-2">
+                  <div className={`h-3 rounded w-2/3 ${d ? "bg-[#2B3141]" : "bg-gray-200"}`} />
+                  <div className={`h-3 rounded w-1/2 ${d ? "bg-[#2B3141]" : "bg-gray-200"}`} />
                 </div>
               </div>
             ))}
           </div>
         ) : notifications.length === 0 ? (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "48px 0", gap: 10 }}>
-            <div style={{
-              width: 44, height: 44, borderRadius: "50%", background: "#1f2937",
-              display: "flex", alignItems: "center", justifyContent: "center"
-            }}>
-              <Bell size={18} color="#6b7280" />
-            </div>
-            <p style={{ color: "#6b7280", fontSize: 13, margin: 0 }}>Hozircha notification yo'q</p>
+          <div className={`flex flex-col items-center py-12 ${d ? "text-[#5C6480]" : "text-gray-400"}`}>
+            <Bell className="w-6 h-6 mb-2" />
+            No notifications
           </div>
         ) : (
           <>
@@ -213,7 +219,9 @@ export default function NotificationsModal({ notifications = [], loading, onClos
                 <p style={{ fontSize: 9, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: ".08em", padding: "14px 16px 6px", margin: 0 }}>
                   Yangi
                 </p>
-                {unread.map((n, i) => <NotifItem key={n._id || i} n={n} isUnread />)}
+                {unread.map((n, i) => (
+                  <NotifItem key={n._id || i} n={n} isUnread d={d} />
+                ))}
               </>
             )}
             {read.length > 0 && (
@@ -221,16 +229,19 @@ export default function NotificationsModal({ notifications = [], loading, onClos
                 <p style={{ fontSize: 9, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: ".08em", padding: "14px 16px 6px", margin: 0 }}>
                   Oldingi
                 </p>
-                {read.map((n, i) => <NotifItem key={n._id || i} n={n} />)}
+                {read.map((n, i) => (
+                  <NotifItem key={n._id || i} n={n} d={d} />
+                ))}
               </>
             )}
           </>
         )}
       </div>
 
-      <div style={{ borderTop: "1px solid #1e293b", padding: "10px 16px", textAlign: "center" }}>
-        <button style={{ background: "none", border: "none", cursor: "pointer", color: "#60a5fa", fontSize: 11 }}>
-          Barchasini ko'rish →
+      {/* FOOTER */}
+      <div className={`border-t p-3 text-center ${d ? "border-[#2B3141]" : "border-[#EEF1F7]"}`}>
+        <button className="text-sm text-[#E8654A] font-semibold hover:underline">
+          View all →
         </button>
       </div>
     </div>
