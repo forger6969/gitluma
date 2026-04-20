@@ -241,5 +241,36 @@
   "cta_badge": "GET STARTED",
   "cta_h1": "Start managing your team's",
   "cta_h2": "development today",
-  "cta_sub": "Connect GitHub in seconds. Free to start."
+  "cta_sub": "Connect GitHub in seconds. Free to start.",
+  
+    "faq": {
+      "title": "Frequently asked questions",
+      "subtitle": "Everything you need to know about GitLuma. Can't find an answer?",
+      "contact": "Contact us",
+  
+      "q1": "How does GitLuma connect to GitHub?",
+      "a1": "GitLuma uses GitHub OAuth 2.0 for authentication — one click and you're in. We automatically discover your repositories and configure webhooks.",
+  
+      "q2": "What happens when I push a commit?",
+      "a2": "GitHub sends a webhook event instantly. We parse commit messages and update tasks in real time.",
+  
+      "q3": "Is my code stored?",
+      "a3": "No. Only metadata is processed. Your code never touches our servers.",
+  
+      "q4": "Can I use private repositories?",
+      "a4": "Yes. Fully supported with minimal permissions.",
+  
+      "q5": "How do task IDs work?",
+      "a5": "Use format like GLM-1 in commits. Tasks update automatically.",
+  
+      "q6": "Can I invite teammates?",
+      "a6": "Yes, via email invite. GitHub account is required.",
+  
+      "q7": "Difference between Pro and Team?",
+      "a7": "Pro is for small teams. Team adds unlimited users and advanced features.",
+  
+      "q8": "Is self-hosted available?",
+      "a8": "Planned for future. Join waitlist."
+    }
+  
 }

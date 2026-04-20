@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-import GitBranchAnimation from "../components/GitBranchAnimation";
+import GitBranchAnimation from "../Components/GitBranchAnimation";
 import ProductDemo from "../components/ProductDemo";
 import FeaturesSection from "../components/FeaturesSection";
 import HowItWorksSection from "../components/HowItWorksSection";
@@ -12,7 +12,7 @@ import TestimonialsSection from "../components/TestimonialsSection";
 
 import FAQSection from "../components/FAQSection";
 import CTA from "../components/CTA";
-import Footer from "../components/Footer";
+import Footer from "../Components/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
