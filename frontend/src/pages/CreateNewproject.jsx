@@ -26,7 +26,7 @@ const CreateNewproject = () => {
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
 
-  // ✅ FIX: useEffect import kerak edi (endi ishlaydi)
+  // ✅ 
   useEffect(() => {
     dispatch(reposFetch());
   }, [dispatch]);
@@ -42,7 +42,7 @@ const CreateNewproject = () => {
     setSearch("");
   };
 
-  // ✅ FIXED HANDLE SUBMIT
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -51,7 +51,7 @@ const CreateNewproject = () => {
     setFormError("");
     setFormSuccess("");
 
-    // ❗ validation
+    // ❗ 
     if (!selectedRepo) {
       setFormError(t("selectAlert") || "Repo tanlanmagan");
       return;
@@ -60,7 +60,7 @@ const CreateNewproject = () => {
     try {
       setSubmitting(true);
 
-      // 🔥 backendga toza data yuborilmoqda
+      // 🔥 
       const payload = {
         fullname: selectedRepo,
         name: projectName,
@@ -85,7 +85,7 @@ const CreateNewproject = () => {
       setDescription("");
       setSelectedRepo("");
 
-      // 🚀 redirect
+      // 🚀 
       navigate(`/dashboard/project/${projectId}`);
     } catch (err) {
       const message =
@@ -136,7 +136,7 @@ const CreateNewproject = () => {
           </div>
         )}
 
-        {/* HEADER */}
+       
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-[#1A1F2E]">
@@ -145,7 +145,7 @@ const CreateNewproject = () => {
             <p className="text-[#8A93A8] text-xs mt-1">{t("setup")}</p>
           </div>
 
-          <div className="flex gap-2">
+          {/* <div className="flex gap-2">
             {["uz", "ru", "en"].map((lng) => (
               <button
                 key={lng}
@@ -156,10 +156,10 @@ const CreateNewproject = () => {
                 {lng.toUpperCase()}
               </button>
             ))}
-          </div>
+          </div> */}
         </div>
 
-        {/* FORM */}
+        
         <div className="grid md:grid-cols-2 gap-4">
 
           {/* LEFT */}
