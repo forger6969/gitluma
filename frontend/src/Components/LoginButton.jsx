@@ -1,9 +1,11 @@
 import React from 'react'
 
-const LoginButton = ({ onClick }) => {
+const LoginButton = ({ onClick, isDark = true }) => {
     return (
         <div
-            className="bg-[#232a38] rounded-[18px] px-7 pt-7 pb-[24px] w-full flex flex-col items-center shadow-lg"
+            className={`rounded-[18px] px-7 pt-7 pb-[24px] w-full flex flex-col items-center shadow-lg transition-colors duration-300 ${
+                isDark ? 'bg-[#232a38]' : 'bg-white'
+            }`}
             style={{ maxWidth: 340 }}
         >
             {/* Button */}
@@ -62,13 +64,17 @@ const LoginButton = ({ onClick }) => {
                 </button>
             </div>
 
-            <p className="text-[#EEF1F7]/60 text-[13px] text-center leading-[1.6] mb-[16px]">
+            <p className={`text-[13px] text-center leading-[1.6] mb-[16px] transition-colors duration-300 ${
+                isDark ? 'text-[#EEF1F7]/60' : 'text-[#2B3141]/60'
+            }`}>
                 Sign in securely using your GitHub account.
             </p>
 
             <div className="flex items-center gap-2">
                 <div className="w-[7px] h-[7px] bg-[#22c55e] rounded-full flex-shrink-0" />
-                <span className="text-[#EEF1F7]/40 text-[10.5px] tracking-[0.08em] uppercase">
+                <span className={`text-[10.5px] tracking-[0.08em] uppercase transition-colors duration-300 ${
+                    isDark ? 'text-[#EEF1F7]/40' : 'text-[#2B3141]/40'
+                }`}>
                     Secure / OAuth
                 </span>
             </div>
