@@ -4,8 +4,6 @@ import { fetchMe } from "./store/slices/authSlice";
 import { Outlet, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-
-
 const App = () => {
   const dispatch = useDispatch();
   const location = useLocation();
