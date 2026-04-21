@@ -48,7 +48,7 @@ const taskSlice = createSlice({
     },
     extraReducers:(builder)=>{
         builder
-        .addCase(getTasks.pending , (state , action)=>{
+        .addCase(getTasks.pending , (state)=>{
             state.loading = true
         })
 
@@ -59,7 +59,7 @@ const taskSlice = createSlice({
 
         .addCase(getTasks.fulfilled , (state , action)=>{
             state.loading = false
-            state.tasks  = action.payload.tasks
+            state.tasks = action.payload.tasks || []
         } )
     }
 })
