@@ -10,9 +10,10 @@ const Task = require("../models/task.model");
 function verifySignature(req, secret) {
   const signature = req.headers["x-hub-signature-256"];
   if (!signature) return false;
+  const body = req.rawBody ?? Buffer.from(JSON.stringify(req.body));
   const hmac = crypto.createHmac("sha256", secret);
-  const digest = "sha256=" + hmac.update(JSON.stringify(req.body)).digest("hex");
-  return signature === digest;
+  const digest = "sha256=" + hmac.update(body).digest("hex");
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
 }
 
 function escapeMarkdown(text) {
