@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjects } from "../store/slices/projectsSlice";
+import { toggleTheme } from "../store/slices/themeSlice";
 
 const Projekt = () => {
   const dispatch = useDispatch();
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const mode = useSelector((state) => state.theme.mode);
+  const isDarkMode = mode === "dark";
   const projects = useSelector((state)=> state.projects.projects)
   const loading = useSelector((state) => state.projects.loading);
   const error = useSelector((state) => state.projects.error);
@@ -96,7 +98,7 @@ const Projekt = () => {
           <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={() => setIsDarkMode((prev) => !prev)}
+              onClick={() => dispatch(toggleTheme())}
               className="rounded-xl px-4 py-2 text-sm font-semibold transition"
               style={{
                 backgroundColor: theme.panelBg,
