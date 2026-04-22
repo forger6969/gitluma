@@ -29,6 +29,7 @@ import ActFeed from './pages/ActFeed.jsx'
 
 
 import Info from './pages/Info.jsx'
+import ProjectDetails from './pages/ProjectMoreInf.jsx'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -90,7 +91,7 @@ const router = createBrowserRouter([
           { index: true, element: <Home /> },
           { path: "projects", element: <Projekt /> },
           { path: "profile", element: <Profile /> },
-          {path:"project/:id", element:<ProjectMoreInf/>},
+          {path:"project/:id", element:<ProjectDetails/>},
           {path:"create" , element:<CreateNewproject/>},
         ]
       }
