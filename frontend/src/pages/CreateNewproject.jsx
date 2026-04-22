@@ -145,56 +145,14 @@ const CreateNewproject = () => {
             <p className="text-[#8A93A8] text-xs mt-1">{t("setup")}</p>
           </div>
 
-          {/* <div className="flex gap-2">
-            {["uz", "ru", "en"].map((lng) => (
-              <button
-                key={lng}
-                type="button"
-                onClick={() => i18n.changeLanguage(lng)}
-                className="px-3 py-1.5 text-xs rounded-lg bg-[#1A1F2E] text-white font-medium hover:bg-[#2B3141] transition-colors"
-              >
-                {lng.toUpperCase()}
-              </button>
-            ))}
-          </div> */}
+   
         </div>
 
         
         <div className="grid md:grid-cols-2 gap-4">
 
-          {/* LEFT */}
-          <div className="bg-white p-6 rounded-2xl border border-[#E4E8F0] shadow-sm hover:shadow-md hover:border-[#C8D0E0] transition-all space-y-4">
-            <p className="text-[10px] font-bold text-[#8A93A8] uppercase tracking-widest">
-              Project Info
-            </p>
-
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-[#6B7280]">
-                {t("projectName")}
-              </label>
-              <input
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#1A1F2E] placeholder-[#B0B8C8] outline-none focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white transition-all"
-                placeholder={t("projectName")}
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-[#6B7280]">
-                {t("description")}
-              </label>
-              <textarea
-                rows="4"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-[#F8F9FC] border border-[#E4E8F0] text-[#1A1F2E] placeholder-[#B0B8C8] outline-none focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white transition-all resize-none"
-                placeholder={t("description")}
-              />
-            </div>
-          </div>
-
-          {/* RIGHT */}
+          
+          
           <div className="bg-white p-6 rounded-2xl border border-[#E4E8F0] shadow-sm hover:shadow-md hover:border-[#C8D0E0] transition-all space-y-4">
             <p className="text-[10px] font-bold text-[#8A93A8] uppercase tracking-widest">
               Repository
