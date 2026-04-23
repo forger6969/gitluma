@@ -9,25 +9,22 @@ const GithubCallbackPage = () => {
   useEffect(() => {
     const access_token = searchParams.get("access_token");
     const refresh_token = searchParams.get("refresh_token");
+    const is_new_user = searchParams.get("is_new_user");
 
     if (!access_token || !refresh_token) {
       setStatus("error");
       return;
     }
 
-    // сохраняем токены
     localStorage.setItem("access_token", access_token);
     localStorage.setItem("refresh_token", refresh_token);
 
-    // чистим URL
     window.history.replaceState({}, document.title, "/github/callback");
 
-    // небольшая задержка для UX
     setTimeout(() => {
       setStatus("success");
-
       setTimeout(() => {
-        navigate("/dashboard"); // редирект на главную
+        navigate(is_new_user === "true" ? "/onboarding" : "/dashboard");
       }, 1200);
     }, 1000);
   }, []);

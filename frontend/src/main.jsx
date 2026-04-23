@@ -53,7 +53,11 @@ const router = createBrowserRouter([
      
       {
         path: "onboarding",
-        element: <OnBoardWizard />
+        element: (
+          <PrivateRoute>
+            <OnBoardWizard />
+          </PrivateRoute>
+        )
       },
       {
         path: "/workSpace",
