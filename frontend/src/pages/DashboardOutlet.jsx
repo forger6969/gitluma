@@ -1,15 +1,18 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useParams } from "react-router-dom";
 import Sidebar from "../Components/Sidebar";
 import Header from "../Components/Header";
 import { useEffect, useState } from "react";
 import { connectSocket } from "../socket/socket";
 import { useDispatch, useSelector } from "react-redux";
 import { useSocketEvents } from "../hooks/useSocketEvents";
+import { getNotifications } from "../store/slices/notificationSlice";
+import api from "../api/api";
 import { getProjects } from "../store/slices/projectsSlice";
 
 const DashboardOutlet = () => {
   const token = localStorage.getItem("access_token");
   const user = useSelector((state) => state.user.user);
+  const notifications = useSelector((state)=> state.notifications.notifications)
   const [socketReady, setSocketReady] = useState(false);
   const dispatch = useDispatch()
 
@@ -24,8 +27,12 @@ const DashboardOutlet = () => {
 }, [user?._id, user?.user?._id]); 
 
 useEffect(()=>{
-  dispatch(getProjects())
-},[dispatch])
+  console.log(notifications);
+},[notifications])  
+
+useEffect(()=>{
+dispatch(getProjects())
+},[])
 
 
   useSocketEvents(socketReady);

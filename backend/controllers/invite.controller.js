@@ -32,7 +32,12 @@ const inviteByUsername = async (req , res ,next)=>{
 
         const project = await Project.findById(projectId)
 
-        if (!project) {
+        console.log("project.repo_owner_user:", project.repo_owner_user.toString())
+console.log("user._id:", user._id.toString())
+console.log("equals result:", project.repo_owner_user.equals(user._id))
+console.log("isMatch: " , project.repo_owner_user.toString() === user._id.toString())
+
+           if (!project) {
             return res.status(404).json({success:false , message:"Project not found"})
         }
 

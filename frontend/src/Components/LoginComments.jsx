@@ -66,16 +66,10 @@ const testimonials = [
 const row1 = testimonials.slice(0, 5);
 const row2 = testimonials.slice(5, 10);
 
-function Card({ item, isDark }) {
+function Card({ item }) {
   return (
-    <div className={`flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px] p-5 sm:p-6 rounded-2xl backdrop-blur-sm flex flex-col justify-between gap-4 sm:gap-5 transition-all duration-300 cursor-default ${
-      isDark
-        ? "bg-[#FFFFFF]/[0.04] border border-[#FFFFFF]/[0.08] hover:border-[#E8654A]/30 hover:bg-[#FFFFFF]/[0.07]"
-        : "bg-white border border-[#2B3141]/[0.08] hover:border-[#E8654A]/40 hover:bg-white shadow-sm"
-    }`}>
-      <p className={`text-[14.5px] leading-relaxed font-normal transition-colors duration-300 ${
-        isDark ? "text-[#EEF1F7]/70" : "text-[#2B3141]/70"
-      }`}>
+    <div className="flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px] p-5 sm:p-6 rounded-2xl bg-[#FFFFFF]/[0.04] border border-[#FFFFFF]/[0.08] backdrop-blur-sm flex flex-col justify-between gap-4 sm:gap-5 transition-all duration-300 cursor-default hover:border-[#E8654A]/30 hover:bg-[#FFFFFF]/[0.07]">
+      <p className="text-[14.5px] leading-relaxed text-[#EEF1F7]/70 font-normal">
         {item.text}
       </p>
       <div className="flex items-center gap-2.5">
@@ -87,9 +81,7 @@ function Card({ item, isDark }) {
         >
           <span className="text-sm text-white font-semibold">{item.avatar}</span>
         </div>
-        <span className={`text-[13.5px] font-medium transition-colors duration-300 ${
-          isDark ? "text-[#EEF1F7]/50" : "text-[#2B3141]/50"
-        }`}>
+        <span className="text-[13.5px] text-[#EEF1F7]/50 font-medium">
           {item.author}
         </span>
       </div>
@@ -97,7 +89,7 @@ function Card({ item, isDark }) {
   );
 }
 
-function MarqueeRow({ items, direction = "left", speed = 35, isDark }) {
+function MarqueeRow({ items, direction = "left", speed = 35 }) {
   const trackRef = useRef(null);
   const animRef = useRef(null);
   const offsetRef = useRef(0);
@@ -105,6 +97,7 @@ function MarqueeRow({ items, direction = "left", speed = 35, isDark }) {
   const hoveredRef = useRef(false);
   const singleSetWidthRef = useRef(0);
 
+  // Drag uchun reflar
   const isDragging = useRef(false);
   const dragStartX = useRef(0);
   const dragStartOffset = useRef(0);
@@ -122,6 +115,7 @@ function MarqueeRow({ items, direction = "left", speed = 35, isDark }) {
     singleSetWidthRef.current = width;
   }, [items.length]);
 
+  // Offsetni [-setW, 0] oralig'ida ushlab turish — doimo kartalar ko'rinadi
   const wrapOffset = useCallback(() => {
     const setW = singleSetWidthRef.current;
     if (setW <= 0) return;
@@ -129,11 +123,12 @@ function MarqueeRow({ items, direction = "left", speed = 35, isDark }) {
     while (offsetRef.current > 0) offsetRef.current -= setW;
   }, []);
 
+  // --- Drag handlers ---
   const handlePointerDown = useCallback((e) => {
     isDragging.current = true;
     dragStartX.current = e.clientX;
     dragStartOffset.current = offsetRef.current;
-    hoveredRef.current = true;
+    hoveredRef.current = true; // avtomatik animatsiyani to'xtatish
     e.currentTarget.setPointerCapture(e.pointerId);
   }, []);
 
@@ -149,12 +144,13 @@ function MarqueeRow({ items, direction = "left", speed = 35, isDark }) {
 
   const handlePointerUp = useCallback(() => {
     isDragging.current = false;
-    hoveredRef.current = false;
-    lastTimeRef.current = null;
+    hoveredRef.current = false; // avtomatik animatsiyani davom ettirish
+    lastTimeRef.current = null; // delta jumpni oldini olish
   }, []);
 
   const initializedRef = useRef(false);
 
+  // Avtomatik animatsiya
   useEffect(() => {
     measureWidth();
     window.addEventListener("resize", measureWidth);
@@ -164,6 +160,7 @@ function MarqueeRow({ items, direction = "left", speed = 35, isDark }) {
       const delta = timestamp - lastTimeRef.current;
       lastTimeRef.current = timestamp;
 
+      // Birinchi frameda right uchun boshlang'ich offset: -setW
       if (!initializedRef.current && singleSetWidthRef.current > 0) {
         if (direction === "right") {
           offsetRef.current = -singleSetWidthRef.current;
@@ -208,12 +205,8 @@ function MarqueeRow({ items, direction = "left", speed = 35, isDark }) {
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
     >
-      <div className={`absolute top-0 left-0 w-16 sm:w-32 h-full z-10 pointer-events-none bg-gradient-to-r ${
-        isDark ? "from-[#2B3141]" : "from-[#F0F2F7]"
-      } to-transparent`} />
-      <div className={`absolute top-0 right-0 w-16 sm:w-32 h-full z-10 pointer-events-none bg-gradient-to-l ${
-        isDark ? "from-[#2B3141]" : "from-[#F0F2F7]"
-      } to-transparent`} />
+      <div className="absolute top-0 left-0 w-16 sm:w-32 h-full bg-gradient-to-r from-[#2B3141] to-transparent z-10 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-16 sm:w-32 h-full bg-gradient-to-l from-[#2B3141] to-transparent z-10 pointer-events-none" />
 
       <div
         ref={trackRef}
@@ -221,19 +214,17 @@ function MarqueeRow({ items, direction = "left", speed = 35, isDark }) {
         style={{ willChange: "transform" }}
       >
         {duplicated.map((item, i) => (
-          <Card key={`${item.author}-${i}`} item={item} isDark={isDark} />
+          <Card key={`${item.author}-${i}`} item={item} />
         ))}
       </div>
     </div>
   );
 }
 
-export default function LoginComments({ isDark = true }) {
+export default function LoginComments() {
   return (
     <div
-      className={`relative w-full min-h-screen overflow-hidden flex flex-col items-center justify-center font-sans transition-colors duration-300 ${
-        isDark ? "bg-[#2B3141]" : "bg-[#F0F2F7]"
-      }`}
+      className="relative w-full min-h-screen bg-[#2B3141] overflow-hidden flex flex-col items-center justify-center font-sans"
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       <div className="absolute -top-[20%] left-[30%] w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] rounded-full bg-[radial-gradient(circle,rgba(232,101,74,0.08)_0%,transparent_70%)] pointer-events-none" />
@@ -243,22 +234,18 @@ export default function LoginComments({ isDark = true }) {
         <p className="text-xs font-semibold tracking-[3px] text-[#E8654A] mb-3">
           WALL OF LOVE
         </p>
-        <h1 className={`text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 leading-tight transition-colors duration-300 ${
-          isDark ? "text-[#EEF1F7]" : "text-[#2B3141]"
-        }`}>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#EEF1F7] mb-3 leading-tight">
           Loved by developers worldwide
         </h1>
-        <p className={`text-sm sm:text-base font-normal transition-colors duration-300 ${
-          isDark ? "text-[#EEF1F7]/50" : "text-[#2B3141]/50"
-        }`}>
+        <p className="text-sm sm:text-base text-[#EEF1F7]/50 font-normal">
           Join thousands of developers managing projects with GitLuma
         </p>
       </div>
 
       <div className="w-full flex flex-col gap-3 sm:gap-5 relative z-10">
-        <MarqueeRow items={row1} direction="left" speed={30} isDark={isDark} />
-        <MarqueeRow items={row2} direction="right" speed={25} isDark={isDark} />
+        <MarqueeRow items={row1} direction="left" speed={30} />
+        <MarqueeRow items={row2} direction="right" speed={25} />
       </div>
     </div>
   );
-}
+} 

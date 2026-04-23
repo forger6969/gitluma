@@ -344,5 +344,28 @@
   "s5_visual": "Visual Thinker",
   "s5_visual_sub": "Kanban · drag & drop",
   "s5_social": "Collaborative",
-  "s5_social_sub": "Shared · real-time"
+  "s5_social_sub": "Shared · real-time",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "changeLanguage": "Change language",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "tasks": "Tasks",
+    "profile": "Profile",
+    "settings": "Settings",
+    "newTask": "New Task"
+
 }

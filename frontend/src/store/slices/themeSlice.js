@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    mode: localStorage.getItem("gl-theme") || "light",
+    mode: localStorage.getItem("gl-theme") 
 };
 
 const themeSlice = createSlice({

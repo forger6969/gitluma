@@ -156,7 +156,7 @@ const Home = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {(repos?.repos || []).slice(0, 3).map((repo, i) => {
+          {repos.repos.slice(0, 3).map((repo, i) => {
             const lc = langColors[repo.language] || defaultLang
             return (
               <motion.div

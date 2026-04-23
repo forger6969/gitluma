@@ -32,7 +32,11 @@ const assignTask = async (req, res, next) => {
       });
     }
 
-    const project = await Project.findById(project_id);
+    const project = await Project.findByIdAndUpdate(
+  project_id,
+  { $inc: { taskCounter: 1 } },
+  { returnDocument: "after" }
+);
 
     if (!project) {
       return res
@@ -49,9 +53,6 @@ const assignTask = async (req, res, next) => {
         .status(403)
         .json({ success: false, message: "You dont have permission" });
     }
-
-    project.taskCounter += 1;
-    await project.save();
 
     const findAssignedUser = await User.findById(assigned_user);
 
@@ -162,6 +163,8 @@ const updateTask = async (req, res, next) => {
 
     const VALID_STATUSES = ["todo", "in_progress", "done", "verified", "overdue"];
     const VALID_PRIORITIES = ["low", "medium", "high"];
+    const completionStatuses = ["done", "verified"];
+    const previousLinkedCommitId = task.linked_commit?.toString() || null;
 
     let linkedCommit = null;
     if (commit_id !== undefined && commit_id !== null && commit_id !== "") {
@@ -224,8 +227,9 @@ const updateTask = async (req, res, next) => {
         }
         task.linked_commit = null;
       } else {
-        // reuse already-fetched commit (validated above)
-        if (!linkedCommit.project.equals(task.project_id))
+        const commit = await Commit.findById(commit_id);
+        if (!commit) return res.status(404).json({ success: false, message: "Commit not found" });
+        if (!commit.project.equals(task.project_id))
           return res.status(400).json({ success: false, message: "Commit does not belong to this project" });
 
         // unlink previous commit if any
@@ -233,9 +237,9 @@ const updateTask = async (req, res, next) => {
           await Commit.findByIdAndUpdate(task.linked_commit, { $unset: { task: 1 } });
         }
 
-        linkedCommit.task = task._id;
-        await linkedCommit.save();
-        task.linked_commit = linkedCommit._id;
+        commit.task = task._id;
+        await commit.save();
+        task.linked_commit = commit._id;
       }
     }
 

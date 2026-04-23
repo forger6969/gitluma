@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux"; 
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { reposFetch } from "../store/slices/repoSlices";
 import api from "../api/api";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const CreateNewproject = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -26,7 +26,6 @@ const CreateNewproject = () => {
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
 
-  // ✅ 
   useEffect(() => {
     dispatch(reposFetch());
   }, [dispatch]);
@@ -43,7 +42,6 @@ const CreateNewproject = () => {
   };
 
   // ✅ FIXED PART (IMPORTANT)
- 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -52,7 +50,6 @@ const CreateNewproject = () => {
     setFormError("");
     setFormSuccess("");
 
-    // ❗ 
     if (!selectedRepo) {
       setFormError(t("selectAlert"));
       return;
@@ -61,28 +58,27 @@ const CreateNewproject = () => {
     try {
       setSubmitting(true);
 
-      const payload = {
+      const res = await api.post("/api/project/create", {
         fullname: selectedRepo,
-        name: projectName,
-        description: description,
-      };
+      });
 
-      const res = await api.post("/api/project/create", payload);
-
+      // 🔥 FIX: support both id and _id
       const projectId = res?.data?.id || res?.data?._id;
-
-      if (!projectId) {
-        setFormError("Project ID не вернулся с сервера");
-        return;
-      }
-
-      setFormSuccess(t("projectCreated") || "Created!");
 
       setProjectName("");
       setDescription("");
       setSelectedRepo("");
 
-      navigate(`/dashboard/project/${projectId}`);
+      
+
+      setFormSuccess(t("projectCreated"));
+
+      if (projectId) {
+        // 🚀 instant redirect (no delay)
+        navigate(`/dashboard/project/${projectId}`);
+      } else {
+        setFormError("Project ID not returned from backend");
+      }
     } catch (err) {
       const message =
         err?.response?.data?.message || err?.message || "Unknown error";
@@ -128,7 +124,7 @@ const CreateNewproject = () => {
           </div>
         )}
 
-       
+        {/* HEADER */}
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-[#1A1F2E]">
@@ -137,7 +133,7 @@ const CreateNewproject = () => {
             <p className="text-[#8A93A8] mt-1 text-xs">{t("setup")}</p>
           </div>
 
-          {/* <div className="flex gap-2">
+          <div className="flex gap-2">
             {["uz", "ru", "en"].map((lng) => (
               <button
                 key={lng}
@@ -148,10 +144,10 @@ const CreateNewproject = () => {
                 {lng.toUpperCase()}
               </button>
             ))}
-          </div> */}
+          </div>
         </div>
 
-        
+        {/* FORM */}
         <div className="grid md:grid-cols-2 gap-4">
 
           {/* LEFT */}
@@ -311,6 +307,3 @@ const CreateNewproject = () => {
 };
 
 export default CreateNewproject;
-
-
-

@@ -103,33 +103,7 @@ export default function ProfileModal({ onClose, user }) {
         </span>
       </button>
 
-      <button
-        onClick={() => dispatch(toggleTheme())}
-        className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm
-          rounded-xl transition-all duration-200 active:scale-[0.98]
-          ${d
-            ? "text-[#EEF1F7] hover:bg-[#161B27]"
-            : "text-[#2B3141] hover:bg-[#F4F6FB]"}`}
-      >
-        <div className={`w-8 h-8 rounded-lg flex items-center justify-center
-          ${d ? "bg-[#2B3141]" : "bg-[#EEF1F7]"}`}>
-          {mode === "dark" ? (
-            <Sun size={16} className={d ? "text-[#EEF1F7]" : "text-[#2B3141]"} />
-          ) : (
-            <Moon size={16} className={d ? "text-[#EEF1F7]" : "text-[#2B3141]"} />
-          )}
-        </div>
 
-        <span className="flex-1 text-left">
-          {mode === "dark" ? "Light mode" : "Dark mode"}
-        </span>
-
-        <span className="text-[10px] font-semibold uppercase
-          bg-[#FFE5DA] text-[#E8654A]
-          px-2 py-0.5 rounded-md">
-          {mode}
-        </span>
-      </button>
 
       <div className={`my-2 border-t ${d ? "border-[#2B3141]" : "border-[#EEF1F7]"}`} />
 
