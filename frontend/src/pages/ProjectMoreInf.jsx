@@ -1023,7 +1023,7 @@ const KANBAN_COLUMNS = [
   },
   {
     key: "in_progress", label: "In Progress",
-    color: C.info, bgColor: "rgba(58,126,232,0.05)", borderColor: "rgba(58,126,232,0.2)",
+    color: _CL.info, bgColor: "rgba(58,126,232,0.05)", borderColor: "rgba(58,126,232,0.2)",
     icon: (
       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 1 1-.49-4.5" />
@@ -1032,7 +1032,7 @@ const KANBAN_COLUMNS = [
   },
   {
     key: "done", label: "Done",
-    color: C.success, bgColor: "rgba(34,176,125,0.05)", borderColor: "rgba(34,176,125,0.2)",
+    color: _CL.success, bgColor: "rgba(34,176,125,0.05)", borderColor: "rgba(34,176,125,0.2)",
     icon: (
       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <polyline points="20 6 9 17 4 12" />
@@ -1041,7 +1041,7 @@ const KANBAN_COLUMNS = [
   },
   {
     key: "verified", label: "Verified",
-    color: C.coral, bgColor: "rgba(232,101,74,0.05)", borderColor: "rgba(232,101,74,0.2)",
+    color: _CL.coral, bgColor: "rgba(232,101,74,0.05)", borderColor: "rgba(232,101,74,0.2)",
     icon: (
       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
@@ -1050,7 +1050,7 @@ const KANBAN_COLUMNS = [
   },
   {
     key: "overdue", label: "Overdue",
-    color: C.danger, bgColor: "rgba(224,61,61,0.05)", borderColor: "rgba(224,61,61,0.2)",
+    color: _CL.danger, bgColor: "rgba(224,61,61,0.05)", borderColor: "rgba(224,61,61,0.2)",
     icon: (
       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
