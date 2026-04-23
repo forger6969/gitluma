@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, createContext, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { closestCorners, DndContext, DragOverlay, PointerSensor, useDroppable, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -19,45 +19,49 @@ import { clearCommits } from "../store/slices/projectCommitsSlice";
 import { getTasks, addTask, putTask } from "../store/slices/taskSlice";
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
-const C = {
+const getC = (dark = false) => ({
   coral:        "#E8654A",
   coralHover:   "#D4512F",
   coralActive:  "#C04020",
-  coralBg:      "#FCEDE9",
-  coralSubtle:  "rgba(232,101,74,0.1)",
-  charcoal:     "#2B3141",
-  pageBg:       "#EEF1F7",
-  cardBg:       "#FFFFFF",
-  inputBg:      "#F4F6FB",
-  heading:      "#181D2A",
-  body:         "#2B3141",
-  muted:        "#5C6480",
-  placeholder:  "#9AA0B4",
-  borderSubtle: "#E2E5EE",
-  borderDef:    "#C8CDD9",
+  coralBg:      dark ? "rgba(232,101,74,0.15)" : "#FCEDE9",
+  coralSubtle:  dark ? "rgba(232,101,74,0.12)" : "rgba(232,101,74,0.1)",
+  charcoal:     dark ? "#0F121A" : "#2B3141",
+  pageBg:       dark ? "#0B0F19" : "#EEF1F7",
+  cardBg:       dark ? "#141824" : "#FFFFFF",
+  inputBg:      dark ? "#1E2235" : "#F4F6FB",
+  heading:      dark ? "#EEF1F7" : "#181D2A",
+  body:         dark ? "#C8CDD9" : "#2B3141",
+  muted:        dark ? "#8892A8" : "#5C6480",
+  placeholder:  dark ? "#5C6480" : "#9AA0B4",
+  borderSubtle: dark ? "#2B3141" : "#E2E5EE",
+  borderDef:    dark ? "#3B4258" : "#C8CDD9",
   success:      "#22B07D",
-  successBg:    "rgba(34,176,125,0.1)",
+  successBg:    dark ? "rgba(34,176,125,0.15)" : "rgba(34,176,125,0.1)",
   warning:      "#D4890A",
-  warningBg:    "rgba(245,166,35,0.1)",
+  warningBg:    dark ? "rgba(212,137,10,0.15)" : "rgba(245,166,35,0.1)",
   danger:       "#E03D3D",
-  dangerBg:     "rgba(224,61,61,0.1)",
+  dangerBg:     dark ? "rgba(224,61,61,0.15)" : "rgba(224,61,61,0.1)",
   info:         "#3A7EE8",
-  infoBg:       "rgba(58,126,232,0.1)",
-};
+  infoBg:       dark ? "rgba(58,126,232,0.15)" : "rgba(58,126,232,0.1)",
+});
 
-/* ── Shared input helpers ── */
-const inputBase = {
+// Context so sub-components can read tokens without prop drilling
+const CCtx = createContext(getC(false));
+const useC = () => useContext(CCtx);
+
+/* ── Shared input helpers (call inside component with current C) ── */
+const makeInputBase = (C) => ({
   backgroundColor: C.inputBg,
   border: `1.5px solid ${C.borderDef}`,
   color: C.heading,
   borderRadius: "12px",
   fontFamily: "inherit",
-};
-const handleFocus = (e) => {
+});
+const makeFocus = (C) => (e) => {
   e.target.style.borderColor = C.coral;
   e.target.style.boxShadow = "0 0 0 3px rgba(232,101,74,0.12)";
 };
-const handleBlur = (e) => {
+const makeBlur = (C) => (e) => {
   e.target.style.borderColor = C.borderDef;
   e.target.style.boxShadow = "none";
 };
@@ -88,6 +92,7 @@ const ROLE_OPTIONS = [
 ];
 
 const RoleDropdown = ({ value, onChange }) => {
+  const C = useC();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -175,6 +180,10 @@ const RoleDropdown = ({ value, onChange }) => {
    InviteModal
    ───────────────────────────────────────────────────────────── */
 const InviteModal = ({ projectId, members = [], onClose }) => {
+  const C = useC();
+  const inputBase = makeInputBase(C);
+  const handleFocus = makeFocus(C);
+  const handleBlur = makeBlur(C);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [searching, setSearching] = useState(false);
@@ -311,12 +320,12 @@ const TOAST_ICONS = {
   ),
 };
 
-const TOAST_ACCENT = {
-  commit: { border: C.coral,   bg: C.coralBg,   icon: C.coral,   bar: C.coral   },
-  task:   { border: C.success, bg: C.successBg, icon: C.success, bar: C.success },
-};
-
 const Toast = ({ toast, onDismiss }) => {
+  const C = useC();
+  const TOAST_ACCENT = {
+    commit: { border: C.coral,   bg: C.coralBg,   icon: C.coral,   bar: C.coral   },
+    task:   { border: C.success, bg: C.successBg, icon: C.success, bar: C.success },
+  };
   const [visible, setVisible] = useState(false);
   const accent = TOAST_ACCENT[toast.type] || TOAST_ACCENT.commit;
 
@@ -379,6 +388,10 @@ const ToastContainer = ({ toasts, onDismiss }) => (
    Task Completion Modal
    ───────────────────────────────────────────────────────────── */
 const TaskCompletionModal = ({ project, modalState, onClose, onSubmit }) => {
+  const C = useC();
+  const inputBase = makeInputBase(C);
+  const handleFocus = makeFocus(C);
+  const handleBlur = makeBlur(C);
   const task = modalState?.task;
   const [commits, setCommits] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -596,6 +609,10 @@ const TaskCompletionModal = ({ project, modalState, onClose, onSubmit }) => {
    TaskDetailModal
    ───────────────────────────────────────────────────────────── */
 const TaskDetailModal = ({ task, onClose, onUpdated, onRequireCompletion }) => {
+  const C = useC();
+  const inputBase = makeInputBase(C);
+  const handleFocus = makeFocus(C);
+  const handleBlur = makeBlur(C);
   const dispatch = useDispatch();
   const pri = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium;
   const col = KANBAN_COLUMNS.find((c) => c.key === task.status);
@@ -869,6 +886,10 @@ const TaskDetailModal = ({ task, onClose, onUpdated, onRequireCompletion }) => {
 const PRIORITIES = ["low", "medium", "high"];
 
 const AssignTaskModal = ({ projectId, members = [], onClose, onAssigned }) => {
+  const C = useC();
+  const inputBase = makeInputBase(C);
+  const handleFocus = makeFocus(C);
+  const handleBlur = makeBlur(C);
   const [form, setForm] = useState({
     task_name: "", task_describe: "", task_deadline: "", assigned_user: "", priority: "medium",
   });
@@ -989,10 +1010,11 @@ const AssignTaskModal = ({ projectId, members = [], onClose, onAssigned }) => {
 /* ─────────────────────────────────────────────────────────────
    Kanban config
    ───────────────────────────────────────────────────────────── */
+const _CL = getC(false);
 const KANBAN_COLUMNS = [
   {
     key: "todo", label: "To Do",
-    color: C.muted, bgColor: "#F0F2F7", borderColor: C.borderDef,
+    color: _CL.muted, bgColor: "#F0F2F7", borderColor: _CL.borderDef,
     icon: (
       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" />
@@ -1038,9 +1060,9 @@ const KANBAN_COLUMNS = [
 ];
 
 const PRIORITY_CONFIG = {
-  high:   { color: C.danger,   bg: C.dangerBg,   label: "High" },
-  medium: { color: C.warning,  bg: C.warningBg,  label: "Med" },
-  low:    { color: C.success,  bg: C.successBg,  label: "Low" },
+  high:   { color: _CL.danger,   bg: _CL.dangerBg,   label: "High" },
+  medium: { color: _CL.warning,  bg: _CL.warningBg,  label: "Med" },
+  low:    { color: _CL.success,  bg: _CL.successBg,  label: "Low" },
 };
 const COMPLETION_STATUSES = ["done", "verified"];
 
@@ -1056,6 +1078,7 @@ const getTaskColumnKey = (overId, tasks) => {
 
 /* ── KanbanCard ── */
 const KanbanCard = ({ task, onClick, dragHandleProps = {}, isDragging = false }) => {
+  const C = useC();
   const pri = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium;
   const isOverdue = task.status === "overdue";
   const deadline = task.task_deadline ? new Date(task.task_deadline) : null;
@@ -1182,6 +1205,7 @@ const DraggableTask = ({ task, onClick }) => {
 };
 
 const DroppableColumn = ({ column, tasks, onTaskClick }) => {
+  const C = useC();
   const { setNodeRef, isOver } = useDroppable({
     id: column.key,
     data: { type: "column", columnKey: column.key },
@@ -1296,6 +1320,7 @@ const KanbanContext = ({ tasks, onTaskClick, onTaskMove }) => {
 
 /* ── KanbanBoard ── */
 const KanbanBoard = ({ tasks, onAssign, isCurrOwner, onTaskClick, onTaskMove }) => {
+  const C = useC();
   return (
     <div className="rounded-2xl p-6"
       style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, boxShadow: "0 1px 3px rgba(43,49,65,0.06)" }}>
@@ -1333,34 +1358,43 @@ const KanbanBoard = ({ tasks, onAssign, isCurrOwner, onTaskClick, onTaskMove }) 
 /* ─────────────────────────────────────────────────────────────
    Shared layout primitives
    ───────────────────────────────────────────────────────────── */
-const Section = ({ children }) => (
-  <div className="rounded-2xl p-6"
-    style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, boxShadow: "0 1px 3px rgba(43,49,65,0.06)" }}>
-    {children}
-  </div>
-);
-
-const SectionTitle = ({ children, count }) => (
-  <div className="flex items-center gap-2.5 mb-5">
-    <h2 className="text-base font-semibold" style={{ color: C.heading }}>{children}</h2>
-    {count !== undefined && (
-      <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
-        style={{ backgroundColor: C.inputBg, color: C.muted }}>{count}</span>
-    )}
-  </div>
-);
-
-const StatCard = ({ title, value, icon }) => (
-  <div className="rounded-2xl p-5 flex items-center gap-4"
-    style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, boxShadow: "0 1px 3px rgba(43,49,65,0.06)" }}>
-    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-      style={{ backgroundColor: C.coralBg }}>{icon}</div>
-    <div>
-      <p className="text-xs font-medium uppercase tracking-wide" style={{ color: C.placeholder }}>{title}</p>
-      <p className="text-lg font-bold mt-0.5" style={{ color: C.heading }}>{value || "—"}</p>
+const Section = ({ children }) => {
+  const C = useC();
+  return (
+    <div className="rounded-2xl p-6"
+      style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, boxShadow: "0 1px 3px rgba(43,49,65,0.06)" }}>
+      {children}
     </div>
-  </div>
-);
+  );
+};
+
+const SectionTitle = ({ children, count }) => {
+  const C = useC();
+  return (
+    <div className="flex items-center gap-2.5 mb-5">
+      <h2 className="text-base font-semibold" style={{ color: C.heading }}>{children}</h2>
+      {count !== undefined && (
+        <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
+          style={{ backgroundColor: C.inputBg, color: C.muted }}>{count}</span>
+      )}
+    </div>
+  );
+};
+
+const StatCard = ({ title, value, icon }) => {
+  const C = useC();
+  return (
+    <div className="rounded-2xl p-5 flex items-center gap-4"
+      style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, boxShadow: "0 1px 3px rgba(43,49,65,0.06)" }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+        style={{ backgroundColor: C.coralBg }}>{icon}</div>
+      <div>
+        <p className="text-xs font-medium uppercase tracking-wide" style={{ color: C.placeholder }}>{title}</p>
+        <p className="text-lg font-bold mt-0.5" style={{ color: C.heading }}>{value || "—"}</p>
+      </div>
+    </div>
+  );
+};
 
 /* ─────────────────────────────────────────────────────────────
    Main Page
@@ -1390,6 +1424,8 @@ const ProjectDetails = () => {
   const prevCommitCountRef = useRef(0);
 
   const dispatch = useDispatch();
+  const isDark = useSelector((s) => s.theme.mode) === "dark";
+  const C = getC(isDark);
   const currentUser = useSelector((s) => s.user.user);
   const currentUserId = currentUser?.user?._id || currentUser?._id;
   const socketCommits = useSelector((s) => s.projectcommits.commits);
@@ -1564,28 +1600,32 @@ const ProjectDetails = () => {
   };
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: C.pageBg }}>
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 rounded-full animate-spin"
-          style={{ borderColor: C.coral, borderTopColor: "transparent" }} />
-        <p className="text-sm font-medium" style={{ color: C.muted }}>Loading project…</p>
+    <CCtx.Provider value={C}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: C.pageBg }}>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 rounded-full animate-spin"
+            style={{ borderColor: C.coral, borderTopColor: "transparent" }} />
+          <p className="text-sm font-medium" style={{ color: C.muted }}>Loading project…</p>
+        </div>
       </div>
-    </div>
+    </CCtx.Provider>
   );
 
   if (!project) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: C.pageBg }}>
-      <div className="text-center">
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3"
-          style={{ backgroundColor: C.dangerBg }}>
-          <svg className="w-6 h-6" style={{ color: C.danger }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
+    <CCtx.Provider value={C}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: C.pageBg }}>
+        <div className="text-center">
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3"
+            style={{ backgroundColor: C.dangerBg }}>
+            <svg className="w-6 h-6" style={{ color: C.danger }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </div>
+          <p className="font-semibold" style={{ color: C.heading }}>Project not found</p>
+          <p className="text-sm mt-1" style={{ color: C.placeholder }}>This project doesn't exist or you don't have access.</p>
         </div>
-        <p className="font-semibold" style={{ color: C.heading }}>Project not found</p>
-        <p className="text-sm mt-1" style={{ color: C.placeholder }}>This project doesn't exist or you don't have access.</p>
       </div>
-    </div>
+    </CCtx.Provider>
   );
 
   const isCurrOwner = project.members?.some((m) => m.user?._id === currentUserId && m.role === "owner");
@@ -1596,6 +1636,7 @@ const ProjectDetails = () => {
   const filteredTasks = taskFilter === "all" ? tasks : tasks.filter((t) => t.status === taskFilter);
 
   return (
+    <CCtx.Provider value={C}>
     <div className="min-h-screen p-6 md:p-8" style={{ backgroundColor: C.pageBg }}>
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
       {inviteOpen && (
@@ -1969,6 +2010,7 @@ const ProjectDetails = () => {
 
       </div>
     </div>
+    </CCtx.Provider>
   );
 };
 
