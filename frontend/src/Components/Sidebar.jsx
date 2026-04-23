@@ -1,24 +1,23 @@
 import { NavLink } from "react-router-dom";
-import { FaHome, FaTasks } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 import { GoProjectSymlink } from "react-icons/go";
 import { CgProfile } from "react-icons/cg";
-import { IoMdSettings } from "react-icons/io";
 import { useSelector } from "react-redux";
 import logo from "../assets/logo.png";
 import logowhite from "../assets/logo.white.svg";
 import { useTranslation } from "react-i18next";
+import { useCreateProject } from "../context/CreateProjectContext";
 
 export default function Sidebar() {
   const mode = useSelector((state) => state.theme.mode);
   const isDark = mode === "dark";
   const { t } = useTranslation();
+  const { open } = useCreateProject();
 
   const NAV = [
     { path: "/dashboard",          label: t("dashboard"), icon: <FaHome /> },
     { path: "/dashboard/projects", label: t("projects"),  icon: <GoProjectSymlink /> },
-    { path: "/dashboard/tasks",    label: t("tasks"),     icon: <FaTasks /> },
     { path: "/dashboard/profile",  label: t("profile"),   icon: <CgProfile /> },
-    { path: "/dashboard/settings", label: t("settings"),  icon: <IoMdSettings /> },
   ];
 
   return (
@@ -162,6 +161,7 @@ export default function Sidebar() {
         `}
       >
         <button
+          onClick={open}
           className={`
             w-full py-2.5 rounded-lg text-sm font-semibold
             flex items-center justify-center gap-2
@@ -181,7 +181,7 @@ export default function Sidebar() {
               transition-all duration-150 delay-75
             `}
           >
-            {t("newTask")}
+            New Project
           </span>
         </button>
       </div>

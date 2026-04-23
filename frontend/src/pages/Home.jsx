@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { useCreateProject } from '../context/CreateProjectContext'
 
 
 
@@ -87,7 +88,9 @@ const Home = () => {
   const dispatch = useDispatch()
   const { user, loaded, loading, error } = useSelector(s => s.user)
   const repos = useSelector(s => s.repos)
-  const d = useSelector(s => s.theme.mode) === 'dark'   // d = isDark shorthand
+  const projects = useSelector(s => s.projects.projects)
+  const d = useSelector(s => s.theme.mode) === 'dark'
+  const { open } = useCreateProject()
 
   if (loading || !user) return <SkeletonScreen d={d} />
 
@@ -121,11 +124,12 @@ const Home = () => {
           </div>
 
           <motion.button
+            onClick={open}
             whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }}
             className={`text-white text-sm font-semibold px-5 py-2.5 rounded-md shadow-md transition
       ${d ? 'bg-[#E8654A]/90 hover:bg-[#E8654A]' : 'bg-gradient-to-r from-[#E8654A] to-[#FF8A65] hover:opacity-90'}`}
           >
-            + Create Project
+            + New Project
           </motion.button>
         </motion.div>
 
@@ -199,19 +203,34 @@ const Home = () => {
             initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
             className={card}
           >
-            <p className={`text-xs font-semibold mb-4 uppercase tracking-wider ${m}`}>Active Tasks</p>
-            {repos?.repos?.slice(0, 4).map((repo) => (
-              <div key={repo.id} className={`flex justify-between items-center py-2 ${divider}`}>
-                <div>
-                  <p className={`text-sm font-medium ${b}`}>{repo.name}</p>
-                  <p className={`text-[11px] ${m}`}>{repo.language || 'Unknown'}</p>
+            <p className={`text-xs font-semibold mb-4 uppercase tracking-wider ${m}`}>Your Projects</p>
+            {projects && projects.length > 0 ? (
+              projects.slice(0, 4).map((project) => (
+                <div key={project._id} className={`flex justify-between items-center py-2 ${divider}`}>
+                  <div>
+                    <p className={`text-sm font-medium ${b}`}>{project.repo_name}</p>
+                    <p className={`text-[11px] ${m}`}>{project.default_branch || 'main'}</p>
+                  </div>
+                  <Link
+                    to={`/dashboard/project/${project._id}`}
+                    className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold transition-colors
+                      ${d ? 'bg-[#E8654A]/10 text-[#F0997B] hover:bg-[#E8654A]/20' : 'bg-[#FFF3EE] text-[#E8654A] hover:bg-[#FFEAE3]'}`}
+                  >
+                    Open →
+                  </Link>
                 </div>
-                <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold
-          ${d ? 'bg-[#E8654A]/10 text-[#F0997B]' : 'bg-[#FFF3EE] text-[#E8654A]'}`}>
-                  In Progress
-                </span>
+              ))
+            ) : (
+              <div className={`py-6 text-center ${m}`}>
+                <p className="text-sm">No projects yet</p>
+                <button
+                  onClick={open}
+                  className={`mt-2 text-xs font-semibold ${d ? 'text-[#F0997B]' : 'text-[#E8654A]'}`}
+                >
+                  + Create your first project
+                </button>
               </div>
-            ))}
+            )}
           </motion.div>
 
           <motion.div
