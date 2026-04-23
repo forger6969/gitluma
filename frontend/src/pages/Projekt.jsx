@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjects } from "../store/slices/projectsSlice";
-import { toggleTheme } from "../store/slices/themeSlice";
 
 const Projekt = () => {
   const dispatch = useDispatch();
@@ -96,19 +95,6 @@ const Projekt = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => dispatch(toggleTheme())}
-              className="rounded-xl px-4 py-2 text-sm font-semibold transition"
-              style={{
-                backgroundColor: theme.panelBg,
-                color: theme.text,
-                border: `1px solid ${theme.cardBorder}`,
-                boxShadow: "0 10px 30px rgba(43,49,65,0.08)",
-              }}
-            >
-              {isDarkMode ? "Light mode" : "Dark mode"}
-            </button>
             <div
               className="rounded-xl px-4 py-2 text-sm"
               style={{

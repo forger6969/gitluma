@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import alex from "../assets/Alex Monolith.png"
 import img from "../assets/Icon (1).png"
 import img2 from "../assets/Icon (2).png"
@@ -10,7 +10,6 @@ import icon1 from "../assets/Icon (5).png"
 import icon2 from "../assets/Icon (6).png"
 import icon3 from "../assets/Icon (7).png"
 import icon4 from "../assets/Icon (8).png"
-import { toggleTheme } from "../store/slices/themeSlice"
 
 const stats = [
   {
@@ -166,7 +165,6 @@ const themes = {
 const baseCardClass = 'rounded-[20px] border'
 
 const Profile = () => {
-  const dispatch = useDispatch()
   const mode = useSelector((state) => state.theme.mode)
   const theme = themes[mode]
 
@@ -226,12 +224,6 @@ const Profile = () => {
             </div>
 
             <div className='flex flex-col gap-3 sm:flex-row lg:justify-end'>
-              <button
-                onClick={() => dispatch(toggleTheme())}
-                className={`inline-flex items-center justify-center gap-2 rounded-[10px] border px-5 py-3 text-[14px] font-semibold transition-colors duration-300 ${theme.toggleButton}`}
-              >
-                {mode === 'dark' ? 'Light Mode' : 'Dark Mode'}
-              </button>
               <button className={`inline-flex items-center justify-center gap-3 rounded-[10px] border px-5 py-3 text-[14px] font-medium transition-colors duration-300 ${theme.shareButton}`}>
                 <img src={share} alt='share' className='h-4 w-4 opacity-90' />
                 Share Profile
