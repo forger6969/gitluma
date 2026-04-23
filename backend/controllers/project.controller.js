@@ -81,7 +81,10 @@ const getProjectById = async (req , res , next)=>{
 
         const {id} = req.params
 
-        const project = await Project.findById(id).populate("repo_owner_user").populate("commits").populate("members.user")
+        const project = await Project.findById(id)
+            .populate("repo_owner_user", "username avatar_url email github_id")
+            .populate("commits")
+            .populate("members.user", "username avatar_url email")
 
         if (!project) {
             return res.status(404).json({success:false , message:"project not found"})
@@ -103,6 +106,8 @@ try {
  const {id} = req.user
 
  const projects = await Project.find({"members.user":id})
+    .populate("repo_owner_user", "username avatar_url email")
+    .populate("members.user", "username avatar_url")
 
  res.json({success:true , projects})
 

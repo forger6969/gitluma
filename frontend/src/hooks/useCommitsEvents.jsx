@@ -14,7 +14,6 @@ const useCommitsEvents = (projectId) => {
 
     const joinRoom = () => {
       socket.emit("project_join", projectId);
-      console.log("Joined project room:", projectId);
     };
 
     // если уже подключён — заходим сразу, иначе ждём connect
@@ -25,7 +24,6 @@ const useCommitsEvents = (projectId) => {
     }
 
     const handleNewCommit = (data) => {
-      console.log("New commit received:", data);
       dispatch(addNewCommit(data.commit));
     };
 
@@ -35,7 +33,7 @@ const useCommitsEvents = (projectId) => {
       socket.off("connect", joinRoom);
       socket.off("new_commit", handleNewCommit);
     };
-  }, [projectId]);
+  }, [projectId, dispatch]);
 };
 
 export default useCommitsEvents;

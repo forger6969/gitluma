@@ -13,7 +13,6 @@ const dispatch = useDispatch()
     if (!socket || !userId) return;
 
     const handleNotification = (data) => {
-      console.log("Notification:", data);
       dispatch(addNotification(data))
     };
 
@@ -22,5 +21,5 @@ const dispatch = useDispatch()
     return () => {
       socket.off("notification", handleNotification);
     };
-  }, [user, socketReady]);
+  }, [user, socketReady, dispatch]);
 };

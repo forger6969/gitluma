@@ -1,4 +1,0 @@
-{
-    "javascript.suggest.includeAutomaticOptionalChainCompletions": true,
-    "kiroAgent.configureMCP": "Disabled"
-}

@@ -19,9 +19,9 @@ gsap.registerPlugin(ScrollTrigger);
 const Landing = () => {
   useEffect(() => {
     // Scroll-reveal for headings & paragraphs (skip elements inside git animation)
-    const targets = gsap.utils.toArray("h1, h2, h3, p, li").filter(
-      (el) => !el.closest(".git-no-reveal")
-    );
+    const targets = gsap.utils
+      .toArray("h1, h2, h3, p, li")
+      .filter((el) => !el.closest(".git-no-reveal"));
 
     targets.forEach((el) => {
       gsap.fromTo(
@@ -37,7 +37,7 @@ const Landing = () => {
             start: "top 91%",
             once: true,
           },
-        }
+        },
       );
     });
 

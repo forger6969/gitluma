@@ -28,4 +28,10 @@ const sendCommitToPorjectRoom = (projectid , data)=>{
     ioInstance.to(projectid).emit("new_commit" , data)
 }
 
-module.exports = {initSocket,sendNotifyByID,sendCommitToPorjectRoom}
+const putTask = (projectid , data)=>{
+
+    ioInstance.to(projectid).emit("put_task" , data)
+
+}
+
+module.exports = {initSocket,sendNotifyByID,sendCommitToPorjectRoom,putTask}

@@ -155,14 +155,14 @@ const GitBranchAnimation = () => {
               const subY   = above ? n.y - 39 : n.y + 65;
 
               return (
-                <g key={i} className="gl">
+                <g key={i} className="">
 
                   {/* PURE SVG ICON */}
                   <g transform={`translate(${n.x - 8}, ${iconY - 8})`}>
                     <n.Icon size={16} color={n.color} strokeWidth={2.2} />
                   </g>
 
-                  <text x={n.x} y={titleY} textAnchor="middle"
+                  <text cla x={n.x} y={titleY} textAnchor="middle"
                     fontSize="12" fontWeight="700"
                     fill="var(--gl-heading)" dominantBaseline="middle">
                     {n.label}

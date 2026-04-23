@@ -5,14 +5,22 @@ import authReducer from "./slices/authSlice";
 import notificationSlice from './slices/notificationSlice'
 import projectSlice from './slices/projectsSlice'
 import projectCommitsSlice from './slices/projectCommitsSlice'
+import rateLimitReducer from "./slices/rateLimitSlice" 
+import themeReducer from "./slices/themeSlice";
+import tasksSlice from './slices/taskSlice'
 
-export const store = configureStore({
-    reducer: {
-        auth: authReducer,
-        user: userSlice,
-        repos: reposSlice,
-        notifications:notificationSlice,
-        projects:projectSlice,
-        projectcommits:projectCommitsSlice
-    }
-})
+const store = configureStore({
+  reducer: {
+    auth: authReducer,
+    user: userSlice,
+    repos: reposSlice,
+    notifications: notificationSlice,
+    projects: projectSlice,
+    projectcommits: projectCommitsSlice,
+    rateLimit: rateLimitReducer,
+    theme: themeReducer,
+    tasks:tasksSlice
+  },
+});
+
+export default store    

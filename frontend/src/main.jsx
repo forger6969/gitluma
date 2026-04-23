@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { Provider } from 'react-redux'
-import { store } from './store/store.js'
+import store  from './store/store.js'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -26,6 +26,7 @@ import { ThemeProvider } from './context/ThemeContext.jsx'
 import ProjectMoreInf from './pages/ProjectMoreInf.jsx'
 import CreateNewproject from './pages/CreateNewproject.jsx';
 import ActFeed from './pages/ActFeed.jsx'
+import TasksPage from './pages/TasksPage.jsx'
 
 
 import Info from './pages/Info.jsx'
@@ -92,6 +93,7 @@ const router = createBrowserRouter([
           { path: "profile", element: <Profile /> },
           {path:"project/:id", element:<ProjectMoreInf/>},
           {path:"create" , element:<CreateNewproject/>},
+        {path:"tasks" , element:<TasksPage/>}
         ]
       }
     ],

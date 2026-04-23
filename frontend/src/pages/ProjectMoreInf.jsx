@@ -1,9 +1,22 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
+import { closestCorners, DndContext, DragOverlay, PointerSensor, useDroppable, useSensor, useSensors } from "@dnd-kit/core";
+import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import api from "../api/api";
+import {
+  getCompletionDefaultOwnerId,
+  getProjectTaskCommits,
+  getTaskEditErrorMessage,
+  normalizeTaskDeadline,
+  updateTaskRequest,
+  updateTaskStatusRequest,
+} from "../api/task";
 import useCommitsEvents from "../hooks/useCommitsEvents";
+import useTaskEvents from "../hooks/useTaskEvents";
 import { useSelector, useDispatch } from "react-redux";
 import { clearCommits } from "../store/slices/projectCommitsSlice";
+import { getTasks, addTask, putTask } from "../store/slices/taskSlice";
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
 const C = {
@@ -283,6 +296,574 @@ const InviteModal = ({ projectId, members = [], onClose }) => {
 };
 
 /* ─────────────────────────────────────────────────────────────
+   Toast
+   ───────────────────────────────────────────────────────────── */
+const TOAST_ICONS = {
+  commit: (
+    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="12" r="3" /><line x1="3" y1="12" x2="9" y2="12" /><line x1="15" y1="12" x2="21" y2="12" />
+    </svg>
+  ),
+  task: (
+    <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  ),
+};
+
+const TOAST_ACCENT = {
+  commit: { border: C.coral,   bg: C.coralBg,   icon: C.coral,   bar: C.coral   },
+  task:   { border: C.success, bg: C.successBg, icon: C.success, bar: C.success },
+};
+
+const Toast = ({ toast, onDismiss }) => {
+  const [visible, setVisible] = useState(false);
+  const accent = TOAST_ACCENT[toast.type] || TOAST_ACCENT.commit;
+
+  useEffect(() => {
+    requestAnimationFrame(() => setVisible(true));
+    const t = setTimeout(() => { setVisible(false); setTimeout(() => onDismiss(toast.id), 300); }, 4500);
+    return () => clearTimeout(t);
+  }, [onDismiss, toast.id]);
+
+  return (
+    <div
+      style={{
+        backgroundColor: C.cardBg,
+        border: `1px solid ${accent.border}`,
+        borderRadius: "14px",
+        boxShadow: "0 8px 28px rgba(43,49,65,0.16)",
+        padding: "12px 14px",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "10px",
+        minWidth: "300px",
+        maxWidth: "360px",
+        position: "relative",
+        overflow: "hidden",
+        transition: "opacity 0.3s, transform 0.3s",
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateX(0)" : "translateX(24px)",
+      }}
+    >
+      <div style={{
+        width: "30px", height: "30px", borderRadius: "8px", flexShrink: 0,
+        backgroundColor: accent.bg, color: accent.icon,
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}>
+        {TOAST_ICONS[toast.type]}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontSize: "12px", fontWeight: 700, color: C.heading, marginBottom: "2px" }}>{toast.title}</p>
+        <p style={{ fontSize: "11px", color: C.muted, lineHeight: 1.4, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{toast.body}</p>
+      </div>
+      <button onClick={() => { setVisible(false); setTimeout(() => onDismiss(toast.id), 300); }}
+        style={{ color: C.placeholder, flexShrink: 0, lineHeight: 1, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12" /></svg>
+      </button>
+      <div style={{
+        position: "absolute", bottom: 0, left: 0,
+        height: "3px", width: "100%", backgroundColor: accent.bar, opacity: 0.35, borderRadius: "0 0 14px 14px",
+      }} />
+    </div>
+  );
+};
+
+const ToastContainer = ({ toasts, onDismiss }) => (
+  <div style={{ position: "fixed", bottom: "24px", right: "24px", zIndex: 100, display: "flex", flexDirection: "column", gap: "10px", alignItems: "flex-end" }}>
+    {toasts.map((t) => <Toast key={t.id} toast={t} onDismiss={onDismiss} />)}
+  </div>
+);
+
+/* ─────────────────────────────────────────────────────────────
+   Task Completion Modal
+   ───────────────────────────────────────────────────────────── */
+const TaskCompletionModal = ({ project, modalState, onClose, onSubmit }) => {
+  const task = modalState?.task;
+  const [commits, setCommits] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [completedBy, setCompletedBy] = useState("");
+  const [selectedCommitId, setSelectedCommitId] = useState("");
+
+  useEffect(() => {
+    if (!modalState || !project?._id) return;
+
+    let ignore = false;
+    const fallbackOwnerId = getCompletionDefaultOwnerId(project);
+    setCompletedBy(modalState.completedBy || fallbackOwnerId);
+    setSelectedCommitId(modalState.commitId || task?.linked_commit?._id || "");
+    setError("");
+    setLoading(true);
+
+    getProjectTaskCommits(project._id)
+      .then((data) => {
+        if (ignore) return;
+        setCommits(data.commits || []);
+      })
+      .catch((err) => {
+        if (ignore) return;
+        setError(err?.response?.data?.message || "Commitlarni yuklab bo'lmadi");
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [modalState, project, task]);
+
+  if (!modalState || !task) return null;
+
+  const members = project?.members || [];
+  const availableCommits = commits.filter((commit) => !commit.task || commit.task?._id === task._id);
+  const linkedCommits = commits.filter((commit) => commit.task && commit.task?._id !== task._id);
+
+  const handleSubmit = async (skipCommit = false) => {
+    setSubmitting(true);
+    setError("");
+
+    try {
+      await onSubmit({
+        ...modalState,
+        completedBy: completedBy || getCompletionDefaultOwnerId(project),
+        commitId: skipCommit ? "" : selectedCommitId,
+      });
+    } catch (err) {
+      setError(err?.message || "Task completion saqlanmadi");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center backdrop-blur-sm"
+      style={{ backgroundColor: "rgba(43,49,65,0.78)" }} onClick={onClose}>
+      <div className="rounded-2xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden"
+        style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderDef}` }}
+        onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-6 py-4 border-b"
+          style={{ borderColor: C.borderSubtle, backgroundColor: C.inputBg }}>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: C.placeholder }}>Task completion</p>
+            <h2 className="text-sm font-semibold" style={{ color: C.heading }}>
+              {task.task_name} {"->"} {modalState.nextStatus.replace("_", " ")}
+            </h2>
+          </div>
+          <button onClick={onClose}
+            className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-gray-100"
+            style={{ color: C.muted }}>
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+          </button>
+        </div>
+
+        <div className="p-6 space-y-5">
+          <div>
+            <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: C.placeholder }}>
+              Kim bajardi?
+            </label>
+            <select
+              value={completedBy}
+              onChange={(e) => setCompletedBy(e.target.value)}
+              className="w-full px-3 py-2.5 text-sm outline-none transition-all cursor-pointer"
+              style={inputBase}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+            >
+              {members.map((member) => (
+                <option key={member._id || member.user?._id} value={member.user?._id}>
+                  {member.user?.username} {member.role === "owner" ? "(owner)" : ""}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="rounded-xl p-4" style={{ backgroundColor: C.inputBg, border: `1px solid ${C.borderSubtle}` }}>
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: C.placeholder }}>Qaysi commit?</p>
+                <p className="text-sm" style={{ color: C.muted }}>Commit tanlashingiz yoki o‘tkazib yuborishingiz mumkin.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleSubmit(true)}
+                disabled={submitting}
+                className="text-xs font-semibold px-3 py-2 rounded-lg transition-all"
+                style={{ backgroundColor: C.cardBg, color: C.muted, border: `1px solid ${C.borderSubtle}`, opacity: submitting ? 0.6 : 1 }}
+              >
+                O'tkazib yuborish
+              </button>
+            </div>
+
+            {loading ? (
+              <p className="text-sm" style={{ color: C.placeholder }}>Commitlar yuklanmoqda…</p>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: C.placeholder }}>Mavjud commitlar</p>
+                  <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                    {availableCommits.length === 0 ? (
+                      <p className="text-sm" style={{ color: C.placeholder }}>Bo'sh commit yo'q</p>
+                    ) : availableCommits.map((commit) => {
+                      const active = selectedCommitId === commit._id;
+                      return (
+                        <button
+                          key={commit._id}
+                          type="button"
+                          onClick={() => setSelectedCommitId(commit._id)}
+                          className="w-full text-left rounded-xl p-3 transition-all"
+                          style={{
+                            backgroundColor: active ? C.coralBg : C.cardBg,
+                            border: `1px solid ${active ? "rgba(232,101,74,0.35)" : C.borderSubtle}`,
+                          }}
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold truncate" style={{ color: C.heading }}>{commit.commit_message}</p>
+                              <p className="text-xs mt-1" style={{ color: C.placeholder }}>
+                                {commit.author_username} · {new Date(commit.commit_date || commit.createdAt).toLocaleString()}
+                              </p>
+                            </div>
+                            <span className="text-xs font-mono px-2 py-1 rounded-lg"
+                              style={{ backgroundColor: C.inputBg, color: C.placeholder }}>
+                              {commit.commit_id?.slice(0, 7)}
+                            </span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {linkedCommits.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: C.placeholder }}>Band commitlar</p>
+                    <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                      {linkedCommits.map((commit) => (
+                        <div key={commit._id} className="rounded-xl p-3"
+                          style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, opacity: 0.8 }}>
+                          <p className="text-sm font-medium" style={{ color: C.heading }}>{commit.commit_message}</p>
+                          <p className="text-xs mt-1" style={{ color: C.placeholder }}>
+                            {commit.author_username} · {commit.task?.key || "Linked task"}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {error && (
+            <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs"
+              style={{ backgroundColor: C.dangerBg, color: C.danger, border: "1px solid rgba(224,61,61,0.2)" }}>
+              <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              {error}
+            </div>
+          )}
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 font-semibold py-2.5 rounded-xl transition-all text-sm"
+              style={{ backgroundColor: C.inputBg, color: C.muted, border: `1px solid ${C.borderSubtle}` }}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSubmit(false)}
+              disabled={submitting || loading}
+              className="flex-1 font-semibold py-2.5 rounded-xl transition-all text-sm"
+              style={{ backgroundColor: C.coral, color: "#fff", opacity: submitting || loading ? 0.6 : 1 }}
+            >
+              {submitting ? "Saving..." : "Save completion"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────────────────────
+   TaskDetailModal
+   ───────────────────────────────────────────────────────────── */
+const TaskDetailModal = ({ task, onClose, onUpdated, onRequireCompletion }) => {
+  const dispatch = useDispatch();
+  const pri = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium;
+  const col = KANBAN_COLUMNS.find((c) => c.key === task.status);
+  const deadline = task.task_deadline ? new Date(task.task_deadline) : null;
+  const isOverdue = task.status === "overdue";
+  const completedBy = task.completedAt_user?.user?.username || task.completedAt_user?.github_username;
+  const initialForm = {
+    task_name: task.task_name || "",
+    task_describe: task.task_describe || "",
+    priority: task.priority || "medium",
+    task_deadline: normalizeTaskDeadline(task.task_deadline),
+    status: task.status || "todo",
+  };
+  const [form, setForm] = useState(initialForm);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    setForm({
+      task_name: task.task_name || "",
+      task_describe: task.task_describe || "",
+      priority: task.priority || "medium",
+      task_deadline: normalizeTaskDeadline(task.task_deadline),
+      status: task.status || "todo",
+    });
+    setError("");
+  }, [task]);
+
+  const set = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSubmitting(true);
+
+    try {
+      if (COMPLETION_STATUSES.includes(form.status) && form.status !== task.status) {
+        onRequireCompletion?.({
+          task,
+          nextStatus: form.status,
+          nextValues: form,
+          previousTask: task,
+          source: "edit",
+        });
+        onClose();
+        return;
+      }
+
+      const res = await updateTaskRequest(task._id, task, form);
+
+      if (res.skipped) {
+        onClose();
+        return;
+      }
+
+      if (res.success && res.task) {
+        dispatch(putTask(res.task));
+        onUpdated?.(res.task);
+        onClose();
+      }
+    } catch (err) {
+      setError(getTaskEditErrorMessage(err));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
+      style={{ backgroundColor: "rgba(43,49,65,0.75)" }} onClick={onClose}>
+      <div className="rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
+        style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderDef}` }}
+        onClick={(e) => e.stopPropagation()}>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b"
+          style={{ borderColor: C.borderSubtle, backgroundColor: C.inputBg }}>
+          <div className="flex items-center gap-2.5">
+            <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg"
+              style={{ backgroundColor: C.coralBg, color: C.coral }}>{task.key}</span>
+            <h2 className="text-sm font-semibold truncate" style={{ color: C.heading }}>{task.task_name}</h2>
+          </div>
+          <button onClick={onClose}
+            className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-gray-100"
+            style={{ color: C.muted }}>
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
+          </button>
+        </div>
+
+        <form className="p-6 space-y-5" onSubmit={handleSubmit}>
+          {/* Badges row */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full"
+              style={{ backgroundColor: pri.bg, color: pri.color }}>{pri.label} priority</span>
+            {col && (
+              <span className="flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full"
+                style={{ backgroundColor: col.bgColor || C.inputBg, color: col.color }}>
+                {col.icon}{col.label}
+              </span>
+            )}
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: C.placeholder }}>
+              Task name
+            </label>
+            <input
+              required
+              value={form.task_name}
+              onChange={set("task_name")}
+              className="w-full px-4 py-2.5 text-sm outline-none transition-all"
+              style={inputBase}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: C.placeholder }}>
+              Description
+            </label>
+            <textarea
+              rows={4}
+              value={form.task_describe}
+              onChange={set("task_describe")}
+              className="w-full px-4 py-2.5 text-sm outline-none transition-all resize-none"
+              style={inputBase}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+            />
+          </div>
+
+          {/* Meta grid */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl p-3" style={{ backgroundColor: C.inputBg }}>
+              <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: C.placeholder }}>Assigned to</p>
+              {task.assigned_user ? (
+                <div className="flex items-center gap-2">
+                  <img src={task.assigned_user.avatar_url} alt="" className="w-7 h-7 rounded-lg object-cover" />
+                  <p className="text-sm font-medium truncate" style={{ color: C.heading }}>{task.assigned_user.username}</p>
+                </div>
+              ) : <p className="text-sm" style={{ color: C.placeholder }}>—</p>}
+            </div>
+
+            <div className="rounded-xl p-3" style={{ backgroundColor: C.inputBg }}>
+              <label className="text-xs font-semibold uppercase tracking-wide mb-2 block" style={{ color: C.placeholder }}>
+                Deadline
+              </label>
+              <input
+                type="date"
+                value={form.task_deadline}
+                onChange={set("task_deadline")}
+                className="w-full px-3 py-2.5 text-sm outline-none transition-all"
+                style={inputBase}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: C.placeholder }}>
+              Priority
+            </label>
+            <select
+              value={form.priority}
+              onChange={set("priority")}
+              className="w-full px-3 py-2.5 text-sm outline-none transition-all cursor-pointer"
+              style={inputBase}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+            >
+              {PRIORITIES.map((priority) => (
+                <option key={priority} value={priority}>
+                  {priority.charAt(0).toUpperCase() + priority.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold uppercase tracking-wide mb-1.5 block" style={{ color: C.placeholder }}>
+              Status
+            </label>
+            <select
+              value={form.status}
+              onChange={set("status")}
+              className="w-full px-3 py-2.5 text-sm outline-none transition-all cursor-pointer"
+              style={inputBase}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+            >
+              {KANBAN_COLUMNS.map((status) => (
+                <option key={status.key} value={status.key}>
+                  {status.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Completed info */}
+          {task.completedAt && (
+            <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl"
+              style={{ backgroundColor: C.successBg, border: `1px solid rgba(34,176,125,0.2)` }}>
+              <svg className="w-4 h-4 shrink-0" style={{ color: C.success }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <div>
+                <p className="text-xs font-semibold" style={{ color: C.success }}>
+                  Completed {new Date(task.completedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                  {completedBy && ` by ${completedBy}`}
+                </p>
+                {task.linked_commit?.commit_message && (
+                  <p className="text-xs mt-1" style={{ color: C.muted }}>
+                    Commit: {task.linked_commit.commit_message}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Created */}
+          <p className="text-xs" style={{ color: C.placeholder }}>
+            Created {new Date(task.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+          </p>
+
+          {deadline && !form.task_deadline && (
+            <p className="text-xs" style={{ color: isOverdue ? C.danger : C.placeholder }}>
+              Current deadline: {deadline.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+            </p>
+          )}
+
+          {error && (
+            <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs"
+              style={{ backgroundColor: C.dangerBg, color: C.danger, border: "1px solid rgba(224,61,61,0.2)" }}>
+              <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              {error}
+            </div>
+          )}
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 font-semibold py-2.5 rounded-xl transition-all text-sm"
+              style={{ backgroundColor: C.inputBg, color: C.muted, border: `1px solid ${C.borderSubtle}` }}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="flex-1 font-semibold py-2.5 rounded-xl transition-all text-sm"
+              style={{ backgroundColor: C.coral, color: "#fff", opacity: submitting ? 0.6 : 1 }}
+            >
+              {submitting ? "Saving..." : "Save changes"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+/* ─────────────────────────────────────────────────────────────
    AssignTaskModal
    ───────────────────────────────────────────────────────────── */
 const PRIORITIES = ["low", "medium", "high"];
@@ -461,25 +1042,39 @@ const PRIORITY_CONFIG = {
   medium: { color: C.warning,  bg: C.warningBg,  label: "Med" },
   low:    { color: C.success,  bg: C.successBg,  label: "Low" },
 };
+const COMPLETION_STATUSES = ["done", "verified"];
+
+const isColumnKey = (value) => KANBAN_COLUMNS.some((column) => column.key === value);
+
+const getTaskColumnKey = (overId, tasks) => {
+  if (!overId) return null;
+  if (isColumnKey(overId)) return overId;
+
+  const task = tasks.find((item) => item._id === overId);
+  return task?.status || null;
+};
 
 /* ── KanbanCard ── */
-const KanbanCard = ({ task }) => {
+const KanbanCard = ({ task, onClick, dragHandleProps = {}, isDragging = false }) => {
   const pri = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium;
   const isOverdue = task.status === "overdue";
   const deadline = task.task_deadline ? new Date(task.task_deadline) : null;
   const deadlineStr = deadline
     ? deadline.toLocaleDateString(undefined, { month: "short", day: "numeric" })
     : null;
+  const completedBy = task.completedAt_user?.user?.username || task.completedAt_user?.github_username;
 
   return (
     <div
       className="rounded-xl p-3"
+      onClick={onClick}
       style={{
         backgroundColor: C.cardBg,
         border: `1px solid ${isOverdue ? "rgba(224,61,61,0.25)" : C.borderSubtle}`,
-        boxShadow: "0 1px 3px rgba(43,49,65,0.05)",
-        transition: "box-shadow 0.15s, transform 0.15s",
-        cursor: "default",
+        boxShadow: isDragging ? "0 10px 24px rgba(43,49,65,0.18)" : "0 1px 3px rgba(43,49,65,0.05)",
+        transition: "box-shadow 0.15s, transform 0.15s, opacity 0.15s",
+        cursor: "pointer",
+        opacity: isDragging ? 0.78 : 1,
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = "0 4px 14px rgba(43,49,65,0.12)";
@@ -496,10 +1091,29 @@ const KanbanCard = ({ task }) => {
           style={{ backgroundColor: C.inputBg, color: C.placeholder }}>
           {task.key}
         </span>
-        <span className="text-xs font-bold px-1.5 py-0.5 rounded-full"
-          style={{ backgroundColor: pri.bg, color: pri.color }}>
-          {pri.label}
-        </span>
+        <div className="flex items-center gap-1">
+          <span className="text-xs font-bold px-1.5 py-0.5 rounded-full"
+            style={{ backgroundColor: pri.bg, color: pri.color }}>
+            {pri.label}
+          </span>
+          <button
+            type="button"
+            {...dragHandleProps}
+            onClick={(e) => e.stopPropagation()}
+            className="w-6 h-6 rounded-md flex items-center justify-center cursor-grab active:cursor-grabbing"
+            style={{ backgroundColor: C.inputBg, color: C.placeholder, touchAction: "none" }}
+            aria-label="Drag task"
+          >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="9" cy="6" r="1" />
+              <circle cx="9" cy="12" r="1" />
+              <circle cx="9" cy="18" r="1" />
+              <circle cx="15" cy="6" r="1" />
+              <circle cx="15" cy="12" r="1" />
+              <circle cx="15" cy="18" r="1" />
+            </svg>
+          </button>
+        </div>
       </div>
       {/* Title */}
       <p className="text-sm font-semibold leading-snug mb-1" style={{ color: C.heading }}>
@@ -525,17 +1139,163 @@ const KanbanCard = ({ task }) => {
           </span>
         </div>
       )}
+      {(completedBy || task.linked_commit?.commit_message) && (
+        <div className="pt-2 mt-2 space-y-1" style={{ borderTop: `1px solid ${C.borderSubtle}` }}>
+          {completedBy && (
+            <p className="text-[11px] truncate" style={{ color: C.muted }}>
+              Done by {completedBy}
+            </p>
+          )}
+          {task.linked_commit?.commit_message && (
+            <p className="text-[11px] truncate" style={{ color: C.placeholder }}>
+              {task.linked_commit.commit_message}
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
 
-/* ── KanbanBoard ── */
-const KanbanBoard = ({ tasks, onAssign, isCurrOwner }) => {
+const DraggableTask = ({ task, onClick }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: task._id,
+    data: { type: "task", task },
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }}
+    >
+      <KanbanCard
+        task={task}
+        onClick={onClick}
+        isDragging={isDragging}
+        dragHandleProps={{ ...attributes, ...listeners }}
+      />
+    </div>
+  );
+};
+
+const DroppableColumn = ({ column, tasks, onTaskClick }) => {
+  const { setNodeRef, isOver } = useDroppable({
+    id: column.key,
+    data: { type: "column", columnKey: column.key },
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      className="flex flex-col rounded-xl overflow-hidden"
+      style={{
+        border: `1px solid ${column.borderColor}`,
+        backgroundColor: isOver ? C.cardBg : column.bgColor,
+        minHeight: "300px",
+        boxShadow: isOver ? "inset 0 0 0 2px rgba(232,101,74,0.18)" : "none",
+        transition: "background-color 0.15s, box-shadow 0.15s",
+      }}
+    >
+      <div className="flex items-center gap-2 px-3 py-2.5 shrink-0"
+        style={{ borderBottom: `1px solid ${column.borderColor}` }}>
+        <div className="flex items-center justify-center shrink-0" style={{ color: column.color }}>
+          {column.icon}
+        </div>
+        <span className="text-xs font-bold flex-1 truncate" style={{ color: column.color }}>
+          {column.label}
+        </span>
+        <span
+          className="text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shrink-0"
+          style={{ backgroundColor: "rgba(255,255,255,0.8)", color: column.color }}>
+          {tasks.length}
+        </span>
+      </div>
+
+      <SortableContext items={tasks.map((task) => task._id)} strategy={verticalListSortingStrategy}>
+        <div className="flex-1 p-2 space-y-2 overflow-y-auto" style={{ maxHeight: "400px" }}>
+          {tasks.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full py-8 opacity-50">
+              <div style={{ color: column.color }}>{column.icon}</div>
+              <p className="text-xs mt-2 font-medium" style={{ color: column.color }}>Empty</p>
+            </div>
+          ) : (
+            tasks.map((task) => (
+              <DraggableTask key={task._id} task={task} onClick={() => onTaskClick(task)} />
+            ))
+          )}
+        </div>
+      </SortableContext>
+    </div>
+  );
+};
+
+const KanbanContext = ({ tasks, onTaskClick, onTaskMove }) => {
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 6 },
+    })
+  );
+  const [activeTaskId, setActiveTaskId] = useState(null);
   const grouped = KANBAN_COLUMNS.reduce((acc, col) => {
-    acc[col.key] = tasks.filter((t) => t.status === col.key);
+    acc[col.key] = tasks.filter((task) => task.status === col.key);
     return acc;
   }, {});
+  const activeTask = tasks.find((task) => task._id === activeTaskId) || null;
 
+  const handleDragStart = (event) => {
+    setActiveTaskId(event.active.id);
+  };
+
+  const handleDragCancel = () => {
+    setActiveTaskId(null);
+  };
+
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+    setActiveTaskId(null);
+
+    if (!over) return;
+
+    const task = tasks.find((item) => item._id === active.id);
+    if (!task) return;
+
+    const nextStatus = getTaskColumnKey(over.id, tasks);
+    if (!nextStatus || nextStatus === task.status) return;
+
+    await onTaskMove(task, nextStatus);
+  };
+
+  return (
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={handleDragStart}
+      onDragCancel={handleDragCancel}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="grid grid-cols-5 gap-3">
+        {KANBAN_COLUMNS.map((column) => (
+          <DroppableColumn
+            key={column.key}
+            column={column}
+            tasks={grouped[column.key] || []}
+            onTaskClick={onTaskClick}
+          />
+        ))}
+      </div>
+
+      <DragOverlay>
+        {activeTask ? <KanbanCard task={activeTask} isDragging /> : null}
+      </DragOverlay>
+    </DndContext>
+  );
+};
+
+/* ── KanbanBoard ── */
+const KanbanBoard = ({ tasks, onAssign, isCurrOwner, onTaskClick, onTaskMove }) => {
   return (
     <div className="rounded-2xl p-6"
       style={{ backgroundColor: C.cardBg, border: `1px solid ${C.borderSubtle}`, boxShadow: "0 1px 3px rgba(43,49,65,0.06)" }}>
@@ -565,47 +1325,7 @@ const KanbanBoard = ({ tasks, onAssign, isCurrOwner }) => {
         )}
       </div>
 
-      {/* Column grid */}
-      <div className="grid grid-cols-5 gap-3">
-        {KANBAN_COLUMNS.map((col) => {
-          const colTasks = grouped[col.key] || [];
-          return (
-            <div key={col.key} className="flex flex-col rounded-xl overflow-hidden"
-              style={{
-                border: `1px solid ${col.borderColor}`,
-                backgroundColor: col.bgColor,
-                minHeight: "300px",
-              }}>
-              {/* Column header */}
-              <div className="flex items-center gap-2 px-3 py-2.5 shrink-0"
-                style={{ borderBottom: `1px solid ${col.borderColor}` }}>
-                <div className="flex items-center justify-center shrink-0" style={{ color: col.color }}>
-                  {col.icon}
-                </div>
-                <span className="text-xs font-bold flex-1 truncate" style={{ color: col.color }}>
-                  {col.label}
-                </span>
-                <span
-                  className="text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: "rgba(255,255,255,0.8)", color: col.color }}>
-                  {colTasks.length}
-                </span>
-              </div>
-              {/* Cards */}
-              <div className="flex-1 p-2 space-y-2 overflow-y-auto" style={{ maxHeight: "400px" }}>
-                {colTasks.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full py-8 opacity-50">
-                    <div style={{ color: col.color }}>{col.icon}</div>
-                    <p className="text-xs mt-2 font-medium" style={{ color: col.color }}>Empty</p>
-                  </div>
-                ) : (
-                  colTasks.map((task) => <KanbanCard key={task._id} task={task} />)
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <KanbanContext tasks={tasks} onTaskClick={onTaskClick} onTaskMove={onTaskMove} />
     </div>
   );
 };
@@ -645,6 +1365,15 @@ const StatCard = ({ title, value, icon }) => (
 /* ─────────────────────────────────────────────────────────────
    Main Page
    ───────────────────────────────────────────────────────────── */
+const STATUS_FILTERS = [
+  { key: "all", label: "All" },
+  { key: "todo", label: "To Do" },
+  { key: "in_progress", label: "In Progress" },
+  { key: "done", label: "Done" },
+  { key: "verified", label: "Verified" },
+  { key: "overdue", label: "Overdue" },
+];
+
 const ProjectDetails = () => {
   const { id } = useParams();
   const [project, setProject] = useState(null);
@@ -652,31 +1381,66 @@ const ProjectDetails = () => {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
   const [invites, setInvites] = useState([]);
-  const [tasks, setTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [taskFilter, setTaskFilter] = useState("all");
+  const [toasts, setToasts] = useState([]);
+  const [dragError, setDragError] = useState("");
+  const [completionModal, setCompletionModal] = useState(null);
+  const toastIdRef = useRef(0);
+  const prevCommitCountRef = useRef(0);
+
   const dispatch = useDispatch();
   const currentUser = useSelector((s) => s.user.user);
   const currentUserId = currentUser?.user?._id || currentUser?._id;
   const socketCommits = useSelector((s) => s.projectcommits.commits);
-  useCommitsEvents(project?._id);
+  const tasks = useSelector((state) => state.tasks.tasks);
 
-  const fetchProject = async () => {
-    try { const res = await api.get(`/api/project/${id}`); setProject(res.data.project); }
-    catch (err) { console.error(err); } finally { setLoading(false); }
+  const addToast = (type, title, body) => {
+    const toast = { id: ++toastIdRef.current, type, title, body };
+    setToasts((prev) => [...prev, toast]);
   };
-  const fetchInvites = async () => {
-    try { const res = await api.get(`/api/invite/invites?projectId=${id}`); setInvites(res.data.invites || []); }
-    catch (err) { console.error(err); }
-  };
-  const fetchTasks = async () => {
-    try { const res = await api.get(`/api/task/project/${id}`); setTasks(res.data.tasks || []); }
-    catch { /* silent */ }
-  };
+  const dismissToast = (toastId) => setToasts((prev) => prev.filter((t) => t.id !== toastId));
+
+  useCommitsEvents(project?._id);
+  useTaskEvents(project?._id, (task) => {
+    addToast("task", `Task ${task.key} updated`, `"${task.task_name}" is now ${task.status.replace("_", " ")}`);
+  });
 
   useEffect(() => {
+    if (socketCommits.length > prevCommitCountRef.current && prevCommitCountRef.current > 0) {
+      const latest = socketCommits[0];
+      addToast("commit", "New commit pushed", latest?.commit_message || "No message");
+    }
+    prevCommitCountRef.current = socketCommits.length;
+  }, [socketCommits]);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        const res = await api.get(`/api/project/${id}`);
+        setProject(res.data.project);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchInvites = async () => {
+      try {
+        const res = await api.get(`/api/invite/invites?projectId=${id}`);
+        setInvites(res.data.invites || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     dispatch(clearCommits());
-    fetchProject(); fetchInvites(); fetchTasks();
+    fetchProject();
+    fetchInvites();
+    dispatch(getTasks(id));
     return () => dispatch(clearCommits());
-  }, [id]);
+  }, [dispatch, id]);
 
   const handleRoleChange = async (memberId, role) => {
     try {
@@ -689,6 +1453,114 @@ const ProjectDetails = () => {
       await api.delete(`/api/project/${id}/members/${memberId}`);
       setProject((p) => ({ ...p, members: p.members.filter((m) => m._id !== memberId) }));
     } catch (err) { console.error(err); }
+  };
+
+  const openCompletionModal = (payload) => {
+    setCompletionModal(payload);
+  };
+
+  const closeCompletionModal = () => {
+    setCompletionModal(null);
+  };
+
+  const submitCompletionModal = async (payload) => {
+    const {
+      task,
+      nextStatus,
+      nextValues,
+      previousTask = task,
+      completedBy,
+      commitId,
+    } = payload;
+
+    const optimisticTask = {
+      ...task,
+      ...nextValues,
+      status: nextStatus,
+      completedAt_user: completedBy
+        ? {
+            user: project?.members?.find((member) => member.user?._id === completedBy)?.user || task.completedAt_user?.user || null,
+            github_username: null,
+          }
+        : task.completedAt_user,
+    };
+
+    dispatch(putTask(optimisticTask));
+    if (selectedTask?._id === optimisticTask._id) {
+      setSelectedTask(optimisticTask);
+    }
+
+    try {
+      const res = await updateTaskRequest(task._id, task, nextValues || { status: nextStatus }, {
+        status: nextStatus,
+        completed_by: completedBy || getCompletionDefaultOwnerId(project),
+        ...(commitId ? { commit_id: commitId } : { commit_id: "" }),
+      });
+
+      if (res?.success && res.task) {
+        dispatch(putTask(res.task));
+        if (selectedTask?._id === res.task._id) {
+          setSelectedTask(res.task);
+        }
+        setCompletionModal(null);
+      }
+    } catch (err) {
+      dispatch(putTask(previousTask));
+      if (selectedTask?._id === previousTask._id) {
+        setSelectedTask(previousTask);
+      }
+
+      if (err?.response?.status === 403) {
+        setDragError("Sizda ruxsat yo'q");
+        addToast("task", "Permission denied", "Sizda ruxsat yo'q");
+      }
+
+      throw new Error(err?.response?.data?.message || "Task completion saqlanmadi");
+    }
+  };
+
+  const handleTaskMove = async (task, nextStatus) => {
+    const previousTask = { ...task };
+    setDragError("");
+
+    if (COMPLETION_STATUSES.includes(nextStatus) && nextStatus !== task.status) {
+      openCompletionModal({
+        task,
+        nextStatus,
+        nextValues: { ...task, status: nextStatus },
+        previousTask,
+        source: "drag",
+      });
+      return;
+    }
+
+    const optimisticTask = { ...task, status: nextStatus };
+    dispatch(putTask(optimisticTask));
+
+    try {
+      const res = await updateTaskStatusRequest(task._id, nextStatus);
+
+      if (res?.success && res.task) {
+        dispatch(putTask(res.task));
+        if (selectedTask?._id === res.task._id) {
+          setSelectedTask(res.task);
+        }
+      }
+    } catch (err) {
+      dispatch(putTask(previousTask));
+
+      if (selectedTask?._id === previousTask._id) {
+        setSelectedTask(previousTask);
+      }
+
+      if (err?.response?.status === 403) {
+        setDragError("Sizda ruxsat yo'q");
+        addToast("task", "Permission denied", "Sizda ruxsat yo'q");
+        return;
+      }
+
+      setDragError(err?.response?.data?.message || "Taskni ko'chirishda xatolik yuz berdi");
+    }
   };
 
   if (loading) return (
@@ -721,8 +1593,11 @@ const ProjectDetails = () => {
     || project.repo_owner_user?.toString() === currentUserId;
   const allCommits = [...socketCommits, ...[...(project.commits || [])].reverse()];
 
+  const filteredTasks = taskFilter === "all" ? tasks : tasks.filter((t) => t.status === taskFilter);
+
   return (
     <div className="min-h-screen p-6 md:p-8" style={{ backgroundColor: C.pageBg }}>
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
       {inviteOpen && (
         <InviteModal projectId={project._id} members={project.members} onClose={() => setInviteOpen(false)} />
       )}
@@ -730,11 +1605,33 @@ const ProjectDetails = () => {
         <AssignTaskModal
           projectId={project._id} members={project.members}
           onClose={() => setAssignOpen(false)}
-          onAssigned={(task) => setTasks((prev) => [task, ...prev])}
+          onAssigned={(task) => dispatch(addTask(task))}
+        />
+      )}
+      {completionModal && (
+        <TaskCompletionModal
+          project={project}
+          modalState={completionModal}
+          onClose={closeCompletionModal}
+          onSubmit={submitCompletionModal}
+        />
+      )}
+      {selectedTask && (
+        <TaskDetailModal
+          task={selectedTask}
+          onClose={() => setSelectedTask(null)}
+          onUpdated={(updatedTask) => setSelectedTask(updatedTask)}
+          onRequireCompletion={openCompletionModal}
         />
       )}
 
       <div className="max-w-7xl mx-auto space-y-5">
+        {dragError && (
+          <div className="px-4 py-3 rounded-xl text-sm font-medium"
+            style={{ backgroundColor: C.dangerBg, color: C.danger, border: "1px solid rgba(224,61,61,0.18)" }}>
+            {dragError}
+          </div>
+        )}
 
         {/* ── Hero Header ── */}
         <div className="rounded-2xl overflow-hidden"
@@ -945,7 +1842,7 @@ const ProjectDetails = () => {
 
             {/* Tasks list */}
             <Section>
-              <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2.5">
                   <h2 className="text-base font-semibold" style={{ color: C.heading }}>Tasks</h2>
                   <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
@@ -964,7 +1861,27 @@ const ProjectDetails = () => {
                   </button>
                 )}
               </div>
-              {tasks.length === 0 ? (
+
+              {/* Filter tabs */}
+              <div className="flex gap-1.5 flex-wrap mb-4">
+                {STATUS_FILTERS.map((f) => {
+                  const count = f.key === "all" ? tasks.length : tasks.filter((t) => t.status === f.key).length;
+                  const active = taskFilter === f.key;
+                  return (
+                    <button key={f.key} onClick={() => setTaskFilter(f.key)}
+                      className="text-xs font-semibold px-2.5 py-1 rounded-lg transition-all"
+                      style={{
+                        backgroundColor: active ? C.coral : C.inputBg,
+                        color: active ? "#fff" : C.muted,
+                        border: `1px solid ${active ? C.coral : C.borderSubtle}`,
+                      }}>
+                      {f.label} {count > 0 && <span style={{ opacity: active ? 0.8 : 0.6 }}>·{count}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {filteredTasks.length === 0 ? (
                 <div className="text-center py-8">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2.5"
                     style={{ backgroundColor: C.inputBg }}>
@@ -972,24 +1889,28 @@ const ProjectDetails = () => {
                       <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
                     </svg>
                   </div>
-                  <p className="text-sm font-medium" style={{ color: C.muted }}>No tasks yet</p>
-                  <p className="text-xs mt-0.5" style={{ color: C.placeholder }}>Assign a task to get started</p>
+                  <p className="text-sm font-medium" style={{ color: C.muted }}>
+                    {taskFilter === "all" ? "No tasks yet" : `No ${taskFilter.replace("_", " ")} tasks`}
+                  </p>
+                  {taskFilter === "all" && <p className="text-xs mt-0.5" style={{ color: C.placeholder }}>Assign a task to get started</p>}
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {tasks.map((task) => {
+                  {filteredTasks.map((task) => {
                     const pri = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium;
                     const col = KANBAN_COLUMNS.find((c) => c.key === task.status);
+                    const completedBy = task.completedAt_user?.user?.username || task.completedAt_user?.github_username;
                     return (
                       <div key={task._id} className="p-3.5 rounded-xl transition-colors"
-                        style={{ border: `1px solid ${C.borderSubtle}` }}
+                        style={{ border: `1px solid ${C.borderSubtle}`, cursor: "pointer" }}
+                        onClick={() => setSelectedTask(task)}
                         onMouseEnter={(e) => e.currentTarget.style.backgroundColor = C.inputBg}
                         onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "transparent"}>
                         <div className="flex items-start gap-3">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="text-xs font-mono font-semibold px-1.5 py-0.5 rounded"
-                                style={{ backgroundColor: C.inputBg, color: C.placeholder }}>{task.key}</span>
+                                style={{ backgroundColor: C.coralSubtle, color: C.coral }}>{task.key}</span>
                               <p className="text-sm font-semibold truncate" style={{ color: C.heading }}>{task.task_name}</p>
                             </div>
                             {task.task_describe && (
@@ -1004,6 +1925,20 @@ const ProjectDetails = () => {
                                 Due {new Date(task.task_deadline).toLocaleDateString()}
                               </span>
                             </div>
+                            {(completedBy || task.linked_commit?.commit_message) && (
+                              <div className="mt-2 space-y-1">
+                                {completedBy && (
+                                  <p className="text-xs" style={{ color: C.muted }}>
+                                    Completed by {completedBy}
+                                  </p>
+                                )}
+                                {task.linked_commit?.commit_message && (
+                                  <p className="text-xs truncate" style={{ color: C.placeholder }}>
+                                    Commit: {task.linked_commit.commit_message}
+                                  </p>
+                                )}
+                              </div>
+                            )}
                           </div>
                           <div className="flex flex-col items-end gap-1.5 shrink-0">
                             <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
@@ -1028,6 +1963,8 @@ const ProjectDetails = () => {
           tasks={tasks}
           onAssign={() => setAssignOpen(true)}
           isCurrOwner={isCurrOwner}
+          onTaskClick={setSelectedTask}
+          onTaskMove={handleTaskMove}
         />
 
       </div>
