@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import alex from "../assets/Alex Monolith.png"
 import img from "../assets/Icon (1).png"
 import img2 from "../assets/Icon (2).png"
@@ -164,7 +165,7 @@ const themes = {
 const baseCardClass = 'rounded-[20px] border'
 
 const Profile = () => {
-  const [mode, setMode] = useState('dark')
+  const mode = useSelector((state) => state.theme.mode)
   const theme = themes[mode]
 
   return (
@@ -223,12 +224,6 @@ const Profile = () => {
             </div>
 
             <div className='flex flex-col gap-3 sm:flex-row lg:justify-end'>
-              <button
-                onClick={() => setMode((prev) => (prev === 'dark' ? 'light' : 'dark'))}
-                className={`inline-flex items-center justify-center gap-2 rounded-[10px] border px-5 py-3 text-[14px] font-semibold transition-colors duration-300 ${theme.toggleButton}`}
-              >
-                {mode === 'dark' ? 'Light Mode' : 'Dark Mode'}
-              </button>
               <button className={`inline-flex items-center justify-center gap-3 rounded-[10px] border px-5 py-3 text-[14px] font-medium transition-colors duration-300 ${theme.shareButton}`}>
                 <img src={share} alt='share' className='h-4 w-4 opacity-90' />
                 Share Profile
