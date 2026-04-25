@@ -13,13 +13,13 @@ export default function Sidebar() {
   const isDark = mode === "dark";
   const { t } = useTranslation();
 
-  const NAV = [
-    { path: "/dashboard",          label: t("dashboard"), icon: <FaHome /> },
-    { path: "/dashboard/projects", label: t("projects"),  icon: <GoProjectSymlink /> },
-    { path: "/dashboard/tasks",    label: t("tasks"),     icon: <FaTasks /> },
-    { path: "/dashboard/profile",  label: t("profile"),   icon: <CgProfile /> },
-    { path: "/dashboard/settings", label: t("settings"),  icon: <IoMdSettings /> },
-  ];
+  const NAV = [ 
+    { path: "/dashboard",          label: t("dashboard"),  icon: <FaHome /> },
+    { path: "/dashboard/projects", label: t("projects"),   icon: <GoProjectSymlink /> },
+    { path: "/dashboard/tasks",    label: t("tasks"),      icon: <FaTasks /> },
+    { path: "/dashboard/profile",  label: t("profile"),    icon: <CgProfile /> },
+    { path: "/dashboard/settings", label: t("settings"),   icon: <IoMdSettings /> },
+  ]; 
 
   return (
     <aside
