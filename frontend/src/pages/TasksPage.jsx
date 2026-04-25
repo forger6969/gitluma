@@ -417,7 +417,7 @@
 
 
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import api from "../api/api";
@@ -585,7 +585,7 @@ const TasksPage = () => {
         overdue: data?.overdue ?? [],
       });
     } catch (err) {
-      console.log("API ERROR:", err.message);
+      console.error("TasksPage fetch error:", err.message);
       setKanban({
         todo: [],
         in_progress: [],

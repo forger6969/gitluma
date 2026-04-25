@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
 const GithubCallbackPage = () => {
@@ -39,7 +39,7 @@ const GithubCallbackPage = () => {
           <>
             <div className="w-16 h-16 border-4 border-gray-700 border-t-white rounded-full animate-spin"></div>
             <p className="text-lg font-medium animate-pulse">
-              Входим через GitHub...
+              Signing in via GitHub...
             </p>
           </>
         )}
@@ -52,7 +52,7 @@ const GithubCallbackPage = () => {
             </div>
             
             <p className="text-lg font-medium">
-              Успешно! Перенаправляем...
+              Success! Redirecting...
             </p>
           </>
         )}
@@ -64,7 +64,7 @@ const GithubCallbackPage = () => {
               ✕
             </div>
             <p className="text-lg font-medium">
-              Ошибка авторизации
+              Authorization error
             </p>
           </>
         )}
