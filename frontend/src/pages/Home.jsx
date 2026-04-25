@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-
+import { useTranslation } from "react-i18next";
 
 
 
@@ -87,7 +87,8 @@ const Home = () => {
   const dispatch = useDispatch()
   const { user, loaded, loading, error } = useSelector(s => s.user)
   const repos = useSelector(s => s.repos)
-  const d = useSelector(s => s.theme.mode) === 'dark'   // d = isDark shorthand
+  const d = useSelector(s => s.theme.mode) === 'dark' 
+  const { t } = useTranslation() 
 
   if (loading || !user) return <SkeletonScreen d={d} />
 
@@ -98,6 +99,7 @@ const Home = () => {
       </p>
     </div>
   )
+
 
   if (!user) return null
   const u = user.user
@@ -116,8 +118,8 @@ const Home = () => {
           className="flex justify-between items-center"
         >
           <div>
-            <h1 className={`text-2xl font-bold tracking-tight ${h}`}>Workspace</h1>
-            <p className={`text-sm mt-1 ${m}`}>{repos?.repos?.length} repositories</p>
+            <h1 className={`text-2xl font-bold tracking-tight ${h}`}>{t("Workspace")}</h1>
+            <p className={`text-sm mt-1 ${m}`}>{repos?.repos?.length} {t("repositories")} </p>
           </div>
 
           <motion.button
@@ -125,7 +127,7 @@ const Home = () => {
             className={`text-white text-sm font-semibold px-5 py-2.5 rounded-md shadow-md transition
       ${d ? 'bg-[#E8654A]/90 hover:bg-[#E8654A]' : 'bg-gradient-to-r from-[#E8654A] to-[#FF8A65] hover:opacity-90'}`}
           >
-            + Create Project
+            + {t("CreateProject")}
           </motion.button>
         </motion.div>
 
@@ -145,11 +147,11 @@ const Home = () => {
             <div className="flex gap-3">
               <div className={`px-5 py-3 rounded-lg text-center ${d ? 'bg-[#E8654A]/10' : 'bg-[#FFF3EE]'}`}>
                 <p className={`text-xl font-bold ${d ? 'text-[#F0997B]' : 'text-[#E8654A]'}`}>{repos?.repos?.length ?? '—'}</p>
-                <p className={`text-[10px] uppercase tracking-wider ${m}`}>Repos</p>
+                <p className={`text-[10px] uppercase tracking-wider ${m}`}> {t("Repos")} </p>
               </div>
               <div className={`px-5 py-3 rounded-lg text-center ${d ? 'bg-[#2B3141]' : 'bg-[#F1F3F9]'}`}>
                 <p className={`text-xl font-bold ${h}`}>{u.followers ?? '—'}</p>
-                <p className={`text-[10px] uppercase tracking-wider ${m}`}>Followers</p>
+                <p className={`text-[10px] uppercase tracking-wider ${m}`}> {t("Followers")} </p>
               </div>
             </div>
           </div>
@@ -176,16 +178,13 @@ const Home = () => {
                   )}
                 </div>
 
-                <p className={`text-xs mt-2 line-clamp-2 ${m}`}>{repo.description || 'No description provided'}</p>
+                <p className={`text-xs mt-2 line-clamp-2 ${m}`}>{repo.description || `${t("RecentActivity")}`}</p>
 
                 <div className="mt-4 flex justify-between items-center">
-                  <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold
-            ${d ? 'bg-[#0D3D2A] text-[#5DCAA5]' : 'bg-[#E8F7EE] text-[#1C5C3A]'}`}>
-                    Active
-                  </span>
+
                   <motion.a href={repo.html_url} target="_blank" whileHover={{ x: 3 }}
                     className={`text-sm font-semibold ${d ? 'text-[#F0997B]' : 'text-[#E8654A]'}`}>
-                    Open →
+                    {t("Open")} →
                   </motion.a>
                 </div>
               </motion.div>
@@ -199,17 +198,13 @@ const Home = () => {
             initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
             className={card}
           >
-            <p className={`text-xs font-semibold mb-4 uppercase tracking-wider ${m}`}>Active Tasks</p>
+            <p className={`text-xs font-semibold mb-4 uppercase tracking-wider ${m}`}>{ t("ActiveTasks") }</p>
             {repos?.repos?.slice(0, 4).map((repo) => (
               <div key={repo.id} className={`flex justify-between items-center py-2 ${divider}`}>
                 <div>
                   <p className={`text-sm font-medium ${b}`}>{repo.name}</p>
                   <p className={`text-[11px] ${m}`}>{repo.language || 'Unknown'}</p>
                 </div>
-                <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold
-          ${d ? 'bg-[#E8654A]/10 text-[#F0997B]' : 'bg-[#FFF3EE] text-[#E8654A]'}`}>
-                  In Progress
-                </span>
               </div>
             ))}
           </motion.div>
@@ -218,7 +213,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             className={card}
           >
-            <p className={`text-xs font-semibold mb-4 uppercase tracking-wider ${m}`}>Recent Activity</p>
+            <p className={`text-xs font-semibold mb-4 uppercase tracking-wider ${m}`}>{t("RecentActivity")}</p>
             {[
               { msg: 'Initial commit', time: '2h ago', color: '#E8654A' },
               { msg: 'Fixed bug', time: '5h ago', color: '#22C55E' },

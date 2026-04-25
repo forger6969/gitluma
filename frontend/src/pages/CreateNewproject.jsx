@@ -69,7 +69,7 @@ const CreateNewproject = () => {
       setDescription("");
       setSelectedRepo("");
 
-      
+
 
       setFormSuccess(t("projectCreated"));
 
@@ -243,15 +243,13 @@ const CreateNewproject = () => {
       {openRepoModal && (
         <div
           onClick={closeModal}
-          className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-150 backdrop-blur-sm ${
-            showModal ? "bg-black/30" : "bg-black/0"
-          }`}
+          className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-150 backdrop-blur-sm ${showModal ? "bg-black/30" : "bg-black/0"
+            }`}
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`w-[440px] max-h-[540px] bg-white rounded-2xl p-5 border border-[#E4E8F0] shadow-2xl transition-all duration-150 flex flex-col ${
-              showModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
-            }`}
+            className={`w-[440px] max-h-[540px] bg-white rounded-2xl p-5 border border-[#E4E8F0] shadow-2xl transition-all duration-150 flex flex-col ${showModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
+              }`}
           >
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-semibold text-[#1A1F2E] text-base">
@@ -293,7 +291,9 @@ const CreateNewproject = () => {
               ))}
 
               {loading && (
-                <p className="text-sm text-[#8A93A8] text-center py-4">Loading...</p>
+                <div className="flex justify-center h-screen items-center">
+                  <span className="loading loading-dots loading-xl"></span>
+                </div>
               )}
               {error && (
                 <p className="text-sm text-red-500 text-center py-4">Error loading repos</p>

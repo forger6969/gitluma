@@ -13,12 +13,12 @@ import TestimonialsSection from "../components/TestimonialsSection";
 import FAQSection from "../components/FAQSection";
 import CTA from "../components/CTA";
 import Footer from "../components/Footer";
+import { useSelector } from "react-redux";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const Landing = () => {
   useEffect(() => {
-    // Scroll-reveal for headings & paragraphs (skip elements inside git animation)
     const targets = gsap.utils
       .toArray("h1, h2, h3, p, li")
       .filter((el) => !el.closest(".git-no-reveal"));
@@ -46,8 +46,15 @@ const Landing = () => {
     };
   }, []);
 
+  const mode = useSelector((s) => s.theme.mode);
+  const isDark = mode === "dark";
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDark);
+  }, [isDark]);
+
   return (
-    <div style={{ background: "var(--gl-bg-page)", color: "var(--gl-body)" }}>
+    <div className={isDark ? "bg-[#0F121A] text-white" : "bg-white text-[#2B3141]"}>
       <Navbar />
       <Hero />
       <GitBranchAnimation />

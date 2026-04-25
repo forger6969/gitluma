@@ -79,29 +79,7 @@ export default function ProfileModal({ onClose, user }) {
         </div>
       </div>
 
-      <button
-        onClick={changeLanguage}
-        className={`w-full flex items-center gap-3 px-3 py-2.5 text-sm
-          rounded-xl transition-all duration-200 active:scale-[0.98]
-          ${d
-            ? "text-[#EEF1F7] hover:bg-[#161B27]"
-            : "text-[#2B3141] hover:bg-[#F4F6FB]"}`}
-      >
-        <div className={`w-8 h-8 rounded-lg flex items-center justify-center
-          ${d ? "bg-[#2B3141]" : "bg-[#EEF1F7]"}`}>
-          <Globe size={16} className={d ? "text-[#EEF1F7]" : "text-[#2B3141]"} />
-        </div>
 
-        <span className="flex-1 text-left">
-          {t("changeLanguage")}
-        </span>
-
-        <span className="text-[10px] font-semibold uppercase
-          bg-[#FFE5DA] text-[#E8654A]
-          px-2 py-0.5 rounded-md">
-          {i18n.language.split("-")[0]}
-        </span>
-      </button>
 
 
 

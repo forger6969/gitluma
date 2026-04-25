@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { Provider } from 'react-redux'
-import store  from './store/store.js'
+import store from './store/store.js'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -29,6 +29,7 @@ import ActFeed from './pages/ActFeed.jsx'
 
 
 import Info from './pages/Info.jsx'
+import Settings from './pages/Settings.jsx'
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
         element: <GithubCallbackPage />
       },
       {
-        path:"/login",
+        path: "/login",
         element: (
           <PublicRoute>
             <Login />
@@ -51,7 +52,7 @@ const router = createBrowserRouter([
         index: true,
         element: <Landing />
       },
-     
+
       {
         path: "onboarding",
         element: <OnBoardWizard />
@@ -60,19 +61,19 @@ const router = createBrowserRouter([
         path: "/workSpace",
         element: <WorkSpace />
       },
-      
+
       {
         path: "/profile",
-        element: <Profile/>
+        element: <Profile />
       },
       {
         path: "*",
         element: <PageNotFound404 />
       },
-     
+
       {
-        path:"/info",
-        element:<Info/>
+        path: "/info",
+        element: <Info />
       }
     ],
   },
@@ -90,8 +91,9 @@ const router = createBrowserRouter([
           { index: true, element: <Home /> },
           { path: "projects", element: <Projekt /> },
           { path: "profile", element: <Profile /> },
-          {path:"project/:id", element:<ProjectMoreInf/>},
-          {path:"create" , element:<CreateNewproject/>},
+          { path: "settings", element: <Settings /> },
+          { path: "project/:id", element: <ProjectMoreInf /> },
+          { path: "create", element: <CreateNewproject /> },
         ]
       }
     ],

@@ -366,6 +366,32 @@
     "tasks": "Tasks",
     "profile": "Profile",
     "settings": "Settings",
-    "newTask": "New Task"
+    "newTask": "New Task",
+
+    "repositories": "repositories",
+    "Workspace": "Workspace",
+    "Repos": "Repos",
+    "Followers": "Followers",
+    "Nodescriptionprovided": "No description provided",
+    "Open": "Open",
+    "ActiveTasks": "Active Tasks",
+    "RecentActivity": "Recent Activity",
+    "CreateProject": "Create Project",
+    "Settings": "Settings",
+    "ManagePreferences": "Manage your preferences",
+    "Appearance": "Appearance",
+    "DarkMode": "Dark Mode",
+    "DarkModeDesc": "Switch to dark theme",
+    "Language": "Language",
+    "LanguageDesc": "Choose interface language",
+    "Notifications": "Notifications",
+    "SoundNotifications": "Sound",
+    "SoundNotificationsDesc": "Play sound on new notification",
+    "PushNotifications": "Push Notifications",
+    "EmailNotifications": "Email Notifications",
+    "Account": "Account",
+    "GitHubAccount": "GitHub Account",
+    "Logout": "Logout",
+    "LogoutDesc": "Sign out from your account"
 
 }
