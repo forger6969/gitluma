@@ -26,6 +26,7 @@ import { ThemeProvider } from './context/ThemeContext.jsx'
 import ProjectMoreInf from './pages/ProjectMoreInf.jsx'
 import CreateNewproject from './pages/CreateNewproject.jsx';
 import ActFeed from './pages/ActFeed.jsx'
+import TasksPage from './pages/TasksPage.jsx'
 
 
 import Info from './pages/Info.jsx'
@@ -93,6 +94,7 @@ const router = createBrowserRouter([
           { path: "profile", element: <Profile /> },
           {path:"project/:id", element:<ProjectDetails/>},
           {path:"create" , element:<CreateNewproject/>},
+        {path:"tasks" , element:<TasksPage/>}
         ]
       }
     ],
