@@ -567,5 +567,21 @@
   "s5_visual": "Vizual fikrlovchi",
   "s5_visual_sub": "Kanban · sudrab tashla",
   "s5_social": "Hamkorlik",
-  "s5_social_sub": "Umumiy · real vaqt"
+  "s5_social_sub": "Umumiy · real vaqt",
+
+
+
+
+
+
+
+  "changeLanguage": "Tilni o‘zgartirish",
+  "logout": "Chiqish",
+  "dashboard": "Bosh sahifa",
+  "projects": "Loyihalar",
+  "tasks": "Vazifalar",
+  "profile": "Profil",
+  "settings": "Sozlamalar",
+  "newTask": "Yangi vazifa"
+
 }

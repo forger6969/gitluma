@@ -19,6 +19,7 @@ const taskSchema = mongoose.Schema({
         github_username:{type:String , default:null}
     },
     completed_by:{type:Schema.Types.ObjectId , ref:"User" , default:null},
+    linked_commit:{type:Schema.Types.ObjectId , ref:"Commit" , default:null}
 
 },{ timestamps: true })
 

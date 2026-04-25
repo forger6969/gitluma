@@ -13,6 +13,10 @@ const useTaskEvents = (projectId, onUpdate) => {
     if (!socket) return;
 
     const handlePutTask = (data) => {
+        console.log("putted task",data);
+        
+        
+
       dispatch(putTask(data));
       onUpdate?.(data);
     };
@@ -31,7 +35,7 @@ const useTaskEvents = (projectId, onUpdate) => {
     return () => {
       socket.off("put_task", handlePutTask);
     };
-  }, [projectId, dispatch]);
+  }, [projectId]);
 };
 
 export default useTaskEvents;

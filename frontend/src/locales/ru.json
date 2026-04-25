@@ -320,5 +320,22 @@
   "s5_visual": "Визуальный мыслитель",
   "s5_visual_sub": "Kanban · drag & drop",
   "s5_social": "Коллаборативный",
-  "s5_social_sub": "Общий · в реальном времени"
+  "s5_social_sub": "Общий · в реальном времени",
+
+
+
+
+
+
+
+
+
+  "changeLanguage": "Сменить язык",
+  "logout": "Выйти",
+  "dashboard": "Главная",
+  "projects": "Проекты",
+  "tasks": "Задачи",
+  "profile": "Профиль",
+  "settings": "Настройки",
+  "newTask": "Новая задача"
 }

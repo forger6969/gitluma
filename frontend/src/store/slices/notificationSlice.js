@@ -8,6 +8,8 @@ export const getNotifications = createAsyncThunk(
         try {
 
             const req = await api.get("/api/notification/my")
+            console.log("notifications:", req.data);
+
             return req.data
 
         } catch (err) {
@@ -34,8 +36,7 @@ export const markAllAsRead = createAsyncThunk(
 const initialState = {
     notifications: [],
     loading: false,
-    error: null,
-    loaded: false
+    error: null
 }
 
 const notificationSlice = createSlice({
@@ -56,13 +57,12 @@ const notificationSlice = createSlice({
             })
 
             .addCase(getNotifications.rejected, (state, action) => {
-                state.error = action.payload
+                state.error = action
                 state.loading = false
             })
 
             .addCase(getNotifications.fulfilled, (state, action) => {
-                state.notifications = action.payload.notifications || []
-                state.loaded = true
+                state.notifications = action.payload.notifications
                 state.loading = false
             })
 

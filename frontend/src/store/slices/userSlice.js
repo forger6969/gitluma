@@ -7,11 +7,13 @@ export const userFetch = createAsyncThunk(
     async (_ , thunkAPI ) =>{
 
         try {
-
+            
             const req = await api.get("/api/user/me")
+            console.log(req);
             return req.data
 
         } catch (err) {
+            console.log(err);
            return thunkAPI.rejectWithValue(err.response?.data || err.message)
         }
 
@@ -20,10 +22,9 @@ export const userFetch = createAsyncThunk(
 
 
 const initialState = {
-    loading:false ,
+    loading:false , 
     error:null,
-    user:null,
-    loaded: false
+    user:null
 }
 
 const userSlice = createSlice({
@@ -45,7 +46,6 @@ const userSlice = createSlice({
 
         .addCase(userFetch.fulfilled , (state , action)=>{
             state.user = action.payload
-            state.loaded = true
             state.loading = false
         })
 

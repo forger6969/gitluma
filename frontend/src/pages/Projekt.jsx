@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getProjects } from "../store/slices/projectsSlice";
+import { useCreateProject } from "../context/CreateProjectContext";
 
 const Projekt = () => {
   const dispatch = useDispatch();
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const projects = useSelector((state)=> state.projects.projects)
+  const { open } = useCreateProject();
+  const isDarkMode = useSelector((s) => s.theme.mode) === "dark";
+  const projects = useSelector((state) => state.projects.projects);
   const loading = useSelector((state) => state.projects.loading);
   const error = useSelector((state) => state.projects.error);
 
@@ -89,23 +91,17 @@ const Projekt = () => {
               Projects
             </h1>
             <p className="mt-2 text-sm" style={{ color: theme.muted }}>
-              Redux store ichidan kelayotgan barcha loyihalar shu yerda
-              render qilindi.
+              All your connected GitHub projects
             </p>
           </div>
           <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={() => setIsDarkMode((prev) => !prev)}
-              className="rounded-xl px-4 py-2 text-sm font-semibold transition"
-              style={{
-                backgroundColor: theme.panelBg,
-                color: theme.text,
-                border: `1px solid ${theme.cardBorder}`,
-                boxShadow: "0 10px 30px rgba(43,49,65,0.08)",
-              }}
+              onClick={open}
+              className="rounded-xl px-4 py-2 text-sm font-semibold transition text-white"
+              style={{ backgroundColor: "#E8654A" }}
             >
-              {isDarkMode ? "Light mode" : "Dark mode"}
+              + New Project
             </button>
             <div
               className="rounded-xl px-4 py-2 text-sm"
@@ -130,7 +126,7 @@ const Projekt = () => {
               color: theme.muted,
             }}
           >
-            Hozircha project topilmadi.
+            No projects yet. Create your first project to get started.
           </div>
         ) : (
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
