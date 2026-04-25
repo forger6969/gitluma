@@ -58,7 +58,6 @@
   "feature_5": "GitHub automation",
   "feature_6": "Notifications",
   "feature_desc": "Powerful feature to improve your workflow",
-  "faq": "Frequently Asked Questions",
   "faq_q1": "How does Gitluma work?",
   "faq_a1": "It manages tasks through commits.",
   "faq_q2": "Is it free?",
@@ -89,7 +88,7 @@
   "repository": "REPOSITORY",
   "selectRepo": "Select repo",
   "changeRepo": "Change repository",
-  "sync": "Sync with GitHub repository",
+  "sync": "Connect a GitHub repository to link commits and pull requests to your tasks.",
   "reset": "Reset",
   "create": "Create",
   "creating": "Creating...",
@@ -345,27 +344,27 @@
   "s5_visual_sub": "Kanban · drag & drop",
   "s5_social": "Collaborative",
   "s5_social_sub": "Shared · real-time",
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    "changeLanguage": "Change language",
-    "logout": "Logout",
-    "dashboard": "Dashboard",
-    "projects": "Projects",
-    "tasks": "Tasks",
-    "profile": "Profile",
-    "settings": "Settings",
-    "newTask": "New Task"
-
+  "changeLanguage": "Change language",
+  "logout": "Logout",
+  "dashboard": "Dashboard",
+  "projects": "Projects",
+  "tasks": "Tasks",
+  "profile": "Profile",
+  "settings": "Settings",
+  "newTask": "New Task",
+  "tasksTitle": "My Tasks",
+  "tasksSubtitle": "All your assigned tasks in one board",
+  "noTasks": "No tasks",
+  "columns": {
+    "todo": "To Do",
+    "in_progress": "In Progress",
+    "done": "Done",
+    "verified": "Verified",
+    "overdue": "Overdue"
+  },
+  "priority": {
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  }
 }
