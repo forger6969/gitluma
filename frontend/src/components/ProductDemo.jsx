@@ -8,19 +8,8 @@ gsap.registerPlugin(ScrollTrigger);
 const GH_PATH =
   "M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12";
 
-// ── Step definitions ───────────────────────────────────────────────────────────
-const STEPS = [
-  { icon: "🔐", label: "Login with GitHub" },
-  { icon: "📦", label: "Create project" },
-  { icon: "🔗", label: "Connect repository" },
-  { icon: "👥", label: "Invite teammates" },
-  { icon: "📋", label: "Assign tasks" },
-  { icon: "💻", label: "Commit in VS Code" },
-  { icon: "⚡", label: "Real-time sync" },
-];
-
 // ── Screen 1 — Login ──────────────────────────────────────────────────────────
-const LoginScreen = () => (
+const LoginScreen = ({ t }) => (
   <div
     className="demo-screen absolute inset-0 flex flex-col items-center justify-center"
     style={{ background: "var(--gl-bg-page)" }}
@@ -41,7 +30,7 @@ const LoginScreen = () => (
           GitLuma
         </div>
         <div className="text-xs mt-1" style={{ color: "var(--gl-muted)" }}>
-          Sign in to continue
+          {t("demo_login_tagline")}
         </div>
       </div>
 
@@ -54,7 +43,7 @@ const LoginScreen = () => (
         <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white">
           <path d={GH_PATH} />
         </svg>
-        Continue with GitHub
+        {t("demo_login_btn")}
       </button>
 
       {/* Divider */}
@@ -66,14 +55,14 @@ const LoginScreen = () => (
         <div className="flex-1 h-px" style={{ background: "var(--gl-border-subtle)" }} />
       </div>
       <div className="text-center text-[10px]" style={{ color: "var(--gl-muted)" }}>
-        No password required · Read-only by default
+        {t("demo_login_no_pw")}
       </div>
     </div>
   </div>
 );
 
 // ── Screen 2 — Dashboard + New Project Modal ──────────────────────────────────
-const DashboardScreen = () => (
+const DashboardScreen = ({ t }) => (
   <div
     className="demo-screen absolute inset-0 flex flex-col opacity-0"
     style={{ background: "var(--gl-bg-page)" }}
@@ -103,7 +92,7 @@ const DashboardScreen = () => (
         className="w-36 border-r px-3 py-3 flex flex-col gap-0.5 flex-shrink-0"
         style={{ background: "var(--gl-bg-card)", borderColor: "var(--gl-border-subtle)" }}
       >
-        {["Dashboard", "Projects", "Team", "Settings"].map((item, i) => (
+        {[t("demo_sidebar_dashboard"), t("demo_sidebar_projects"), t("demo_sidebar_team"), t("demo_sidebar_settings")].map((item, i) => (
           <div
             key={i}
             className="text-xs px-2 py-1.5 rounded-md"
@@ -123,10 +112,10 @@ const DashboardScreen = () => (
         <div className="flex items-center justify-between mb-4">
           <div>
             <div className="text-sm font-semibold" style={{ color: "var(--gl-heading)" }}>
-              Projects
+              {t("demo_sidebar_projects")}
             </div>
             <div className="text-[10px] mt-0.5" style={{ color: "var(--gl-muted)" }}>
-              0 active projects
+              {t("demo_dash_active")}
             </div>
           </div>
           <button
@@ -134,7 +123,7 @@ const DashboardScreen = () => (
             className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-semibold text-white"
             style={{ background: "#E8654A" }}
           >
-            + New Project
+            {t("demo_dash_new")}
           </button>
         </div>
 
@@ -145,10 +134,10 @@ const DashboardScreen = () => (
         >
           <div className="text-3xl mb-2">📦</div>
           <div className="text-xs font-medium" style={{ color: "var(--gl-muted)" }}>
-            No projects yet
+            {t("demo_dash_empty")}
           </div>
           <div className="text-[10px] mt-1" style={{ color: "var(--gl-muted)" }}>
-            Create your first project to get started
+            {t("demo_dash_empty_sub")}
           </div>
         </div>
 
@@ -163,7 +152,7 @@ const DashboardScreen = () => (
           }}
         >
           <div className="font-semibold text-sm mb-4" style={{ color: "var(--gl-heading)" }}>
-            Create New Project
+            {t("demo_dash_modal_title")}
           </div>
 
           {/* Project name */}
@@ -172,7 +161,7 @@ const DashboardScreen = () => (
               className="text-[9px] font-bold uppercase tracking-widest mb-1.5"
               style={{ color: "var(--gl-muted)" }}
             >
-              Project Name
+              {t("demo_dash_proj_name")}
             </div>
             <div
               id="proj-name-input"
@@ -199,7 +188,7 @@ const DashboardScreen = () => (
               className="text-[9px] font-bold uppercase tracking-widest mb-1.5"
               style={{ color: "var(--gl-muted)" }}
             >
-              Repository
+              {t("demo_dash_repo")}
             </div>
             <div
               id="repo-selector"
@@ -210,7 +199,7 @@ const DashboardScreen = () => (
                 color: "var(--gl-muted)",
               }}
             >
-              <span id="repo-selector-text">Select repository…</span>
+              <span id="repo-selector-text">{t("demo_dash_select_repo")}</span>
               <span style={{ fontSize: 10 }}>▾</span>
             </div>
 
@@ -253,7 +242,7 @@ const DashboardScreen = () => (
             className="w-full py-2 rounded-lg text-xs font-semibold text-white mt-1"
             style={{ background: "#E8654A", opacity: 0.35 }}
           >
-            Create Project
+            {t("demo_dash_create_btn")}
           </button>
         </div>
       </div>
@@ -262,7 +251,7 @@ const DashboardScreen = () => (
 );
 
 // ── Screen 3 — Project (multi-phase: webhook, invite, tasks, toast) ───────────
-const ProjectScreen = () => (
+const ProjectScreen = ({ t }) => (
   <div
     className="demo-screen absolute inset-0 flex flex-col opacity-0"
     style={{ background: "var(--gl-bg-page)" }}
@@ -289,7 +278,7 @@ const ProjectScreen = () => (
           className="text-xs px-2.5 py-1 rounded-lg font-semibold text-white"
           style={{ background: "#E8654A" }}
         >
-          + Invite
+          + {t("demo_invite_btn")}
         </button>
         <div
           className="w-6 h-6 rounded-full text-white text-[10px] flex items-center justify-center font-bold"
@@ -307,7 +296,7 @@ const ProjectScreen = () => (
         className="w-36 border-r px-3 py-3 flex flex-col gap-0.5 flex-shrink-0"
         style={{ background: "var(--gl-bg-card)", borderColor: "var(--gl-border-subtle)" }}
       >
-        {["Overview", "Commits", "Tasks", "Team", "Settings"].map((item, i) => (
+        {[t("demo_proj_overview"), t("demo_proj_commits"), t("demo_proj_tasks"), t("demo_sidebar_team"), t("demo_sidebar_settings")].map((item, i) => (
           <div
             key={i}
             className="text-xs px-2 py-1.5 rounded-md"
@@ -338,7 +327,7 @@ const ProjectScreen = () => (
             style={{ background: "#9AA0B4" }}
           />
           <div className="text-[11px]" style={{ color: "var(--gl-muted)" }}>
-            <span id="webhook-text">Connecting webhook…</span>
+            <span id="webhook-text">{t("demo_connecting")}</span>
           </div>
           <div
             id="webhook-repo"
@@ -353,13 +342,13 @@ const ProjectScreen = () => (
         <div className="p-3 pt-2">
           <div className="flex items-center justify-between mb-2.5">
             <div className="text-xs font-semibold" style={{ color: "var(--gl-heading)" }}>
-              Task Board
+              {t("demo_task_board")}
             </div>
             <button
               className="text-[10px] px-2 py-1 rounded font-semibold"
               style={{ color: "var(--gl-coral)", background: "var(--gl-coral-bg)" }}
             >
-              + Add Task
+              {t("demo_add_task")}
             </button>
           </div>
 
@@ -372,7 +361,7 @@ const ProjectScreen = () => (
                   className="text-[9px] font-bold uppercase tracking-wider"
                   style={{ color: "var(--gl-muted)" }}
                 >
-                  Todo
+                  {t("demo_col_todo")}
                 </span>
               </div>
               <div className="space-y-1.5">
@@ -417,7 +406,7 @@ const ProjectScreen = () => (
                   className="text-[9px] font-bold uppercase tracking-wider"
                   style={{ color: "var(--gl-muted)" }}
                 >
-                  In Progress
+                  {t("demo_col_inprogress")}
                 </span>
               </div>
               <div
@@ -453,7 +442,7 @@ const ProjectScreen = () => (
                   className="text-[9px] font-bold uppercase tracking-wider"
                   style={{ color: "var(--gl-muted)" }}
                 >
-                  Done
+                  {t("demo_col_done")}
                 </span>
               </div>
               <div
@@ -491,7 +480,7 @@ const ProjectScreen = () => (
         >
           <div className="flex items-center justify-between mb-3">
             <div className="font-semibold text-xs" style={{ color: "var(--gl-heading)" }}>
-              Invite teammates
+              {t("demo_invite_title")}
             </div>
             <span className="text-xs cursor-pointer" style={{ color: "var(--gl-muted)" }}>
               ✕
@@ -519,7 +508,7 @@ const ProjectScreen = () => (
               className="px-3 py-2 rounded-lg text-xs font-semibold text-white flex-shrink-0"
               style={{ background: "#E8654A" }}
             >
-              Send
+              {t("demo_send")}
             </button>
           </div>
           <div className="space-y-2">
@@ -544,7 +533,7 @@ const ProjectScreen = () => (
                   className="ml-auto text-[10px] px-1.5 py-0.5 rounded"
                   style={{ background: "rgba(34,176,125,0.12)", color: "#22B07D" }}
                 >
-                  Invited ✓
+                  {t("demo_invited")}
                 </span>
               </div>
             ))}
@@ -570,13 +559,13 @@ const ProjectScreen = () => (
           </div>
           <div>
             <div className="text-[11px] font-semibold" style={{ color: "var(--gl-heading)" }}>
-              New commit pushed
+              {t("demo_commit_pushed")}
             </div>
             <div className="text-[10px] font-mono mt-0.5" style={{ color: "var(--gl-muted)" }}>
               GLM-1: add auth module
             </div>
             <div className="text-[10px] mt-0.5 font-medium" style={{ color: "#22B07D" }}>
-              Task auto-moved → Done ✓
+              {t("demo_task_moved")}
             </div>
           </div>
         </div>
@@ -815,6 +804,16 @@ const ProductDemo = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [hovStep,    setHovStep]    = useState(null);
 
+  const STEPS = [
+    { icon: "🔐", label: t("demo_step1") },
+    { icon: "📦", label: t("demo_step2") },
+    { icon: "🔗", label: t("demo_step3") },
+    { icon: "👥", label: t("demo_step4") },
+    { icon: "📋", label: t("demo_step5") },
+    { icon: "💻", label: t("demo_step6") },
+    { icon: "⚡", label: t("demo_step7") },
+  ];
+
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
@@ -961,7 +960,7 @@ const ProductDemo = () => {
     tl.to(q("#create-proj-btn"), { scale: 1.04, duration: 0.12 }, "<0.38");
     click(q("#create-proj-btn"), "<0.08");
     tl.to(q("#create-proj-btn"), { scale: 1, duration: 0.1 }, ">");
-    tl.add(() => { q("#create-proj-btn").textContent = "Creating…"; });
+    tl.add(() => { q("#create-proj-btn").textContent = t("demo_dash_creating"); });
 
     // transition to project screen
     tl.to(dashScr, { opacity: 0, scale: 0.97, duration: 0.4, ease: "power2.in" }, "+=0.5");
@@ -973,7 +972,7 @@ const ProductDemo = () => {
     tl.add(() => {
       q("#webhook-dot").style.background = "#22B07D";
       q("#webhook-dot").style.boxShadow  = "0 0 0 4px rgba(34,176,125,0.25)";
-      q("#webhook-text").textContent      = "Webhook connected ✓";
+      q("#webhook-text").textContent      = t("demo_webhook_ok");
       q("#webhook-text").style.color      = "#22B07D";
     });
     tl.to(q("#webhook-repo"), { opacity: 1, duration: 0.3 }, ">");
@@ -1103,9 +1102,9 @@ const ProductDemo = () => {
               background: "var(--gl-bg-page)",
             }}
           >
-            <LoginScreen />
-            <DashboardScreen />
-            <ProjectScreen />
+            <LoginScreen t={t} />
+            <DashboardScreen t={t} />
+            <ProjectScreen t={t} />
             <VSCodeScreen />
             <Cursor />
           </div>

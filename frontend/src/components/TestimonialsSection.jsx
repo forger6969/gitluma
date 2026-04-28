@@ -1,38 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const TESTIMONIALS = [
-  {
-    quote:
-      "GitLuma changed how our team works. Every developer knows exactly what task their commit belongs to — no more switching between Jira and GitHub.",
-    name:    "Alex Chen",
-    role:    "Engineering Lead",
-    company: "Buildify",
-    letter:  "A",
-    color:   "#3A7EE8",
-  },
-  {
-    quote:
-      "Working with commits is now effortless. I type the task ID, push, and the dashboard updates instantly. It feels like magic for a distributed team.",
-    name:    "Maria Garcia",
-    role:    "Senior Developer",
-    company: "Remoteflow",
-    letter:  "M",
-    color:   "#22B07D",
-  },
-  {
-    quote:
-      "Perfect tool for team collaboration. Real-time notifications mean our PM is always in the loop without pinging developers every hour.",
-    name:    "Jake Wilson",
-    role:    "CTO",
-    company: "Launchpad",
-    letter:  "J",
-    color:   "#E8654A",
-  },
-];
 
 const Stars = () => (
   <div className="flex gap-0.5 mb-4">
@@ -45,8 +16,36 @@ const Stars = () => (
 );
 
 const TestimonialsSection = () => {
+  const { t } = useTranslation();
   const ref = useRef(null);
   const [hov, setHov] = useState(null);
+
+  const TESTIMONIALS = [
+    {
+      quote:   t("test_q1"),
+      name:    "Alex Chen",
+      role:    t("test_role1"),
+      company: "Buildify",
+      letter:  "A",
+      color:   "#3A7EE8",
+    },
+    {
+      quote:   t("test_q2"),
+      name:    "Maria Garcia",
+      role:    t("test_role2"),
+      company: "Remoteflow",
+      letter:  "M",
+      color:   "#22B07D",
+    },
+    {
+      quote:   t("test_q3"),
+      name:    "Jake Wilson",
+      role:    t("test_role3"),
+      company: "Launchpad",
+      letter:  "J",
+      color:   "#E8654A",
+    },
+  ];
 
   useEffect(() => {
     const section = ref.current;
@@ -68,33 +67,31 @@ const TestimonialsSection = () => {
     >
       <div className="max-w-6xl mx-auto px-6">
 
-        {/* Header */}
         <div className="text-center mb-14">
           <span
             className="text-xs font-semibold tracking-widest px-4 py-1.5 rounded-full"
             style={{ color: "var(--gl-coral)", background: "var(--gl-coral-bg)" }}
           >
-            TESTIMONIALS
+            {t("test_badge")}
           </span>
           <h2 className="text-4xl font-bold mt-5" style={{ color: "var(--gl-heading)" }}>
-            What developers say
+            {t("test_h2")}
           </h2>
           <p className="mt-4 max-w-md mx-auto" style={{ color: "var(--gl-muted)" }}>
-            Trusted by engineering teams who ship daily
+            {t("test_sub")}
           </p>
         </div>
 
-        {/* Cards */}
         <div className="grid md:grid-cols-3 gap-6">
-          {TESTIMONIALS.map((t, i) => (
+          {TESTIMONIALS.map((item, i) => (
             <div
               key={i}
               className="tcard rounded-2xl p-7 flex flex-col cursor-default"
               style={{
                 background:   "var(--gl-bg-page)",
-                border:       `1px solid ${hov === i ? t.color : "var(--gl-border-subtle)"}`,
+                border:       `1px solid ${hov === i ? item.color : "var(--gl-border-subtle)"}`,
                 transform:    hov === i ? "translateY(-6px)" : "translateY(0)",
-                boxShadow:    hov === i ? `0 20px 50px rgba(0,0,0,0.08), 0 0 0 1px ${t.color}` : "none",
+                boxShadow:    hov === i ? `0 20px 50px rgba(0,0,0,0.08), 0 0 0 1px ${item.color}` : "none",
                 transition:   "all 0.3s ease",
               }}
               onMouseEnter={() => setHov(i)}
@@ -102,32 +99,29 @@ const TestimonialsSection = () => {
             >
               <Stars />
 
-              {/* Quote */}
               <p className="text-sm leading-relaxed flex-1 mb-6" style={{ color: "var(--gl-body)" }}>
-                &ldquo;{t.quote}&rdquo;
+                &ldquo;{item.quote}&rdquo;
               </p>
 
-              {/* Divider */}
               <div className="h-px mb-5" style={{ background: "var(--gl-border-subtle)" }} />
 
-              {/* Author */}
               <div className="flex items-center gap-3">
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0 transition-transform duration-300"
                   style={{
-                    background: t.color,
+                    background: item.color,
                     transform:  hov === i ? "scale(1.1)" : "scale(1)",
                   }}
                 >
-                  {t.letter}
+                  {item.letter}
                 </div>
                 <div>
                   <div className="text-sm font-semibold" style={{ color: "var(--gl-heading)" }}>
-                    {t.name}
+                    {item.name}
                   </div>
                   <div className="text-xs" style={{ color: "var(--gl-muted)" }}>
-                    {t.role} ·{" "}
-                    <span style={{ color: t.color }}>{t.company}</span>
+                    {item.role} ·{" "}
+                    <span style={{ color: item.color }}>{item.company}</span>
                   </div>
                 </div>
               </div>
@@ -135,7 +129,6 @@ const TestimonialsSection = () => {
           ))}
         </div>
 
-        {/* Social proof bar */}
         <div className="flex items-center justify-center gap-3 mt-10 flex-wrap">
           <div className="flex -space-x-2">
             {["#3A7EE8","#22B07D","#E8654A","#9370DB","#F59E0B","#EC4899"].map((c, i) => (
@@ -149,7 +142,9 @@ const TestimonialsSection = () => {
             ))}
           </div>
           <p className="text-sm" style={{ color: "var(--gl-muted)" }}>
-            Join <span className="font-semibold" style={{ color: "var(--gl-heading)" }}>200+</span> dev teams already using GitLuma
+            {t("test_join_pre")}{" "}
+            <span className="font-semibold" style={{ color: "var(--gl-heading)" }}>200</span>
+            {t("test_join_post")}
           </p>
         </div>
 

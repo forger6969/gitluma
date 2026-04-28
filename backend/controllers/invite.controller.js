@@ -1,4 +1,3 @@
-require("dotenv").config()
 const User = require("../models/user.model")
 const axios = require("axios")
 const Project = require("../models/projects.model")

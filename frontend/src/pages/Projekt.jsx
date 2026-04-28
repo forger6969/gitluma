@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { getProjects } from "../store/slices/projectsSlice";
 
 const Projekt = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const projects = useSelector((state)=> state.projects.projects)
   const loading = useSelector((state) => state.projects.loading);
   const error = useSelector((state) => state.projects.error);
@@ -16,7 +18,7 @@ const Projekt = () => {
   if (loading) {
     return (
       <div className="min-h-[91vh] bg-[#0F1115] flex items-center justify-center text-[#DFE2EB]">
-        Loading projects...
+        {t("proj_loading")}
       </div>
     );
   }
@@ -36,20 +38,16 @@ const Projekt = () => {
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black text-[#DFE2EB]">Projects</h1>
-            <p className="mt-2 text-sm text-[#98A2B3]">
-              Redux store ichidan kelayotgan barcha loyihalar shu yerda
-              render qilindi.
-            </p>
+            <h1 className="text-3xl font-black text-[#DFE2EB]">{t("proj_title")}</h1>
           </div>
           <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-[#DFE2EB]">
-            Total: {projects?.length || 0}
+            {t("proj_total")}: {projects?.length || 0}
           </div>
         </div>
 
         {!projects?.length ? (
           <div className="rounded-3xl border border-dashed border-white/10 bg-white/5 px-6 py-16 text-center text-[#98A2B3]">
-            Hozircha project topilmadi.
+            {t("proj_empty")}
           </div>
         ) : (
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -74,18 +72,18 @@ const Projekt = () => {
 
                 <div className="mt-6 grid grid-cols-2 gap-3">
                   <InfoCard
-                    title="Members"
+                    title={t("proj_members")}
                     value={project.members?.length || 0}
                   />
                   <InfoCard
-                    title="Commits"
+                    title={t("commits")}
                     value={project.commits?.length || 0}
                   />
                 </div>
 
                 <div className="mt-5 rounded-2xl bg-black/20 p-4">
                   <p className="text-xs uppercase tracking-[0.2em] text-[#667085]">
-                    Repository owner
+                    {t("proj_repo_owner")}
                   </p>
                   <p className="mt-2 text-sm font-medium text-[#E4E7EC]">
                     {project.repo_owner}
@@ -100,7 +98,7 @@ const Projekt = () => {
                     to={`/dashboard/project/${project._id}`}
                     className="rounded-xl bg-[#A78BFA] px-4 py-2 text-sm font-semibold text-[#1F1147] transition hover:bg-[#C4B5FD]"
                   >
-                    Open
+                    {t("proj_open")}
                   </Link>
                 </div>
               </div>

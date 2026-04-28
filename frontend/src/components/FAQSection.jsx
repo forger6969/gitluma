@@ -1,40 +1,6 @@
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { gsap } from "gsap";
-
-const FAQS = [
-  {
-    q: "How does GitLuma connect to GitHub?",
-    a: "GitLuma uses GitHub OAuth 2.0 for authentication — one click and you're in. We automatically discover your repositories and configure webhooks without any manual setup. You stay in full control of which repos are tracked.",
-  },
-  {
-    q: "What happens when I push a commit?",
-    a: "GitHub sends a webhook event to GitLuma instantly. We parse the commit message for task IDs (e.g. GLM-1), update the linked task's status in real time, and push a WebSocket notification to all team members who have the dashboard open.",
-  },
-  {
-    q: "Is my code or repository content stored?",
-    a: "No. GitLuma only processes commit metadata — author, message, timestamp and branch name. Your actual source code never touches our servers. We store only what's needed to track tasks and team activity.",
-  },
-  {
-    q: "Can I use GitLuma with private repositories?",
-    a: "Yes. Private repositories are fully supported on all plans. GitLuma requests the minimum GitHub OAuth scopes needed — read access to repos and webhook management — nothing more.",
-  },
-  {
-    q: "How do task IDs work in commit messages?",
-    a: "Prefix your commit with a task ID like: git commit -m \"GLM-1: add login flow\". GitLuma matches the pattern, moves the task to 'In Progress' on first commit and 'Done' when you merge to main. Custom patterns are supported on Pro and Team plans.",
-  },
-  {
-    q: "Can I invite teammates who don't have a GitHub account?",
-    a: "Teammates join GitLuma via an email invitation link. Once they sign in with their own GitHub account, they're auto-added to your project. GitHub is required for all members since commits are the core data source.",
-  },
-  {
-    q: "What is the difference between Pro and Team plans?",
-    a: "Pro is great for growing teams up to 15 people with full analytics, unlimited projects and 30-day history. Team adds unlimited seats, custom webhooks, full API access, SSO, audit logs and a dedicated support channel.",
-  },
-  {
-    q: "Is there a self-hosted option?",
-    a: "Self-hosted GitLuma is on our roadmap for Team plan customers. Sign up to the waitlist in your dashboard and we'll notify you when the Docker image is ready.",
-  },
-];
 
 const FAQItem = ({ faq, index }) => {
   const [open,    setOpen]    = useState(false);
@@ -64,7 +30,6 @@ const FAQItem = ({ faq, index }) => {
         onMouseLeave={() => setHovered(false)}
         onClick={toggle}
       >
-        {/* Number + question */}
         <div className="flex items-start gap-3.5 flex-1 min-w-0">
           <span
             className="text-xs font-bold mt-0.5 shrink-0 tabular-nums transition-colors duration-200"
@@ -80,7 +45,6 @@ const FAQItem = ({ faq, index }) => {
           </span>
         </div>
 
-        {/* Icon */}
         <div
           className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all duration-300"
           style={{
@@ -102,7 +66,6 @@ const FAQItem = ({ faq, index }) => {
         </div>
       </button>
 
-      {/* Answer */}
       <div ref={bodyRef} style={{ height: 0, overflow: "hidden", opacity: 0 }}>
         <p
           className="text-sm leading-relaxed pb-5 pl-8"
@@ -115,52 +78,65 @@ const FAQItem = ({ faq, index }) => {
   );
 };
 
-const FAQSection = () => (
-  <section
-    className="py-24 git-no-reveal"
-    style={{ background: "var(--gl-bg-card)" }}
-  >
-    <div className="max-w-3xl mx-auto px-6">
+const FAQSection = () => {
+  const { t } = useTranslation();
 
-      {/* Header */}
-      <div className="text-center mb-12">
-        <span
-          className="text-xs font-semibold tracking-widest px-4 py-1.5 rounded-full"
-          style={{ color: "var(--gl-coral)", background: "var(--gl-coral-bg)" }}
-        >
-          FAQ
-        </span>
-        <h2 className="text-4xl font-bold mt-5" style={{ color: "var(--gl-heading)" }}>
-          Frequently asked questions
-        </h2>
-        <p className="mt-4" style={{ color: "var(--gl-muted)" }}>
-          Everything you need to know about GitLuma. Can&apos;t find an answer?{" "}
+  const FAQS = [
+    { q: t("faqs_q1"), a: t("faqs_a1") },
+    { q: t("faqs_q2"), a: t("faqs_a2") },
+    { q: t("faqs_q3"), a: t("faqs_a3") },
+    { q: t("faqs_q4"), a: t("faqs_a4") },
+    { q: t("faqs_q5"), a: t("faqs_a5") },
+    { q: t("faqs_q6"), a: t("faqs_a6") },
+    { q: t("faqs_q7"), a: t("faqs_a7") },
+    { q: t("faqs_q8"), a: t("faqs_a8") },
+  ];
+
+  return (
+    <section
+      className="py-24 git-no-reveal"
+      style={{ background: "var(--gl-bg-card)" }}
+    >
+      <div className="max-w-3xl mx-auto px-6">
+
+        <div className="text-center mb-12">
           <span
-            className="cursor-pointer font-medium transition-colors duration-150"
-            style={{ color: "var(--gl-coral)" }}
-            onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
-            onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
+            className="text-xs font-semibold tracking-widest px-4 py-1.5 rounded-full"
+            style={{ color: "var(--gl-coral)", background: "var(--gl-coral-bg)" }}
           >
-            Contact us
+            {t("faqs_badge")}
           </span>
-        </p>
-      </div>
+          <h2 className="text-4xl font-bold mt-5" style={{ color: "var(--gl-heading)" }}>
+            {t("faqs_h2")}
+          </h2>
+          <p className="mt-4" style={{ color: "var(--gl-muted)" }}>
+            {t("faqs_sub")}{" "}
+            <span
+              className="cursor-pointer font-medium transition-colors duration-150"
+              style={{ color: "var(--gl-coral)" }}
+              onMouseEnter={e => e.currentTarget.style.textDecoration = "underline"}
+              onMouseLeave={e => e.currentTarget.style.textDecoration = "none"}
+            >
+              {t("faqs_contact")}
+            </span>
+          </p>
+        </div>
 
-      {/* FAQ list */}
-      <div
-        className="rounded-2xl px-8"
-        style={{
-          background: "var(--gl-bg-page)",
-          border:     "1px solid var(--gl-border-subtle)",
-        }}
-      >
-        {FAQS.map((faq, i) => (
-          <FAQItem key={i} faq={faq} index={i} />
-        ))}
-      </div>
+        <div
+          className="rounded-2xl px-8"
+          style={{
+            background: "var(--gl-bg-page)",
+            border:     "1px solid var(--gl-border-subtle)",
+          }}
+        >
+          {FAQS.map((faq, i) => (
+            <FAQItem key={i} faq={faq} index={i} />
+          ))}
+        </div>
 
-    </div>
-  </section>
-);
+      </div>
+    </section>
+  );
+};
 
 export default FAQSection;

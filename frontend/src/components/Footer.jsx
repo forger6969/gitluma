@@ -32,16 +32,16 @@ const Footer = () => {
 
   const COLUMNS = [
     {
-      title: "Product",
-      links: ["Features", "Integrations", "Pricing", "Changelog", "Roadmap"],
+      title: t("footer_col_product"),
+      links: [t("features"), t("integrations_title"), t("pricing"), t("changelog"), t("footer_roadmap")],
     },
     {
-      title: "Developers",
-      links: ["Documentation", "API Reference", "CLI Tool", "GitHub App", "Webhooks"],
+      title: t("footer_col_developers"),
+      links: [t("documentation"), t("footer_api_ref"), t("footer_github_app"), t("footer_webhooks")],
     },
     {
       title: t("company"),
-      links: ["About", "Blog", "Careers", "Contact", "Privacy"],
+      links: [t("footer_about_us"), t("footer_blog"), t("careers"), t("contact"), t("privacy")],
     },
   ];
 
@@ -126,11 +126,11 @@ const Footer = () => {
               </span>
             </div>
             <span>·</span>
-            <span>© 2024 GitLuma. All rights reserved.</span>
+            <span>{t("footer_rights")}</span>
           </div>
 
           <div className="flex items-center gap-5 text-xs" style={{ color: "var(--gl-muted)" }}>
-            {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((link, i) => (
+            {[t("footer_privacy_policy"), t("footer_terms"), t("footer_cookie_policy")].map((link, i) => (
               <span
                 key={i}
                 className="cursor-pointer transition-colors duration-150 hover:text-current"

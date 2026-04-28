@@ -17,12 +17,26 @@ initSocket(io)
 
 app.set("io" , io)
 
-mongoose.connect(process.env.MONGODB_URI).then(()=>{
-    console.log("mongodb succesfuly connected!");
-}).catch((err)=>{
-    console.error("MongoDB connection error:", err.message);
-    process.exit(1);
-})
+const connectDB = async () => {
+    try {
+        await mongoose.connect(process.env.MONGODB_URI);
+        console.log("mongodb successfully connected!");
+    } catch (err) {
+        console.error("MongoDB connection error:", err.message);
+        console.log("Retrying in 5 seconds...");
+        setTimeout(connectDB, 5000);
+    }
+};
+
+mongoose.connection.on("disconnected", () => {
+    console.log("MongoDB disconnected. Attempting reconnect...");
+});
+
+mongoose.connection.on("reconnected", () => {
+    console.log("MongoDB reconnected!");
+});
+
+connectDB();
 
 server.listen(process.env.PORT , ()=>{
     console.log("socket and api connected");
