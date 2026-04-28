@@ -11,6 +11,12 @@ import icon2 from "../assets/Icon (6).png"
 import icon3 from "../assets/Icon (7).png"
 import icon4 from "../assets/Icon (8).png"
 
+
+
+// const user = useSelector((state) => state.user)
+// console.log(user);
+
+
 const stats = [
   {
     value: '1,284',
