@@ -3,7 +3,7 @@ const { default: mongoose, Schema } = require("mongoose");
 const notificationSchema = mongoose.Schema({
     title:{type:String , required:true},
     text:{type:String , default:null},
-    type:{type:String , enum:["info" , "warning" , "error","success","commit" , "task"]},
+    type:{type:String , enum:["info" , "warning" , "error","success","commit","task"]},
     redirect_url:{type:String , default:null},
     additional_data:[
         {

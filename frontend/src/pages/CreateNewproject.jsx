@@ -1,26 +1,206 @@
-import { useEffect, useState } from "react";
+// import React from "react";
+
+
+// const CreateNewproject = () => {
+
+//   return (
+//     <div>
+//       {/* <div className="min-h-screen bg-[#0b1220] text-white flex items-center justify-center">
+//         <div className="w-full max-w-6xl px-6 py-10">
+//           <p className="text-xs text-gray-400 mb-4 tracking-wide">
+//             DIRECTORY / PROJECTS /{" "}
+//             <span className="text-gray-300">INITIALIZE PROJECT</span>
+//           </p>
+
+//           <h1 className="text-4xl font-semibold mb-2">
+//             Architect New Workspace
+//           </h1>
+
+//           <p className="text-gray-400 mb-10 max-w-2xl">
+//             Define the core parameters and stack for your next monolith. Team
+//             access and repo syncing can be adjusted later.
+//           </p>
+
+//           <div className="grid md:grid-cols-2 gap-6">
+//             <div className="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 shadow-lg">
+//               <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
+//                 ⚙️ Project Identity
+//               </h2>
+
+//               <div className="mb-5">
+//                 <label className="text-xs text-gray-400 block mb-2">
+//                   PROJECT NAME
+//                 </label>
+//                 <input
+//                   type="text"
+//                   placeholder="e.g. Project Catalyst"
+//                   className="w-full bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+//                 />
+//               </div>
+
+//               <div>
+//                 <label className="text-xs text-gray-400 block mb-2">
+//                   DESCRIPTION
+//                 </label>
+//                 <textarea
+//                   rows="4"
+//                   placeholder="Briefly describe the objective, scope, and target audience..."
+//                   className="w-full bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+//                 ></textarea>
+//               </div>
+//             </div>
+
+//             <div className="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 shadow-lg">
+//               <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
+//                 {"</>"} Integration
+//               </h2>
+
+//               <div className="mb-4">
+//                 <label className="text-xs text-gray-400 block mb-2">
+//                   GITHUB REPOSITORY
+//                 </label>
+
+//                 <select className="w-full bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3 text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+//                   <option>Select a repository...</option>
+//                 </select>
+//               </div>
+
+//               <div className="bg-[#0b1220] border border-gray-700 rounded-lg p-4 text-sm text-gray-400 flex gap-3">
+//                 <span className="text-indigo-400">ℹ️</span>
+//                 <p>
+//                   Connecting a repository allows Kinetic to sync issue tracking
+//                   directly with your branch PRs and commits.
+//                 </p>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="grid md:grid-cols-2 gap-6 mt-6">
+//             <div className="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 shadow-lg">
+//               <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
+//                 🧱 Tech Stack
+//               </h2>
+
+//               <div className="mb-4 relative">
+//                 <input
+//                   type="text"
+//                   placeholder="Search languages, frameworks, or tools..."
+//                   className="w-full bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3 text-sm pl-10 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+//                 />
+//                 <span className="absolute left-3 top-3.5 text-gray-500">
+//                   🔍
+//                 </span>
+//               </div>
+
+//               <div className="flex flex-wrap gap-2">
+//                 {["React.js", "TypeScript", "PostgreSQL", "TailwindCSS"].map(
+//                   (tech) => (
+//                     <span
+//                       key={tech}
+//                       className="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-3 py-1 rounded-md text-xs flex items-center gap-2"
+//                     >
+//                       {tech}
+//                       <button className="text-indigo-300 hover:text-red-400">
+//                         ×
+//                       </button>
+//                     </span>
+//                   ),
+//                 )}
+
+//                 <button className="bg-gray-800 text-gray-400 px-3 py-1 rounded-md text-xs hover:bg-gray-700">
+//                   + Add More
+//                 </button>
+//               </div>
+//             </div>
+
+//             <div className="bg-[#111827]/80 backdrop-blur-xl border border-gray-800 rounded-2xl p-6 shadow-lg">
+//               <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
+//                 👥 Team Members
+//               </h2>
+
+//               <div className="mb-5 flex gap-2">
+//                 <input
+//                   type="text"
+//                   placeholder="Search members..."
+//                   className="flex-1 bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+//                 />
+//                 <button className="bg-gray-800 border border-gray-700 px-4 rounded-lg hover:bg-gray-700">
+//                   ➕
+//                 </button>
+//               </div>
+
+//               <div className="space-y-3">
+//                 <div className="flex items-center justify-between bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3">
+//                   <div className="flex items-center gap-3">
+//                     <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-xs">
+//                       ED
+//                     </div>
+//                     <div>
+//                       <p className="text-sm">Erik Draven (You)</p>
+//                       <p className="text-xs text-gray-400">OWNER</p>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 <div className="flex items-center justify-between bg-[#0b1220] border border-gray-700 rounded-lg px-4 py-3">
+//                   <div className="flex items-center gap-3">
+//                     <img
+//                       src="https://i.pravatar.cc/40?img=5"
+//                       alt="avatar"
+//                       className="w-8 h-8 rounded-full"
+//                     />
+//                     <div>
+//                       <p className="text-sm">Sarah Jenkins</p>
+//                       <p className="text-xs text-gray-400">TECH LEAD</p>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="mt-8 border-t border-gray-800 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+//             <button className="w-full md:w-auto bg-gradient-to-r from-indigo-500 to-purple-500 px-6 py-3 rounded-xl font-medium hover:opacity-90 transition">
+//               Initialize Project →
+//             </button>
+
+//             <button className="text-gray-400 hover:text-white text-sm">
+//               Save as Draft
+//             </button>
+//           </div>
+//         </div>
+//       </div> */}
+
+
+//     </div>
+//   );
+// };
+
+// export default CreateNewproject;
+
+
+
+
+
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { reposFetch } from "../store/slices/repoSlices";
 import api from "../api/api";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 
 const CreateNewproject = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const { repos = [], loading, error } = useSelector((state) => state.repos || {});
-
-  const mode = useSelector((state) => state.theme.mode);
-  const isDark = mode === "dark";
+  const { repos = [], loading, error } = useSelector(
+    (state) => state.repos || {}
+  );
 
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedRepo, setSelectedRepo] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [formError, setFormError] = useState("");
-  const [formSuccess, setFormSuccess] = useState("");
+
   const [openRepoModal, setOpenRepoModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState("");
@@ -31,371 +211,176 @@ const CreateNewproject = () => {
 
   const openModal = () => {
     setOpenRepoModal(true);
-    setTimeout(() => setShowModal(true), 0);
+    setTimeout(() => setShowModal(true), 10);
   };
 
   const closeModal = () => {
     setShowModal(false);
     setTimeout(() => setOpenRepoModal(false), 150);
-    setSearch("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (submitting) return;
-    setFormError("");
-    setFormSuccess("");
 
     if (!selectedRepo) {
-      setFormError(t("selectAlert"));
+      alert(t("selectAlert"));
       return;
     }
 
     try {
       setSubmitting(true);
-      const payload = {
-        fullname: selectedRepo,
-        name: projectName,
-        description: description,
-      };
-      const res = await api.post("/api/project/create", payload);
-      const projectId = res?.data?.id || res?.data?._id;
-      if (!projectId) {
-        setFormError("Project ID не вернулся с сервера");
-        return;
-      }
-      setFormSuccess(t("projectCreated") || "Created!");
+
+      console.log(selectedRepo);
+      
+      await api.post("/api/project/create", {
+        fullname: selectedRepo
+      });
+
       setProjectName("");
       setDescription("");
       setSelectedRepo("");
-      navigate(`/dashboard/project/${projectId}`);
+
+      alert(t("projectCreated"));
     } catch (err) {
-      const message = err?.response?.data?.message || err?.message || "Unknown error";
-      setFormError(message);
+      console.error(err);
+      alert(t("error"));
     } finally {
       setSubmitting(false);
     }
   };
 
-  const filteredRepos = (repos || []).filter((repo) =>
-    repo?.full_name?.toLowerCase?.().includes(search.toLowerCase())
+  const filteredRepos = repos.filter((repo) =>
+    repo.full_name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
-    <div
-      className={`min-h-screen flex justify-center items-start py-14 px-6 transition-colors duration-300 ${
-        isDark ? "bg-[#0E1117]" : "bg-[#F4F6FB]"
-      }`}
-    >
-      <div className="w-full max-w-xl flex flex-col gap-6">
-
-        {/* ERROR */}
-        {formError && (
-          <div
-            className={`flex justify-between items-center gap-3 px-4 py-3 rounded-2xl text-sm border ${
-              isDark
-                ? "bg-red-950/40 border-red-800/50 text-red-400"
-                : "bg-red-50 border-red-200 text-red-600"
-            }`}
-          >
-            <span>{formError}</span>
-            <button
-              type="button"
-              onClick={() => setFormError("")}
-              className="opacity-50 hover:opacity-100 transition-opacity flex-shrink-0"
-            >
-              ✕
-            </button>
+    <div className="min-h-screen bg-[#EEF1F7] text-[#2B3141] flex justify-center py-14 px-6">
+      <form onSubmit={handleSubmit} className="w-full max-w-4xl space-y-6">
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-semibold text-[#010000]">
+              {t("workspace")}
+            </h1>
+            <p className="text-[#6B7280] mt-1 text-xs">
+              {t("setup")}
+            </p>
           </div>
-        )}
 
-        {/* SUCCESS */}
-        {formSuccess && (
-          <div
-            className={`flex justify-between items-center gap-3 px-4 py-3 rounded-2xl text-sm border ${
-              isDark
-                ? "bg-green-950/40 border-green-800/50 text-green-400"
-                : "bg-green-50 border-green-200 text-green-700"
-            }`}
-          >
-            <span>{formSuccess}</span>
-            <button
-              type="button"
-              onClick={() => setFormSuccess("")}
-              className="opacity-50 hover:opacity-100 transition-opacity flex-shrink-0"
-            >
-              ✕
-            </button>
+          <div className="flex gap-2">
+            {["uz", "ru", "en"].map((lng) => (
+              <button
+                key={lng}
+                type="button"
+                onClick={() => i18n.changeLanguage(lng)}
+                className="px-2 py-1 text-xs rounded bg-[#2B3141] text-white"
+              >
+                {lng.toUpperCase()}
+              </button>
+            ))}
           </div>
-        )}
-
-        {/* HEADER */}
-        <div>
-          <h1
-            className={`text-3xl font-bold tracking-tight ${
-              isDark ? "text-white" : "text-[#1A1F2E]"
-            }`}
-          >
-            {t("workspace")}
-          </h1>
-          <p
-            className={`text-xs mt-1 ${
-              isDark ? "text-[#4A5168]" : "text-[#8A93A8]"
-            }`}
-          >
-            {t("setup")}
-          </p>
         </div>
 
-        {/* FORM */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-white p-5 rounded-xl border space-y-4">
+            <h2 className="text-[11px] text-gray-500 tracking-widest">
+              {t("project")}
+            </h2>
 
-          {/* CARD */}
-          <div
-            className={`rounded-2xl border overflow-hidden transition-colors duration-300 ${
-              isDark
-                ? "bg-[#141820] border-[#2B3141]"
-                : "bg-white border-[#E4E8F0] shadow-sm"
-            }`}
+            <input
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              className="w-full p-2.5 text-sm rounded-md bg-gray-50 border"
+              placeholder={t("projectName")}
+            />
+
+            <textarea
+              rows="3"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full p-2.5 text-sm rounded-md bg-gray-50 border"
+              placeholder={t("description")}
+            />
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border space-y-3">
+            <h2 className="text-[11px] text-gray-500 tracking-widest">
+              {t("repository")}
+            </h2>
+
+            {selectedRepo && (
+              <div className="flex justify-between bg-gray-100 border rounded px-3 py-2 text-sm">
+                <span className="truncate">{selectedRepo}</span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedRepo("")}
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            <div
+              onClick={openModal}
+              className="w-full p-2.5 text-sm rounded-md bg-gray-50 border cursor-pointer"
+            >
+              {selectedRepo ? t("changeRepo") : t("selectRepo")}
+            </div>
+
+            <p className="text-[11px] text-gray-400">
+              {t("sync")}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center pt-2">
+          <button
+            type="button"
+            onClick={() => {
+              setProjectName("");
+              setDescription("");
+              setSelectedRepo("");
+            }}
+            className="text-sm text-gray-500"
           >
-            {/* Project details section */}
-            <div
-              className={`p-7 flex flex-col gap-3 transition-colors duration-300 ${
-                isDark ? "bg-[#141820]" : "bg-white"
-              }`}
-            >
-              <p
-                className={`text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 ${
-                  isDark ? "text-[#3D4460]" : "text-[#C0C4D8]"
-                }`}
-              >
-                {t("project")}
-                <span className={`flex-1 h-px ${isDark ? "bg-[#2B3141]" : "bg-[#F0F1F8]"}`} />
-              </p>
+            {t("reset")}
+          </button>
 
-              <input
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                className={`w-full px-4 py-3 text-sm rounded-xl border outline-none transition-all ${
-                  isDark
-                    ? "bg-[#1C2130] border-[#2B3141] text-white placeholder-[#3D4460] focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10"
-                    : "bg-[#F8F9FC] border-[#E4E8F0] text-[#1A1F2E] placeholder-[#8A93A8] focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white"
-                }`}
-                placeholder={t("projectName")}
-              />
+          <button
+            type="submit"
+            disabled={submitting}
+            className="px-5 py-2 text-sm rounded-md bg-[#E8654A] text-white"
+          >
+            {submitting ? t("creating") : t("create")}
+          </button>
+        </div>
+      </form>
 
-              <textarea
-                rows="3"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className={`w-full px-4 py-3 text-sm rounded-xl border outline-none transition-all resize-none ${
-                  isDark
-                    ? "bg-[#1C2130] border-[#2B3141] text-white placeholder-[#3D4460] focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10"
-                    : "bg-[#F8F9FC] border-[#E4E8F0] text-[#1A1F2E] placeholder-[#8A93A8] focus:border-[#E8654A] focus:ring-2 focus:ring-[#E8654A]/10 focus:bg-white"
-                }`}
-                placeholder={t("description")}
-              />
-            </div>
-
-            {/* Divider */}
-            <div className={`h-px ${isDark ? "bg-[#2B3141]" : "bg-[#F0F1F8]"}`} />
-
-            {/* Repository section */}
-            <div
-              className={`p-7 flex flex-col gap-3 transition-colors duration-300 ${
-                isDark ? "bg-[#12151E]" : "bg-[#FAFBFF]"
-              }`}
-            >
-              <p
-                className={`text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 ${
-                  isDark ? "text-[#3D4460]" : "text-[#C0C4D8]"
-                }`}
-              >
-                Repository
-                <span className={`flex-1 h-px ${isDark ? "bg-[#2B3141]" : "bg-[#F0F1F8]"}`} />
-              </p>
-
-              {selectedRepo && (
-                <div
-                  className={`flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border ${
-                    isDark
-                      ? "bg-blue-950/40 border-blue-800/40"
-                      : "bg-[#EEF1FF] border-[#C7D1FF]"
-                  }`}
-                >
-                  <span
-                    className={`truncate font-mono text-xs font-medium ${
-                      isDark ? "text-blue-400" : "text-[#4B63E0]"
-                    }`}
-                  >
-                    {selectedRepo}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedRepo("")}
-                    className={`flex-shrink-0 text-sm transition-colors ${
-                      isDark
-                        ? "text-[#3D4460] hover:text-red-400"
-                        : "text-[#B0B5CC] hover:text-red-500"
-                    }`}
-                  >
-                    ✕
-                  </button>
-                </div>
-              )}
-
-              <button
-                type="button"
-                onClick={openModal}
-                className={`w-full flex items-center gap-2.5 px-4 py-3 rounded-xl border border-dashed text-sm transition-all duration-200 ${
-                  isDark
-                    ? "bg-transparent border-[#2B3141] text-[#3D4460] hover:border-violet-500/50 hover:text-violet-400 hover:bg-violet-500/5"
-                    : "bg-white border-[#DDE1F0] text-[#9499B2] hover:border-violet-400 hover:text-violet-500 hover:bg-violet-50"
-                }`}
-              >
-                <svg
-                  width="15" height="15" fill="none"
-                  stroke="currentColor" strokeWidth="1.8"
-                  viewBox="0 0 24 24" className="flex-shrink-0"
-                >
-                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                </svg>
-                {selectedRepo ? t("changeRepo") : t("selectRepo")}
-              </button>
-
-              <p
-                className={`text-xs leading-relaxed ${
-                  isDark ? "text-[#3D4460]" : "text-[#B8BDD4]"
-                }`}
-              >
-                {t("sync")}
-              </p>
-            </div>
-          </div>
-
-          {/* ACTIONS */}
-          <div className="flex justify-between items-center">
-            <button
-              type="button"
-              onClick={() => {
-                setProjectName("");
-                setDescription("");
-                setSelectedRepo("");
-                setFormError("");
-                setFormSuccess("");
-              }}
-              className={`text-sm transition-colors ${
-                isDark
-                  ? "text-[#3D4460] hover:text-white"
-                  : "text-[#B0B5CC] hover:text-[#1A1F2E]"
-              }`}
-            >
-              {t("reset")}
-            </button>
-
-            <button
-              type="submit"
-              disabled={submitting}
-              className="px-6 py-2.5 text-sm rounded-lg bg-[#E8654A] text-white font-semibold shadow-[0_4px_14px_rgba(232,101,74,0.35)] hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
-            >
-              {submitting ? t("creating") : t("create")}
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {/* MODAL */}
       {openRepoModal && (
         <div
           onClick={closeModal}
-          className={`fixed inset-0 flex items-center justify-center z-50 transition-all duration-200 backdrop-blur-sm ${
-            showModal ? "bg-black/40" : "bg-black/0"
+          className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-150 ${
+            showModal ? "bg-black/40 opacity-100" : "bg-black/0 opacity-0"
           }`}
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`w-[460px] max-h-[560px] rounded-2xl flex flex-col border shadow-2xl transition-all duration-200 overflow-hidden ${
+            className={`w-[420px] max-h-[520px] bg-white rounded-xl p-4 transform transition-all duration-150 ${
               showModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
-            } ${
-              isDark
-                ? "bg-[#141820] border-[#2B3141]"
-                : "bg-white border-[#E4E8F0]"
             }`}
           >
-            {/* Modal Header */}
-            <div
-              className={`flex justify-between items-center px-6 py-4 border-b flex-shrink-0 ${
-                isDark ? "border-[#2B3141]" : "border-[#F0F1F8]"
-              }`}
-            >
-              <h2
-                className={`font-semibold text-base ${
-                  isDark ? "text-white" : "text-[#141826]"
-                }`}
-              >
-                {t("selectRepository")}
-              </h2>
-              <button
-                type="button"
-                onClick={closeModal}
-                className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm transition-all ${
-                  isDark
-                    ? "text-[#3D4460] hover:bg-[#1C2130] hover:text-white"
-                    : "text-[#9499B2] hover:bg-[#F4F5FB] hover:text-[#141826]"
-                }`}
-              >
-                ✕
-              </button>
+            <div className="flex justify-between mb-3">
+              <h2>{t("selectRepository")}</h2>
+              <button onClick={closeModal}>✕</button>
             </div>
 
-            {/* Search */}
-            <div
-              className={`px-5 py-3.5 border-b flex-shrink-0 ${
-                isDark ? "border-[#2B3141]" : "border-[#F0F1F8]"
-              }`}
-            >
-              <div className="relative">
-                <svg
-                  className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none ${
-                    isDark ? "text-[#3D4460]" : "text-[#C4C8DC]"
-                  }`}
-                  width="14" height="14" fill="none"
-                  stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <path d="m21 21-4.35-4.35" />
-                </svg>
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  autoFocus
-                  placeholder={t("search")}
-                  className={`w-full pl-9 pr-4 py-2.5 rounded-xl text-sm border outline-none transition-all ${
-                    isDark
-                      ? "bg-[#1C2130] border-[#2B3141] text-white placeholder-[#3D4460] focus:border-violet-500 focus:ring-2 focus:ring-violet-500/10"
-                      : "bg-[#FAFBFF] border-[#EAECF5] text-[#141826] placeholder-[#C4C8DC] focus:border-violet-400 focus:ring-2 focus:ring-violet-400/10"
-                  }`}
-                />
-              </div>
-            </div>
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full p-2 border mb-3"
+              placeholder={t("search")}
+            />
 
-            {/* Repo list */}
-            <div className="flex-1 overflow-y-auto p-3">
-              {loading && (
-                <p className={`text-sm text-center py-6 ${isDark ? "text-[#3D4460]" : "text-[#C4C8DC]"}`}>
-                  {t("loading")}
-                </p>
-              )}
-              {error && (
-                <p className="text-sm text-red-500 text-center py-6">
-                  {t("error")}
-                </p>
-              )}
-              {!loading && filteredRepos.length === 0 && (
-                <p className={`text-sm text-center py-6 ${isDark ? "text-[#3D4460]" : "text-[#C4C8DC]"}`}>
-                  {t("noDescription")}
-                </p>
-              )}
+            <div className="space-y-2 max-h-[340px] overflow-y-auto">
               {filteredRepos.map((repo) => (
                 <div
                   key={repo.id}
@@ -403,20 +388,17 @@ const CreateNewproject = () => {
                     setSelectedRepo(repo.full_name);
                     closeModal();
                   }}
-                  className={`px-4 py-3 rounded-xl cursor-pointer border border-transparent transition-all mb-1 ${
-                    isDark
-                      ? "hover:bg-violet-500/10 hover:border-violet-500/20"
-                      : "hover:bg-violet-50 hover:border-violet-200/60"
-                  }`}
+                  className="p-2 bg-gray-50 border rounded cursor-pointer"
                 >
-                  <p className={`text-xs font-mono font-medium ${isDark ? "text-blue-400" : "text-[#4B63E0]"}`}>
-                    {repo.full_name}
-                  </p>
-                  <p className={`text-xs mt-0.5 ${isDark ? "text-[#3D4460]" : "text-[#B0B5CC]"}`}>
+                  <p className="text-sm">{repo.full_name}</p>
+                  <p className="text-xs text-gray-400">
                     {repo.description || t("noDescription")}
                   </p>
                 </div>
               ))}
+
+              {loading && <p>Loading...</p>}
+              {error && <p>Error...</p>}
             </div>
           </div>
         </div>

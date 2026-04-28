@@ -1,10 +1,11 @@
 import React from "react";
 import LoginButton from "../Components/LoginButton";
 import LoginComments from "../Components/LoginComments";
+import { API_URL } from "../config/runtime";
 
 const Login = () => {
   const loginWithGithub = () => {
-    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/github`;
+    window.location.href = `${API_URL}/api/auth/github`;
   };
 
   return (
@@ -55,5 +56,4 @@ const Login = () => {
 };
 
 export default Login;
-
 

@@ -5,6 +5,7 @@ import { reposFetch } from "../store/slices/repoSlices";
 import { getProjects } from "../store/slices/projectsSlice";
 import api from "../api/api";
 import { useCreateProject } from "../context/CreateProjectContext";
+import { API_URL } from "../config/runtime";
 
 export default function RepoPickerModal() {
   const { close } = useCreateProject();
@@ -106,7 +107,7 @@ export default function RepoPickerModal() {
         {/* Configure GitHub App link */}
         <div style={{ borderBottom: `1px solid ${border}`, padding: "10px 16px" }}>
           <a
-            href={`${import.meta.env.VITE_API_URL}/api/auth/github`}
+            href={`${API_URL}/api/auth/github`}
             className="flex items-center gap-2.5 text-sm transition-colors"
             style={{ color: textMuted }}
             onMouseEnter={(e) => (e.currentTarget.style.color = textMain)}

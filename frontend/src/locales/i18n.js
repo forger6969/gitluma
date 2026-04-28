@@ -6,9 +6,9 @@ import uz from "./uz.json"
 import ru from "./ru.json"
 
 const savedLang = localStorage.getItem("lang")
+const browserLang = navigator.language.split("-")[0]
 
-
-const lang = savedLang || "en"
+const lang = savedLang || browserLang || "en"
 
 i18n
   .use(initReactI18next)

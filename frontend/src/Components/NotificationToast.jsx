@@ -1,203 +1,120 @@
-import { useEffect, useState } from "react";
-import { 
-  X, ChevronDown, Info, AlertTriangle, 
-  XCircle, CheckCircle, GitCommit 
-} from "lucide-react";
-import { useSelector } from "react-redux";
-import { motion } from "framer-motion"; // Добавлен импорт
+import { useEffect, useState } from "react"
+import {
+  X, ChevronDown, Info, AlertTriangle,
+  XCircle, CheckCircle, GitCommit
+} from "lucide-react"
 
-/* TYPES (dark + light) */
 const TYPE = {
-  info: {
-    Icon: Info,
-    light: {
-      bg: "bg-white",
-      border: "border-[#E6E9F2]",
-      icon: "bg-blue-100 text-blue-600",
-      text: "text-[#2B3141]",
-      sub: "text-[#7A8499]",
-      bar: "from-blue-500 to-blue-400"
-    },
-    dark: {
-      bg: "bg-[#161B27]",
-      border: "border-[#2B3141]",
-      icon: "bg-blue-900/30 text-blue-400",
-      text: "text-[#EEF1F7]",
-      sub: "text-[#5C6480]",
-      bar: "from-blue-500 to-blue-400"
-    }
-  },
-  warning: {
-    Icon: AlertTriangle,
-    light: {
-      bg: "bg-white",
-      border: "border-[#E6E9F2]",
-      icon: "bg-yellow-100 text-yellow-600",
-      text: "text-[#2B3141]",
-      sub: "text-[#7A8499]",
-      bar: "from-yellow-500 to-yellow-400"
-    },
-    dark: {
-      bg: "bg-[#161B27]",
-      border: "border-[#2B3141]",
-      icon: "bg-yellow-900/30 text-yellow-400",
-      text: "text-[#EEF1F7]",
-      sub: "text-[#5C6480]",
-      bar: "from-yellow-500 to-yellow-400"
-    }
-  },
-  error: {
-    Icon: XCircle,
-    light: {
-      bg: "bg-white",
-      border: "border-[#E6E9F2]",
-      icon: "bg-red-100 text-red-500",
-      text: "text-[#2B3141]",
-      sub: "text-[#7A8499]",
-      bar: "from-red-500 to-red-400"
-    },
-    dark: {
-      bg: "bg-[#161B27]",
-      border: "border-[#2B3141]",
-      icon: "bg-red-900/30 text-red-400",
-      text: "text-[#EEF1F7]",
-      sub: "text-[#5C6480]",
-      bar: "from-red-500 to-red-400"
-    }
-  },
-  success: {
-    Icon: CheckCircle,
-    light: {
-      bg: "bg-white",
-      border: "border-[#E6E9F2]",
-      icon: "bg-green-100 text-green-600",
-      text: "text-[#2B3141]",
-      sub: "text-[#7A8499]",
-      bar: "from-green-500 to-green-400"
-    },
-    dark: {
-      bg: "bg-[#161B27]",
-      border: "border-[#2B3141]",
-      icon: "bg-green-900/30 text-green-400",
-      text: "text-[#EEF1F7]",
-      sub: "text-[#5C6480]",
-      bar: "from-green-500 to-green-400"
-    }
-  },
-  commit: {
-    Icon: GitCommit,
-    light: {
-      bg: "bg-white",
-      border: "border-[#E6E9F2]",
-      icon: "bg-[#EEF1F7] text-[#2B3141]",
-      text: "text-[#2B3141]",
-      sub: "text-[#7A8499]",
-      bar: "from-[#E8654A] to-[#FF8A65]"
-    },
-    dark: {
-      bg: "bg-[#161B27]",
-      border: "border-[#2B3141]",
-      icon: "bg-[#2B3141] text-[#C8CDD9]",
-      text: "text-[#EEF1F7]",
-      sub: "text-[#5C6480]",
-      bar: "from-[#E8654A] to-[#FF8A65]"
-    }
-  }
-};
+  info:    { Icon: Info,        bg: "#0c1628", border: "#1e40af", iconBg: "#1e3a8a", iconColor: "#93c5fd", titleColor: "#dbeafe", barColor: "#3b82f6" },
+  warning: { Icon: AlertTriangle, bg: "#1c1208", border: "#92400e", iconBg: "#78350f", iconColor: "#fcd34d", titleColor: "#fef3c7", barColor: "#f59e0b" },
+  error:   { Icon: XCircle,     bg: "#1a0808", border: "#991b1b", iconBg: "#7f1d1d", iconColor: "#fca5a5", titleColor: "#fee2e2", barColor: "#ef4444" },
+  success: { Icon: CheckCircle, bg: "#071a0c", border: "#166534", iconBg: "#14532d", iconColor: "#86efac", titleColor: "#dcfce7", barColor: "#22c55e" },
+  commit:  { Icon: GitCommit,   bg: "#120b1f", border: "#6d28d9", iconBg: "#4c1d95", iconColor: "#d8b4fe", titleColor: "#ede9fe", barColor: "#a855f7" },
+}
 
 export default function NotificationToast({ notification, onClose }) {
-  const [openAccordion, setOpenAccordion] = useState(false);
-  const [progress, setProgress] = useState(100);
+  const [visible, setVisible]           = useState(false)
+  const [openAccordion, setOpenAccordion] = useState(false)
+  const [progress, setProgress]         = useState(100)
 
-  const d = useSelector(s => s.theme.mode) === "dark";
+  const cfg = TYPE[notification?.type] || TYPE.info
+  const { Icon } = cfg
+  const hasAdditional = notification?.additional_data?.length > 0
 
-  const cfg = TYPE[notification?.type] || TYPE.info;
-  const theme = d ? cfg.dark : cfg.light;
-  const { Icon } = cfg;
-
-  const hasExtra = notification?.additional_data?.length > 0;
-
-  const handleClose = () => {
-    // В Framer Motion onClose лучше вызывать в onAnimationComplete
-    onClose();
-  };
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 10)
+    return () => clearTimeout(t)
+  }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress(p => {
-        if (p <= 0) {
-          clearInterval(interval);
-          handleClose();
-          return 0;
-        }
-        return p - 1;
-      });
-    }, 50); // Уменьшил интервал для плавности (5000мс всего)
+        if (p <= 0) { clearInterval(interval); handleClose(); return 0 }
+        return p - 1  
+      })
+    }, 100)
+    return () => clearInterval(interval)
+  }, [])
 
-    return () => clearInterval(interval);
-  }, []);
+  const handleClose = () => {
+    setVisible(false)
+    setTimeout(onClose, 300)
+  }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -20, scale: 0.96 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -20, scale: 0.96 }}
-      transition={{ duration: 0.25 }}
-      className={`w-[340px] rounded-2xl border shadow-lg overflow-hidden ${theme.bg} ${theme.border}`}
-    >
-      {/* PROGRESS BAR */}
-      <div className={d ? "h-1 bg-[#0E1118]" : "h-1 bg-[#EEF1F7]"}>
-        <div
-          className={`h-full bg-gradient-to-r transition-all duration-100 ease-linear ${theme.bar}`}
-          style={{ width: `${progress}%` }}
-        />
-      </div>
+    <div style={{
+      width: 350,
+      background: cfg.bg,
+      border: `1px solid ${cfg.border}`,
+      borderRadius: 14,
+      overflow: "hidden",
+      boxShadow: "0 16px 48px rgba(0,0,0,0.6)",
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translateY(0) scale(1)" : "translateY(-12px) scale(0.97)",
+      transition: "opacity 0.25s, transform 0.25s"
+    }}>
 
-      <div className="p-4"> {/* Добавлен padding */}
-        <div className="flex gap-3">
-          {/* ICON */}
-          <div className={`w-10 h-10 shrink-0 rounded-xl flex items-center justify-center ${theme.icon}`}>
-            <Icon className="w-5 h-5" />
+
+
+      <div style={{ padding: "14px 14px 14px 14px" }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+          {/* Icon */}
+          <div style={{
+            width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+            background: cfg.iconBg, color: cfg.iconColor,
+            display: "flex", alignItems: "center", justifyContent: "center"
+          }}>
+            <Icon size={16} color={cfg.iconColor} />
           </div>
 
-          {/* CONTENT */}
-          <div className="flex-1 min-w-0">
-            <p className={`text-sm font-semibold ${theme.text} truncate`}>
+          {/* Content */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: cfg.titleColor, lineHeight: 1.4 }}>
               {notification.title}
             </p>
             {notification.text && (
-              <p className={`text-xs mt-1 ${theme.sub} line-clamp-2`}>
+              <p style={{ margin: "3px 0 6px", fontSize: 11, color: "#9ca3af", lineHeight: 1.5 }}>
                 {notification.text}
               </p>
             )}
-
-            <span className={`inline-flex items-center gap-1 mt-2 text-[10px]
-              px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${theme.icon}`}>
-              <Icon className="w-3 h-3" />
+            <span style={{
+              display: "inline-flex", alignItems: "center", gap: 4,
+              marginTop: 4, fontSize: 9, fontWeight: 700,
+              textTransform: "uppercase", letterSpacing: ".07em",
+              padding: "2px 8px", borderRadius: 999,
+              background: cfg.iconBg, color: cfg.iconColor
+            }}>
+              <Icon size={10} color={cfg.iconColor} />
               {notification.type}
             </span>
           </div>
 
-          <button
-            onClick={handleClose}
-            className={`shrink-0 transition h-fit ${d ? "text-[#5C6480] hover:text-white" : "text-gray-400 hover:text-[#2B3141]"}`}
-          >
-            <X className="w-4 h-4" />
+          {/* Close */}
+          <button onClick={handleClose} style={{
+            background: "none", border: "none", cursor: "pointer",
+            color: "#4b5563", padding: 2, flexShrink: 0,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            borderRadius: 6, transition: "color 0.15s"
+          }}>
+            <X size={14} />
           </button>
         </div>
 
-        {/* EXTRA DATA */}
-        {hasExtra && (
-          <div className="mt-3">
+        {/* Accordion */}
+        {hasAdditional && (
+          <div style={{ marginTop: 10 }}>
             <button
               onClick={() => setOpenAccordion(p => !p)}
-              className={`flex items-center gap-2 text-xs font-medium transition
-                ${d ? "text-[#5C6480] hover:text-white" : "text-[#7A8499] hover:text-[#2B3141]"}`}
+              style={{
+                display: "flex", alignItems: "center", gap: 5,
+                background: "none", border: "none", cursor: "pointer",
+                fontSize: 11, color: "#6b7280", padding: 0, width: "100%"
+              }}
             >
               <ChevronDown
                 size={13}
-                className="transition-transform duration-200"
                 style={{
+                  transition: "transform 0.2s",
                   transform: openAccordion ? "rotate(180deg)" : "rotate(0deg)"
                 }}
               />
@@ -205,42 +122,34 @@ export default function NotificationToast({ notification, onClose }) {
             </button>
 
             {openAccordion && (
-              <motion.div 
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                className={`mt-2 rounded-xl border overflow-hidden ${d ? "border-[#2B3141]" : "border-[#E6E9F2]"}`}
-              >
+              <div style={{
+                marginTop: 8, borderRadius: 8,
+                overflow: "hidden", border: "1px solid rgba(255,255,255,0.08)"
+              }}>
                 {notification.additional_data.map((item, i) => (
-                  <div
-                    key={i}
-                    className={`flex justify-between px-3 py-2 text-[11px]
-                      ${d
-                        ? i % 2 !== 0 ? "bg-[#0E1118]" : "bg-transparent"
-                        : i % 2 !== 0 ? "bg-[#F4F6FB]" : "bg-transparent"}`}
-                  >
-                    <span className={d ? "text-[#5C6480]" : "text-[#7A8499]"}>
-                      {item.key}
-                    </span>
-                    <span className={`font-mono font-medium ${d ? "text-[#EEF1F7]" : "text-[#2B3141]"}`}>
-                      {item.value}
-                    </span>
+                  <div key={i} style={{
+                    display: "flex", justifyContent: "space-between",
+                    padding: "6px 10px", fontSize: 11,
+                    background: i % 2 === 0 ? "rgba(255,255,255,0.04)" : "transparent"
+                  }}>
+                    <span style={{ color: "#9ca3af", fontWeight: 500 }}>{item.key}</span>
+                    <span style={{ color: "#e2e8f0", marginLeft: 12, fontFamily: "monospace" }}>{item.value}</span>
                   </div>
                 ))}
-              </motion.div>
+              </div>
             )}
           </div>
         )}
 
-        {/* LINK */}
         {notification.redirect_url && (
-          <a 
-            href={notification.redirect_url} 
-            className={`inline-flex items-center gap-1 mt-3 text-[11px] font-semibold transition-opacity hover:opacity-80 ${d ? "text-blue-400" : "text-blue-600"}`}
-          >
+          <a href={notification.redirect_url} style={{
+            display: "inline-flex", marginTop: 10,
+            fontSize: 11, color: cfg.iconColor, textDecoration: "none", gap: 4
+          }}>
             Ko'rish →
           </a>
         )}
       </div>
-    </motion.div>
-  );
+    </div>
+  )
 }

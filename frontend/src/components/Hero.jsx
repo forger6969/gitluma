@@ -267,6 +267,7 @@ const Hero = () => {
             }}
             onMouseEnter={() => setBtn2(true)}
             onMouseLeave={() => setBtn2(false)}
+            onClick={() => navigate("/docs")}
           >
             {t("view_docs")}
           </button>

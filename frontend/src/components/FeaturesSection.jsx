@@ -182,6 +182,7 @@ const FEATURE_META = [
       "No polling — pure event-driven",
       "Works across all team members",
     ],
+    docsHref: "/docs#real-time-notifications",
     Visual: CommitFeedMini,
   },
   {
@@ -198,6 +199,7 @@ const FEATURE_META = [
       "Reads repos, branches & PRs",
       "One-click connect — no tokens needed",
     ],
+    docsHref: "/docs#github-integration",
     Visual: GitHubConnectMini,
   },
   {
@@ -214,6 +216,7 @@ const FEATURE_META = [
       "Role-based access (owner / member)",
       "See who's working on what, live",
     ],
+    docsHref: "/docs#team-collaboration",
     Visual: TeamBoardMini,
   },
   {
@@ -230,6 +233,7 @@ const FEATURE_META = [
       "Members auto-added on accept",
       "Re-invite or remove anytime",
     ],
+    docsHref: "/docs#email-invitations",
     Visual: EmailMini,
   },
 ];
@@ -375,18 +379,20 @@ const FeaturesSection = () => {
                 </ul>
 
                 {/* Learn more */}
-                <div
+                <a
+                  href={f.docsHref}
                   className="flex items-center gap-1 text-xs font-semibold relative z-10 transition-all duration-200"
                   style={{
                     color:     f.accentColor,
                     transform: isHov ? "translateX(4px)" : "translateX(0)",
+                    textDecoration: "none",
                   }}
                 >
                   Learn more
                   <svg viewBox="0 0 16 16" className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M3 8h10M9 4l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                </div>
+                </a>
               </div>
             );
           })}

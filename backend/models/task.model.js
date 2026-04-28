@@ -2,8 +2,9 @@ const { default: mongoose, Schema } = require("mongoose");
 
 const taskSchema = mongoose.Schema({
 
-    assigned_by:{type:Schema.Types.ObjectId, ref:"User"},
     assigned_user:{type:Schema.Types.ObjectId , ref:"User"},
+    assigned_by:{type:Schema.Types.ObjectId , ref:"User"},
+    completed_by:{type:Schema.Types.ObjectId , ref:"User"},
     project_id:{type:Schema.Types.ObjectId , ref:"Project"},
     task_name:{type:String , required:true},
     task_describe:{type:String , default:null},
@@ -12,15 +13,9 @@ const taskSchema = mongoose.Schema({
     priority:{type:String , enum:["low","medium","high"] , default:"medium"},
     key:{type:String , required:true,unique:true},
     completedAt:{type:Date,default:null},
-    verifiedAt:{type:Date , default:null},
-    linked_commit:{type:Schema.Types.ObjectId , ref:"Commit" , default:null},
-    completedAt_user:{
-        user:{type:Schema.Types.ObjectId , ref:"User" , default:null},
-        github_username:{type:String , default:null}
-    },
-    completed_by:{type:Schema.Types.ObjectId , ref:"User" , default:null},
-    linked_commit:{type:Schema.Types.ObjectId , ref:"Commit" , default:null}
-
+    completedAt_user:{ user:{type:Schema.Types.ObjectId , ref:"User"} , completedAt:{type:Date} },
+    linked_commit:{type:Schema.Types.ObjectId , ref:"Commit"},
+    verifiedAt:{type:Date , default:null}
 },{ timestamps: true })
 
 const Task = mongoose.model("Task",taskSchema)

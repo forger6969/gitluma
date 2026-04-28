@@ -1,16 +1,13 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import NavCard from '../components/NavCard';
 import EnfOfHistory from '../components/EnfOfHistory';
 import NewMember from '../components/NewMember'
 import Error from '../components/Error';
 
 const ActFeed = () => {
-  const today = new Date();
-  const options = { month: 'long', day: 'numeric' };
-  const todayLabel = today.toLocaleDateString('en-US', options);
-  const yesterday = new Date(today);
-  yesterday.setDate(today.getDate() - 1);
-  const yesterdayLabel = yesterday.toLocaleDateString('en-US', options);
+  let today = new Date();
+  let options = { month: 'long', day: 'numeric' };
+  let formattedDate = today.toLocaleDateString('en-US', options);
   let [name, setName] = useState('');
   let [taskNumber, setTaskNumber] = useState('');
   let [info, setInfo] = useState('');
@@ -46,7 +43,7 @@ let btnClick = () => {
       <p className=' text-[#C8C4D6] text-[16px] mb-[25px]  font-[600] '>
         Real-time updates across all workspace monoliths and developer streams.
       </p>
-      <p className=' text-[#474553] font-[700] my-[20px] '>Today — {todayLabel}</p>
+      <p className=' text-[#474553] font-[700] my-[20px] '>Today — March 24</p>
       {activities.map((item, index) => (
   <NavCard
     key={index}
@@ -58,7 +55,7 @@ let btnClick = () => {
       <NewMember/>
       <Error/>
 
-      <p className=' text-[#474553] font-[700] my-[20px] '>Yesterday — {yesterdayLabel}</p>
+      <p className=' text-[#474553] font-[700] my-[20px] '>Yesterday — March 23</p>
       <Error/>
        <NewMember/>
 

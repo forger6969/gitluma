@@ -1,0 +1,533 @@
+import { useEffect, useState, useCallback, useMemo } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import DocsNavbarControls from "../../Components/DocsNavbarControls";
+import { getDocsContent } from "../../content/docsContent";
+
+const IconBook = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>;
+const IconCode = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>;
+const IconZap = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>;
+const IconGit = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4"><circle cx="18" cy="18" r="3" /><circle cx="6" cy="6" r="3" /><path d="M6 21V9a9 9 0 0 0 9 9" /></svg>;
+const IconKey = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4"><path d="m21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4" /></svg>;
+const IconLayers = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4"><polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" /></svg>;
+const IconArrowRight = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M5 12h14M12 5l7 7-7 7" /></svg>;
+const IconArrowLeft = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>;
+const IconCopy = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>;
+const IconCheck = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4"><polyline points="20 6 9 17 4 12" /></svg>;
+const IconGithub = () => <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" /></svg>;
+const IconMenu = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>;
+const IconX = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M18 6 6 18M6 6l12 12" /></svg>;
+const IconHash = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3 h-3"><line x1="4" y1="9" x2="20" y2="9" /><line x1="4" y1="15" x2="20" y2="15" /><line x1="10" y1="3" x2="8" y2="21" /><line x1="16" y1="3" x2="14" y2="21" /></svg>;
+
+const NAV_ICON_MAP = {
+  "getting-started": <IconBook />,
+  "api-reference": <IconCode />,
+  cli: <IconZap />,
+  integrations: <IconGit />,
+  auth: <IconKey />,
+  sdk: <IconLayers />,
+};
+
+function scrollToSection(anchor) {
+  const element = document.getElementById(anchor);
+  if (!element) {
+    return;
+  }
+
+  const top = element.getBoundingClientRect().top + window.scrollY - 84;
+  window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
+}
+
+function getSectionId(section) {
+  return typeof section === "string" ? section : section.id;
+}
+
+function getSectionLabel(section) {
+  return typeof section === "string" ? section : section.label;
+}
+
+function buildDocsNav(docs) {
+  return docs.nav.map((item) => ({
+    ...item,
+    icon: NAV_ICON_MAP[item.id] || <IconBook />,
+  }));
+}
+
+function CodeBlock({ code, language = "bash" }) {
+  const { i18n } = useTranslation();
+  const docs = getDocsContent(i18n.language);
+  const [copied, setCopied] = useState(false);
+
+  const copy = () => {
+    navigator.clipboard.writeText(code).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="relative my-4 rounded-2xl overflow-hidden" style={{ background: "var(--gl-bg-card)", border: "1px solid var(--gl-border-subtle)" }}>
+      <div className="flex items-center justify-between px-4 py-2.5" style={{ background: "var(--gl-bg-card-hdr)", borderBottom: "1px solid var(--gl-border-subtle)" }}>
+        <span className="text-xs font-mono font-semibold tracking-wider" style={{ color: "var(--gl-coral)" }}>{language}</span>
+        <button
+          onClick={copy}
+          className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg transition-all duration-150"
+          style={{ color: copied ? "#22B07D" : "var(--gl-muted)", background: copied ? "rgba(34,176,125,0.1)" : "transparent" }}
+        >
+          {copied ? <IconCheck /> : <IconCopy />}
+          {copied ? docs.common.copied : docs.common.copy}
+        </button>
+      </div>
+      <pre className="px-5 py-4 overflow-x-auto text-sm leading-relaxed" style={{ color: "var(--gl-body)", fontFamily: "'JetBrains Mono', 'Fira Code', monospace" }}>
+        <code>{code}</code>
+      </pre>
+    </div>
+  );
+}
+
+function SidebarNav({ currentId, docsNav, onNavigate }) {
+  const [openId, setOpenId] = useState(currentId);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setOpenId(currentId);
+  }, [currentId]);
+
+  const handleSectionClick = useCallback((item, section, event) => {
+    event.preventDefault();
+    const anchor = getSectionId(section);
+
+    if (currentId === item.id) {
+      scrollToSection(anchor);
+    } else {
+      navigate(`${item.path}#${anchor}`);
+      setTimeout(() => scrollToSection(anchor), 350);
+    }
+
+    onNavigate?.();
+  }, [currentId, navigate, onNavigate]);
+
+  return (
+    <nav>
+      {docsNav.map((item) => {
+        const isActive = currentId === item.id;
+        const isOpen = openId === item.id;
+
+        return (
+          <div key={item.id} className="mb-0.5">
+            <div
+              className="flex items-center rounded-xl"
+              style={{
+                background: isActive ? "rgba(232,101,74,0.10)" : "transparent",
+                border: isActive ? "1px solid rgba(232,101,74,0.18)" : "1px solid transparent",
+              }}
+            >
+              <Link
+                to={item.path}
+                className="flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium flex-1 transition-colors duration-150"
+                style={{ color: isActive ? "var(--gl-coral)" : "var(--gl-muted)", textDecoration: "none" }}
+                onClick={() => {
+                  onNavigate?.();
+                  setOpenId(item.id);
+                }}
+                onMouseEnter={(event) => {
+                  if (!isActive) {
+                    event.currentTarget.style.color = "var(--gl-heading)";
+                  }
+                }}
+                onMouseLeave={(event) => {
+                  if (!isActive) {
+                    event.currentTarget.style.color = "var(--gl-muted)";
+                  }
+                }}
+              >
+                <span style={{ color: isActive ? "var(--gl-coral)" : "var(--gl-muted)", flexShrink: 0 }}>{item.icon}</span>
+                {item.label}
+              </Link>
+
+              <button
+                onClick={() => setOpenId(isOpen ? null : item.id)}
+                className="px-2.5 py-2.5 flex-shrink-0 transition-colors duration-150"
+                style={{ color: isActive ? "var(--gl-coral)" : "var(--gl-muted)" }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3 h-3" style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}>
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+            </div>
+
+            <div style={{ maxHeight: isOpen ? "400px" : "0px", overflow: "hidden", transition: "max-height 0.3s ease" }}>
+              <div className="ml-4 pl-3 pt-1 pb-1" style={{ borderLeft: "1.5px solid var(--gl-border-subtle)" }}>
+                {item.sections.map((section) => {
+                  const id = getSectionId(section);
+                  const label = getSectionLabel(section);
+
+                  return (
+                    <a
+                      key={id}
+                      href={`${item.path}#${id}`}
+                      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs transition-colors duration-150 mb-0.5"
+                      style={{ color: "var(--gl-muted)", textDecoration: "none", display: "flex" }}
+                      onMouseEnter={(event) => {
+                        event.currentTarget.style.color = "var(--gl-coral)";
+                      }}
+                      onMouseLeave={(event) => {
+                        event.currentTarget.style.color = "var(--gl-muted)";
+                      }}
+                      onClick={(event) => handleSectionClick(item, section, event)}
+                    >
+                      <span style={{ opacity: 0.4 }}><IconHash /></span>
+                      {label}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </nav>
+  );
+}
+
+function OnThisPage({ sections, color, common }) {
+  const [activeSection, setActiveSection] = useState(null);
+
+  useEffect(() => {
+    if (!sections?.length) {
+      return undefined;
+    }
+
+    const observers = [];
+
+    sections.forEach((section) => {
+      const id = getSectionId(section);
+      const element = document.getElementById(id);
+
+      if (!element) {
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setActiveSection(id);
+          }
+        },
+        { rootMargin: "-15% 0px -65% 0px" }
+      );
+
+      observer.observe(element);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((observer) => observer.disconnect());
+  }, [sections]);
+
+  if (!sections?.length) {
+    return null;
+  }
+
+  return (
+    <aside className="w-52 shrink-0 sticky top-14 h-[calc(100vh-56px)] overflow-y-auto py-6 pl-4 pr-2 hidden xl:block">
+      <div className="mb-3">
+        <span className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--gl-muted)" }}>{common.onThisPage}</span>
+      </div>
+
+      <nav className="space-y-0.5">
+        {sections.map((section) => {
+          const id = getSectionId(section);
+          const label = getSectionLabel(section);
+          const isActive = activeSection === id;
+
+          return (
+            <a
+              key={id}
+              href={`#${id}`}
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs transition-all duration-150"
+              style={{
+                color: isActive ? color : "var(--gl-muted)",
+                background: isActive ? `${color}12` : "transparent",
+                borderLeft: `2px solid ${isActive ? color : "transparent"}`,
+                textDecoration: "none",
+                fontWeight: isActive ? "600" : "400",
+              }}
+              onMouseEnter={(event) => {
+                if (!isActive) {
+                  event.currentTarget.style.color = "var(--gl-heading)";
+                }
+              }}
+              onMouseLeave={(event) => {
+                if (!isActive) {
+                  event.currentTarget.style.color = "var(--gl-muted)";
+                }
+              }}
+              onClick={(event) => {
+                event.preventDefault();
+                scrollToSection(id);
+              }}
+            >
+              {label}
+            </a>
+          );
+        })}
+      </nav>
+
+      <div className="mt-6 pt-4 space-y-1" style={{ borderTop: "1px solid var(--gl-border-subtle)" }}>
+        <div className="text-xs mb-2 font-semibold uppercase tracking-[0.15em]" style={{ color: "var(--gl-muted)" }}>{common.navigate}</div>
+        <Link
+          to="/docs"
+          className="flex items-center gap-1.5 text-xs py-1 transition-colors duration-150"
+          style={{ color: "var(--gl-muted)", textDecoration: "none" }}
+          onMouseEnter={(event) => {
+            event.currentTarget.style.color = color;
+          }}
+          onMouseLeave={(event) => {
+            event.currentTarget.style.color = "var(--gl-muted)";
+          }}
+        >
+          <IconArrowLeft />
+          {common.allDocs}
+        </Link>
+        <Link
+          to="/"
+          className="flex items-center gap-1.5 text-xs py-1 transition-colors duration-150"
+          style={{ color: "var(--gl-muted)", textDecoration: "none" }}
+          onMouseEnter={(event) => {
+            event.currentTarget.style.color = color;
+          }}
+          onMouseLeave={(event) => {
+            event.currentTarget.style.color = "var(--gl-muted)";
+          }}
+        >
+          <IconArrowLeft />
+          {common.backToHome}
+        </Link>
+      </div>
+    </aside>
+  );
+}
+
+function ReadingProgress({ color }) {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(total > 0 ? (window.scrollY / total) * 100 : 0);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div className="fixed top-0 left-0 w-full z-[100] h-0.5">
+      <div className="h-full transition-all duration-75" style={{ width: `${progress}%`, background: color }} />
+    </div>
+  );
+}
+
+export default function DocLayout({ title, icon, color = "#E8654A", description, children, sections }) {
+  const { i18n } = useTranslation();
+  const docs = getDocsContent(i18n.language);
+  const docsNav = useMemo(() => buildDocsNav(docs), [docs]);
+  const [visible, setVisible] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  const currentId = docsNav.find((item) => item.path === location.pathname)?.id || "getting-started";
+  const pageSections = sections ?? docsNav.find((item) => item.id === currentId)?.sections ?? [];
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!location.hash) {
+      return;
+    }
+
+    const anchor = location.hash.slice(1);
+    setTimeout(() => scrollToSection(anchor), 400);
+  }, [location.hash]);
+
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
+
+  return (
+    <div style={{ background: "var(--gl-bg-page)", minHeight: "100vh", color: "var(--gl-body)" }}>
+      <ReadingProgress color={color} />
+
+      <nav className="sticky top-0 z-50 backdrop-blur-md" style={{ background: "var(--gl-bg-card)cc", borderBottom: "1px solid var(--gl-border-subtle)" }}>
+        <div className="max-w-[1400px] mx-auto px-6 h-14 flex items-center justify-between">
+          <Link to="/docs" className="flex items-center gap-2 group">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center transition-transform duration-200 group-hover:scale-110" style={{ background: "rgba(232,101,74,0.15)" }}>
+              <span className="text-sm">GL</span>
+            </div>
+            <span className="font-bold text-sm tracking-tight" style={{ color: "var(--gl-heading)" }}>GitLuma</span>
+            <span className="text-xs px-2 py-0.5 rounded-full font-mono" style={{ background: "rgba(232,101,74,0.12)", color: "var(--gl-coral)" }}>{docs.common.docsBadge}</span>
+          </Link>
+
+          <div className="hidden md:flex items-center gap-1.5 text-xs" style={{ color: "var(--gl-muted)" }}>
+            <Link
+              to="/docs"
+              style={{ color: "var(--gl-muted)", textDecoration: "none" }}
+              onMouseEnter={(event) => {
+                event.currentTarget.style.color = color;
+              }}
+              onMouseLeave={(event) => {
+                event.currentTarget.style.color = "var(--gl-muted)";
+              }}
+            >
+              {docs.common.documentation}
+            </Link>
+            <span>/</span>
+            <span style={{ color: "var(--gl-heading)", fontWeight: "600" }}>{title}</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <DocsNavbarControls showDivider />
+
+            <button
+              type="button"
+              className="flex lg:hidden items-center justify-center w-8 h-8 rounded-xl transition-all"
+              style={{ background: "var(--gl-bg-card)", border: "1px solid var(--gl-border-subtle)", color: "var(--gl-body)" }}
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <IconMenu />
+            </button>
+
+            <Link
+              to="/"
+              className="hidden sm:flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-semibold transition-all duration-150 hover:scale-105"
+              style={{ background: `${color}20`, color, border: `1.5px solid ${color}`, textDecoration: "none" }}
+            >
+              <IconArrowLeft />
+              {docs.common.home}
+            </Link>
+
+            <a
+              href="https://github.com"
+              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-medium transition-all duration-150 hover:opacity-80"
+              style={{ background: "var(--gl-body)", color: "#fff" }}
+            >
+              <IconGithub />
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      {mobileMenuOpen && (
+        <div className="lg:hidden">
+          <button
+            type="button"
+            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
+            aria-label={docs.common.closeNavigation}
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          <aside className="fixed inset-y-0 left-0 z-50 w-[280px] max-w-[84vw] px-5 py-5 overflow-y-auto shadow-2xl" style={{ background: "var(--gl-bg-card)", borderRight: "1px solid var(--gl-border-subtle)" }}>
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-[0.22em]" style={{ color }}>{docs.common.documentation}</div>
+                <div className="text-sm font-semibold mt-1" style={{ color: "var(--gl-heading)" }}>{docs.common.gitLumaDocs}</div>
+              </div>
+              <button
+                type="button"
+                className="w-9 h-9 rounded-lg flex items-center justify-center"
+                style={{ background: "var(--gl-bg-page)", color: "var(--gl-body)", border: "1px solid var(--gl-border-subtle)" }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <IconX />
+              </button>
+            </div>
+
+            <div className="mb-4">
+              <DocsNavbarControls />
+            </div>
+
+            <div className="mb-4 pb-4 border-b" style={{ borderColor: "var(--gl-border-subtle)" }}>
+              <Link
+                to="/"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium"
+                style={{ color, background: `${color}10`, textDecoration: "none" }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <IconArrowLeft />
+                {docs.common.backToHome}
+              </Link>
+            </div>
+
+            <SidebarNav currentId={currentId} docsNav={docsNav} onNavigate={() => setMobileMenuOpen(false)} />
+          </aside>
+        </div>
+      )}
+
+      <div className="max-w-[1400px] mx-auto flex">
+        <aside className="w-60 shrink-0 sticky top-14 h-[calc(100vh-56px)] overflow-y-auto py-6 px-4 hidden lg:block" style={{ borderRight: "1px solid var(--gl-border-subtle)" }}>
+          <div className="mb-4 pb-3 border-b" style={{ borderColor: "var(--gl-border-subtle)" }}>
+            <span className="text-xs font-bold uppercase tracking-[0.18em]" style={{ color: "var(--gl-muted)" }}>{docs.common.documentation}</span>
+          </div>
+          <SidebarNav currentId={currentId} docsNav={docsNav} />
+        </aside>
+
+        <main className="flex-1 min-w-0 px-8 py-10" style={{ opacity: visible ? 1 : 0, transform: visible ? "none" : "translateY(16px)", transition: "opacity 0.5s ease, transform 0.5s ease" }}>
+          <div className="relative rounded-3xl overflow-hidden mb-10 p-8" style={{ background: "linear-gradient(135deg, var(--gl-body) 0%, #1a2035 100%)" }}>
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-20 blur-3xl pointer-events-none" style={{ background: `radial-gradient(circle, ${color} 0%, transparent 70%)`, transform: "translate(30%, -30%)" }} />
+            <div className="absolute bottom-0 left-20 w-48 h-48 rounded-full opacity-10 blur-2xl pointer-events-none" style={{ background: "radial-gradient(circle, #3A7EE8 0%, transparent 70%)", transform: "translateY(50%)" }} />
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: `${color}18`, color }}>{icon}</div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium" style={{ background: `${color}15`, color, border: `1px solid ${color}40` }}>
+                  <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+                  {docs.common.documentation}
+                </div>
+              </div>
+              <h1 className="text-4xl font-black text-white mb-3 leading-tight">{title}</h1>
+              <p className="text-sm leading-relaxed max-w-lg mb-6" style={{ color: "#8b95ad" }}>{description}</p>
+              <Link
+                to="/docs"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all duration-150 hover:opacity-90 active:scale-95 w-fit"
+                style={{ background: color, textDecoration: "none" }}
+              >
+                {docs.common.backToDocs}
+                <IconArrowRight />
+              </Link>
+            </div>
+          </div>
+
+          <div className="space-y-6">{children}</div>
+
+          <div className="flex items-center justify-between pt-6 mt-10" style={{ borderTop: "1px solid var(--gl-border-subtle)" }}>
+            <div className="text-xs" style={{ color: "var(--gl-muted)" }}>
+              {docs.common.lastUpdated} - <span style={{ color }}>GitLuma v2.0</span>
+            </div>
+            <Link
+              to="/"
+              className="text-xs flex items-center gap-1.5 transition-colors duration-150"
+              style={{ color: "var(--gl-muted)", textDecoration: "none" }}
+              onMouseEnter={(event) => {
+                event.currentTarget.style.color = color;
+              }}
+              onMouseLeave={(event) => {
+                event.currentTarget.style.color = "var(--gl-muted)";
+              }}
+            >
+              <IconArrowLeft />
+              {docs.common.backToHome}
+            </Link>
+          </div>
+        </main>
+
+        <OnThisPage sections={pageSections} color={color} common={docs.common} />
+      </div>
+    </div>
+  );
+}
+
+export { CodeBlock };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
 const GithubCallbackPage = () => {
@@ -9,22 +9,25 @@ const GithubCallbackPage = () => {
   useEffect(() => {
     const access_token = searchParams.get("access_token");
     const refresh_token = searchParams.get("refresh_token");
-    const is_new_user = searchParams.get("is_new_user");
 
     if (!access_token || !refresh_token) {
       setStatus("error");
       return;
     }
 
+    // сохраняем токены
     localStorage.setItem("access_token", access_token);
     localStorage.setItem("refresh_token", refresh_token);
 
+    // чистим URL
     window.history.replaceState({}, document.title, "/github/callback");
 
+    // небольшая задержка для UX
     setTimeout(() => {
       setStatus("success");
+
       setTimeout(() => {
-        navigate(is_new_user === "true" ? "/onboarding" : "/dashboard");
+        navigate("/dashboard"); // редирект на главную
       }, 1200);
     }, 1000);
   }, []);
@@ -39,7 +42,7 @@ const GithubCallbackPage = () => {
           <>
             <div className="w-16 h-16 border-4 border-gray-700 border-t-white rounded-full animate-spin"></div>
             <p className="text-lg font-medium animate-pulse">
-              Signing in via GitHub...
+              Входим через GitHub...
             </p>
           </>
         )}
@@ -50,9 +53,8 @@ const GithubCallbackPage = () => {
             <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center animate-scale">
               ✓
             </div>
-            
             <p className="text-lg font-medium">
-              Success! Redirecting...
+              Успешно! Перенаправляем...
             </p>
           </>
         )}
@@ -64,7 +66,7 @@ const GithubCallbackPage = () => {
               ✕
             </div>
             <p className="text-lg font-medium">
-              Authorization error
+              Ошибка авторизации
             </p>
           </>
         )}

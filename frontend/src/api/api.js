@@ -1,11 +1,12 @@
 import axios from "axios"
+import { API_URL } from "../config/runtime"
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL
+    baseURL: API_URL
 })
 
 const refreshApi = axios.create({
-    baseURL: import.meta.env.VITE_API_URL
+    baseURL: API_URL
 })
 
 api.interceptors.response.use(

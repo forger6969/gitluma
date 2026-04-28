@@ -40,14 +40,14 @@ export default function PageNotFound404() {
           404 page not found
         </h1>
         <p className="mt-5 max-w-xl text-sm page-404-description md:text-base">
-          This page has escaped the gravitational pull. Head back to the dashboard
-          and continue your mission.
+          Эта страница улетела за пределы гравитации. Возвращайся на главную и
+          продолжай миссию.
         </p>
         <Link
-          to="/dashboard"
+          to="/"
           className="mt-8 rounded-full border px-6 py-3 text-sm font-semibold transition page-404-home-link"
         >
-          Back to Dashboard
+          Вернуться на главную
         </Link>
       </div>
 

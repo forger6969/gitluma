@@ -1,5 +1,6 @@
 // socket.js
 import { io } from "socket.io-client"
+import { API_URL } from "../config/runtime"
 
 let socket;
 let isConnecting = false; // 👈 флаг
@@ -9,7 +10,7 @@ export const connectSocket = (userId) => {
     
     isConnecting = true;
 
-    socket = io(import.meta.env.VITE_API_URL, {
+    socket = io(API_URL, {
         query: { userId }
     });
 

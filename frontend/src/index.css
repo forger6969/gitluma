@@ -56,22 +56,6 @@
   --gl-node-fill: #161b22;
 }
 
-:root {
-  --color-luma-coral: #e8654a;
-  --color-luma-coral-hover: #d4512f;
-  --color-luma-coral-active: #c04020;
-  --color-luma-coral-soft: #f3b7a8;
-  --color-git-charcoal: #2b3141;
-  --color-git-charcoal-soft: #6a728f;
-  --color-git-charcoal-muted: #9aa0b4;
-  --color-frost-bg: #eef1f7;
-  --color-frost-hover: #eef0f4;
-  --color-frost-active: #c8cdd9;
-  --color-white: #ffffff;
-  --color-surface-dark: #232320;
-  --color-surface-panel: #31302d;
-  --color-border-soft: rgba(255, 255, 255, 0.12);
-}
 
 .custom-scroll::-webkit-scrollbar {
     width: 0px;

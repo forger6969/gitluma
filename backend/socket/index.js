@@ -14,7 +14,6 @@ const initSocket = (io)=>{
 
         socket.on("project_join" , (projectid)=>{
             socket.join(projectid)
-            console.log(`socket ${socket.id} joined project room: ${projectid}`)
         })
     })
 
@@ -28,10 +27,4 @@ const sendCommitToPorjectRoom = (projectid , data)=>{
     ioInstance.to(projectid).emit("new_commit" , data)
 }
 
-const putTask = (projectid , data)=>{
-
-    ioInstance.to(projectid).emit("put_task" , data)
-
-}
-
-module.exports = {initSocket,sendNotifyByID,sendCommitToPorjectRoom,putTask}
+module.exports = {initSocket,sendNotifyByID,sendCommitToPorjectRoom}

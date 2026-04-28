@@ -11,6 +11,7 @@ const projectSchema = mongoose.Schema({
     webhook_id: { type: String, required: [true, "Сохранение webhook id обязательно"] },
     webhook_secret: { type: String, required: [true, "webhook_secret обязателен для сохранения"] },
     last_updated_commit: { type: String, default: null },
+    taskCounter: { type: Number, default: 0 },
     commits: [
         {
             type: Schema.Types.ObjectId, ref: "Commit"
@@ -21,8 +22,7 @@ const projectSchema = mongoose.Schema({
             user: { type: Schema.Types.ObjectId, ref: "User" },
             role: { type: String, enum: ["member", "owner"] }
         }
-    ],
-    taskCounter:{type:Number , default:0}
+    ]
 })
 
 const Project = mongoose.model("Project", projectSchema)
