@@ -48,12 +48,6 @@ const heatmapRows = [
   [0, 1, 2, 3, 2, 1, 1, 2, 4, 3, 2, 1],
 ]
 
-const connectedAccounts = [
-  { name: 'GitHub Profile', icon: 'GH' },
-  { name: 'LinkedIn', icon: 'in' },
-  { name: 'Behance', icon: 'Be' },
-]
-
 const expertise = ['TypeScript', 'Rust', 'Kubernetes', 'GraphQL', 'Next.js', 'Tailwind']
 
 const activities = [
@@ -172,7 +166,19 @@ const baseCardClass = 'rounded-[20px] border'
 
 const Profile = () => {
   const mode = useSelector((state) => state.theme.mode)
+  const userState = useSelector((state) => state.user)
+  const githubUser = userState?.user?.user || {}
   const theme = themes[mode]
+  const fullName = githubUser?.username || githubUser?.login || 'GitHub User'
+  const profileUrl = githubUser?.html_url || '#'
+  const profilePath = githubUser?.html_url
+    ? githubUser.html_url.replace(/^https?:\/\//, '')
+    : 'github.com/unknown'
+  const location = githubUser?.location || 'Location not set'
+  const bio = githubUser?.bio || 'Bio not available'
+  const followers = githubUser?.followers ?? 0
+  const following = githubUser?.following ?? 0
+  const publicRepos = githubUser?.public_repos ?? 0
 
   return (
     <div className={`min-h-screen px-4 py-6 transition-colors duration-300 sm:px-6 lg:px-8 ${theme.page}`}>
@@ -186,8 +192,8 @@ const Profile = () => {
                 <div className={`rounded-[18px] border p-1.5 transition-colors duration-300 ${theme.avatarFrame}`}>
                   <img
                     width={160}
-                    src={alex}
-                    alt='Alex Monolith avatar'
+                    src={githubUser?.avatar_url || alex}
+                    alt={`${fullName} avatar`}
                     className='h-[132px] w-[104px] rounded-[14px] object-cover sm:h-[150px] sm:w-[118px]'
                   />
                 </div>
@@ -199,7 +205,7 @@ const Profile = () => {
               <div className='space-y-3'>
                 <div className='flex flex-col gap-3 xl:flex-row xl:items-center'>
                   <h1 className={`max-w-[260px] text-[38px] leading-[0.95] font-extrabold tracking-[-0.04em] sm:text-[52px] ${theme.heading}`}>
-                    Alex Monolith
+                    {fullName}
                   </h1>
 
                   <div className='flex flex-wrap gap-2'>
@@ -215,17 +221,20 @@ const Profile = () => {
                 <div className={`flex flex-col gap-2 text-[14px] sm:flex-row sm:flex-wrap sm:items-center sm:gap-4 ${theme.subtext}`}>
                   <div className='flex items-center gap-2'>
                     <img src={img} alt='location' className='h-4 w-4 opacity-80' />
-                    <span>Berlin, DE</span>
+                    <span>{location}</span>
                   </div>
                   <div className='flex items-center gap-2'>
                     <img src={img2} alt='github' className='h-4 w-4 opacity-80' />
-                    <span>github.com/alex-mono</span>
+                    <a href={profileUrl} target='_blank' rel='noreferrer' className='underline-offset-2 hover:underline'>
+                      {profilePath}
+                    </a>
                   </div>
                   <div className='flex items-center gap-2'>
                     <img src={consoleIcon} alt='handle' className='h-4 w-4 opacity-80' />
-                    <span>@0xAlex</span>
+                    <span>@{githubUser?.login || githubUser?.username || 'unknown'}</span>
                   </div>
                 </div>
+                <p className={`max-w-[720px] text-[13px] ${theme.subtext}`}>{bio}</p>
               </div>
             </div>
 
@@ -300,12 +309,12 @@ const Profile = () => {
                 <p className={`text-[32px] font-bold tracking-[-0.03em] ${theme.metricValue}`}>124 Days</p>
               </div>
               <div>
-                <p className={`mb-1 text-[10px] uppercase tracking-[0.18em] ${theme.metricLabel}`}>Total Review Ops</p>
-                <p className={`text-[32px] font-bold tracking-[-0.03em] ${theme.metricValue}`}>842</p>
+                <p className={`mb-1 text-[10px] uppercase tracking-[0.18em] ${theme.metricLabel}`}>Followers</p>
+                <p className={`text-[32px] font-bold tracking-[-0.03em] ${theme.metricValue}`}>{followers}</p>
               </div>
               <div>
                 <p className={`mb-1 text-[10px] uppercase tracking-[0.18em] ${theme.metricLabel}`}>Public Repos</p>
-                <p className={`text-[32px] font-bold tracking-[-0.03em] ${theme.metricValue}`}>34</p>
+                <p className={`text-[32px] font-bold tracking-[-0.03em] ${theme.metricValue}`}>{publicRepos}</p>
               </div>
             </div>
           </article>
@@ -314,20 +323,42 @@ const Profile = () => {
             <article className={`${baseCardClass} p-5 transition-colors duration-300 ${theme.card}`}>
               <h3 className={`mb-4 text-[13px] uppercase tracking-[0.22em] ${theme.smallTitle}`}>Connected Accounts</h3>
               <div className='space-y-3'>
-                {connectedAccounts.map((account) => (
-                  <div
-                    key={account.name}
-                    className={`flex items-center justify-between rounded-[14px] border px-4 py-3 transition-colors duration-300 ${theme.innerCard}`}
-                  >
-                    <div className='flex items-center gap-3'>
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-[10px] border text-[14px] font-semibold transition-colors duration-300 ${theme.innerIcon}`}>
-                        {account.icon}
-                      </div>
-                      <span className={`text-[14px] ${theme.bodyText}`}>{account.name}</span>
+                <a
+                  href={profileUrl}
+                  target='_blank'
+                  rel='noreferrer'
+                  className={`flex items-center justify-between rounded-[14px] border px-4 py-3 transition-colors duration-300 ${theme.innerCard}`}
+                >
+                  <div className='flex items-center gap-3'>
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-[10px] border text-[14px] font-semibold transition-colors duration-300 ${theme.innerIcon}`}>
+                      GH
                     </div>
-                    <span className={`text-[16px] ${theme.smallTitle}`}>{'>'}</span>
+                    <span className={`text-[14px] ${theme.bodyText}`}>GitHub Profile</span>
                   </div>
-                ))}
+                  <span className={`text-[16px] ${theme.smallTitle}`}>{'>'}</span>
+                </a>
+                <div
+                  className={`flex items-center justify-between rounded-[14px] border px-4 py-3 transition-colors duration-300 ${theme.innerCard}`}
+                >
+                  <div className='flex items-center gap-3'>
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-[10px] border text-[14px] font-semibold transition-colors duration-300 ${theme.innerIcon}`}>
+                      Fo
+                    </div>
+                    <span className={`text-[14px] ${theme.bodyText}`}>Following</span>
+                  </div>
+                  <span className={`text-[14px] font-semibold ${theme.bodyText}`}>{following}</span>
+                </div>
+                <div
+                  className={`flex items-center justify-between rounded-[14px] border px-4 py-3 transition-colors duration-300 ${theme.innerCard}`}
+                >
+                  <div className='flex items-center gap-3'>
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-[10px] border text-[14px] font-semibold transition-colors duration-300 ${theme.innerIcon}`}>
+                      Fr
+                    </div>
+                    <span className={`text-[14px] ${theme.bodyText}`}>Followers</span>
+                  </div>
+                  <span className={`text-[14px] font-semibold ${theme.bodyText}`}>{followers}</span>
+                </div>
               </div>
             </article>
 
