@@ -1,6 +1,6 @@
 const express = require("express")
 const { userTokenMiddleware } = require("../middlewares/tokenMIddleware")
-const { assignTask, getProjectTasks, updateTask, getProjectCommits, getMyTasks } = require("../controllers/task.controller")
+const { assignTask, getProjectTasks, updateTask, getProjectCommits, getMyTasks, getProjectTaskCommits } = require("../controllers/task.controller")
 const router = express.Router()
 
 router.post("/task/assign",userTokenMiddleware, assignTask)
