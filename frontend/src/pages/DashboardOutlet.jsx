@@ -1,18 +1,15 @@
-import { Navigate, Outlet, useParams } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import Sidebar from "../Components/Sidebar";
 import Header from "../Components/Header";
 import { useEffect, useState } from "react";
 import { connectSocket } from "../socket/socket";
 import { useDispatch, useSelector } from "react-redux";
 import { useSocketEvents } from "../hooks/useSocketEvents";
-import { getNotifications } from "../store/slices/notificationSlice";
-import api from "../api/api";
 import { getProjects } from "../store/slices/projectsSlice";
 
 const DashboardOutlet = () => {
   const token = localStorage.getItem("access_token");
   const user = useSelector((state) => state.user.user);
-  const notifications = useSelector((state)=> state.notifications.notifications)
   const [socketReady, setSocketReady] = useState(false);
   const dispatch = useDispatch()
 
@@ -26,10 +23,6 @@ useEffect(() => {
 }, [user?._id, user?.user?._id]); 
 
 useEffect(()=>{
-  console.log(notifications);
-},[notifications])  
-
-useEffect(()=>{
 dispatch(getProjects())
 },[])
 
@@ -38,8 +31,8 @@ dispatch(getProjects())
 
   if (!token) return <Navigate to="/" />;
   return (
-    <div className="flex bg-oq max-w-full max-h-full">
-      <div className="max-h-screen ">
+    <div className="flex max-w-full max-h-full" style={{ background: "var(--gl-bg-page)" }}>
+      <div className="max-h-screen overflow-hidden">
         <Sidebar />
       </div>
       <div className="flex-1 w-full max-h-screen overflow-y-auto custom-scroll">

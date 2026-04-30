@@ -419,7 +419,6 @@
 
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
 import api from "../api/api";
 
 /* ─── Columns ─── */
@@ -432,30 +431,28 @@ const COLUMNS = [
 ];
 
 /* ─── Task Card ─── */
-const TaskCard = ({ task, isDark }) => {
+const TaskCard = ({ task }) => {
   const { t } = useTranslation();
 
   return (
     <div
       className="p-3 rounded-xl transition-all duration-200 hover:scale-[1.02]"
       style={{
-        background: isDark ? "#1E293B" : "#fff",
-        border: `1px solid ${isDark ? "#2B3141" : "#E2E5EE"}`,
-        boxShadow: isDark
-          ? "0 2px 10px rgba(0,0,0,0.5)"
-          : "0 2px 10px rgba(0,0,0,0.04)",
+        background: "var(--gl-bg-card)",
+        border: "1px solid var(--gl-border-subtle)",
+        boxShadow: "var(--gl-shadow)",
       }}
     >
       <p
         className="text-sm font-semibold"
-        style={{ color: isDark ? "#F1F5F9" : "#181D2A" }}
+        style={{ color: "var(--gl-heading)" }}
       >
         {task?.task_name ?? "No name"}
       </p>
 
       <p
         className="text-xs mt-1 line-clamp-2"
-        style={{ color: isDark ? "#94A3B8" : "#5C6480" }}
+        style={{ color: "var(--gl-muted)" }}
       >
         {task?.task_describe ?? "No description"}
       </p>
@@ -464,8 +461,8 @@ const TaskCard = ({ task, isDark }) => {
         <span
           className="text-xs font-mono px-2 py-0.5 rounded"
           style={{
-            background: isDark ? "#334155" : "#F4F6FB",
-            color: isDark ? "#CBD5E1" : "#5C6480",
+            background: "var(--gl-bg-input)",
+            color: "var(--gl-muted)",
           }}
         >
           {task?.key ?? "-"}
@@ -496,7 +493,7 @@ const TaskCard = ({ task, isDark }) => {
 };
 
 /* ─── Column ─── */
-const Column = ({ title, tasks, color, isDark }) => {
+const Column = ({ title, tasks, color }) => {
   const { t } = useTranslation();
 
   const safeTasks = Array.isArray(tasks) ? tasks : [];
@@ -505,14 +502,10 @@ const Column = ({ title, tasks, color, isDark }) => {
     <div
       className="rounded-2xl p-3 flex flex-col"
       style={{
-        background: isDark
-          ? "rgba(18,21,30,0.95)"
-          : "rgba(255,255,255,0.9)",
-        border: `1px solid ${isDark ? "#2B3141" : "#E2E5EE"}`,
+        background: "var(--gl-bg-card)",
+        border: "1px solid var(--gl-border-subtle)",
         minHeight: "520px",
-        boxShadow: isDark
-          ? "0 6px 20px rgba(0,0,0,0.6)"
-          : "0 6px 20px rgba(0,0,0,0.05)",
+        boxShadow: "var(--gl-shadow)",
       }}
     >
       {/* Header */}
@@ -524,7 +517,7 @@ const Column = ({ title, tasks, color, isDark }) => {
         <span
           className="text-xs px-2 py-0.5 rounded-full font-semibold"
           style={{
-            background: isDark ? "#334155" : "#F4F6FB",
+            background: "var(--gl-bg-input)",
             color,
           }}
         >
@@ -537,13 +530,13 @@ const Column = ({ title, tasks, color, isDark }) => {
         {safeTasks.length === 0 ? (
           <p
             className="text-xs opacity-60"
-            style={{ color: isDark ? "#9CA3AF" : "#5C6480" }}
+            style={{ color: "var(--gl-muted)" }}
           >
             {t("noTasks")}
           </p>
         ) : (
           safeTasks.map((tks) => (
-            <TaskCard key={tks?._id ?? tks?.id} task={tks} isDark={isDark} />
+            <TaskCard key={tks?._id ?? tks?.id} task={tks} />
           ))
         )}
       </div>
@@ -554,8 +547,6 @@ const Column = ({ title, tasks, color, isDark }) => {
 /* ─── PAGE ─── */
 const TasksPage = () => {
   const { t } = useTranslation();
-  const mode = useSelector((state) => state.theme.mode);
-  const isDark = mode === "dark";
 
   const [kanban, setKanban] = useState({
     todo: [],
@@ -604,34 +595,20 @@ const TasksPage = () => {
 
   if (loading) {
     return (
-      <div
-        className="flex items-center justify-center h-screen"
-        style={{ background: isDark ? "#0F172A" : "#EEF1F7" }}
-      >
-        <p style={{ color: isDark ? "#9CA3AF" : "#5C6480" }}>
-          {t("loading")}
-        </p>
+      <div className="flex items-center justify-center h-screen" style={{ background: "var(--gl-bg-page)" }}>
+        <p style={{ color: "var(--gl-muted)" }}>{t("loading")}</p>
       </div>
     );
   }
 
   return (
-    <div
-      className="min-h-screen p-6"
-      style={{ background: isDark ? "#0F172A" : "#EEF1F7" }}
-    >
+    <div className="min-h-screen p-6" style={{ background: "var(--gl-bg-page)" }}>
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1
-            className="text-xl font-bold"
-            style={{ color: isDark ? "#fff" : "#181D2A" }}
-          >
+          <h1 className="text-xl font-bold" style={{ color: "var(--gl-heading)" }}>
             {t("tasksTitle")}
           </h1>
-          <p
-            className="text-sm"
-            style={{ color: isDark ? "#9CA3AF" : "#5C6480" }}
-          >
+          <p className="text-sm" style={{ color: "var(--gl-muted)" }}>
             {t("tasksSubtitle")}
           </p>
         </div>
@@ -643,7 +620,6 @@ const TasksPage = () => {
               title={t(`columns.${col.key}`)}
               color={col.color}
               tasks={kanban[col.key]}
-              isDark={isDark}
             />
           ))}
         </div>
