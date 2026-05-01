@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { icons } from "../components/onboarding/OnBoardIcons.jsx";
-import { getStepsTree } from "../components/onboarding/OnBoardStepsTree.js";
-import OptionCard from "../components/onboarding/OnBoardOptionCard.jsx";
-import CompleteScreen from "../components/onboarding/OnBoardCompleteScreen.jsx";
+import { icons } from "../сomponents/onboarding/OnBoardIcons.jsx";
+import { getStepsTree } from "../сomponents/onboarding/OnBoardStepsTree.js";
+import OptionCard from "../сomponents/onboarding/OnBoardOptionCard.jsx";
+import CompleteScreen from "../сomponents/onboarding/OnBoardCompleteScreen.jsx";
 import api from "../api/api.js";
 import i18n from "../locales/i18n.js";
 

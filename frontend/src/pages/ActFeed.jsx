@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import NavCard from '../Components/NavCard';
-import EnfOfHistory from '../Components/EnfOfHistory';
-import NewMember from '../Components/NewMember'
-import Error from '../Components/Error';
+import NavCard from '../сomponents/NavCard';
+import EnfOfHistory from '../сomponents/EnfOfHistory';
+import NewMember from '../сomponents/NewMember'
+import Error from '../сomponents/Error';
 
 const ActFeed = () => {
   const today = new Date();

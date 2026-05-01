@@ -3,12 +3,12 @@ import { useTranslation } from "react-i18next";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import Features from "../components/Features";
-import Integrations from "../components/Integrationss";
-import Company from "../components/Company";
-import LanguageSwitcher from "../components/LanguageSwitcher";
-import Testimonials from "../components/Testimonials";
-import Step from "../components/Step";
+import Features from "../сomponents/Features";
+import Integrations from "../сomponents/Integrationss";
+import Company from "../сomponents/Company";
+import LanguageSwitcher from "../сomponents/LanguageSwitcher";
+import Testimonials from "../сomponents/Testimonials";
+import Step from "../сomponents/Step";
 
 gsap.registerPlugin(ScrollTrigger);
 

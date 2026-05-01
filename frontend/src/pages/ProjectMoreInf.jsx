@@ -45,7 +45,7 @@ const getC = (dark = false) => ({
   infoBg:       dark ? "rgba(58,126,232,0.15)" : "rgba(58,126,232,0.1)",
 });
 
-// Context so sub-components can read tokens without prop drilling
+// Context so sub-сomponents can read tokens without prop drilling
 const CCtx = createContext(getC(false));
 const useC = () => useContext(CCtx);
 

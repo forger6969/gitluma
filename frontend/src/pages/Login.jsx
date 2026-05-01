@@ -1,6 +1,6 @@
 import React from "react";
-import LoginButton from "../Components/LoginButton";
-import LoginComments from "../Components/LoginComments";
+import LoginButton from "../сomponents/LoginButton";
+import LoginComments from "../сomponents/LoginComments";
 
 const Login = () => {
   const loginWithGithub = () => {
