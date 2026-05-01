@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../context/ThemeContext";
-
+import icon from "../assets/git.png"
 const SunIcon = () => (
   <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2">
     <circle cx="12" cy="12" r="5" />
@@ -50,7 +50,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`sticky top-0 z-50 flex items-center justify-between px-8 py-3.5 transition-all duration-300 ${UI.nav}`}
+      className={`sticky top-0 z-50 flex items-center justify-between px-8  transition-all duration-300 ${UI.nav}`}
       style={{
         boxShadow: scrolled ? "0 4px 24px rgba(0,0,0,0.07)" : "none",
         backdropFilter: scrolled ? "blur(16px)" : "none",
@@ -58,10 +58,10 @@ const Navbar = () => {
     >
       {/* Logo */}
       <div className="flex items-center gap-2.5 select-none">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center">
-          ⚡
+        <div className="w-40 h-20 rounded-lg flex items-center justify-center">
+          <img src={icon} alt="" />
         </div>
-        <span className="font-bold">GitLuma</span>
+        
       </div>
 
       {/* Center */}
