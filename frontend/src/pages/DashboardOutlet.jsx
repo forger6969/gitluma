@@ -1,13 +1,13 @@
 import { Navigate, Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import Header from "../сomponents/Header";
+import Header from "../components/Header";
 import { useEffect, useState } from "react";
 import { connectSocket } from "../socket/socket";
 import { useDispatch, useSelector } from "react-redux";
 import { useSocketEvents } from "../hooks/useSocketEvents";
 import { getProjects } from "../store/slices/projectsSlice";
 import { CreateProjectProvider, useCreateProject } from "../context/CreateProjectContext";
-import RepoPickerModal from "../сomponents/RepoPickerModal";
+import RepoPickerModal from "../components/RepoPickerModal";
 
 function DashboardLayout() {
   const token = localStorage.getItem("access_token");
