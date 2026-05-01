@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import Sidebar from "../сomponents/Sidebar";
+import Sidebar from "../components/Sidebar";
 import Header from "../сomponents/Header";
 import { useEffect, useState } from "react";
 import { connectSocket } from "../socket/socket";
