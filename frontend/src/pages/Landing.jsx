@@ -2,17 +2,17 @@ import { useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import Navbar from "../сomponents/Navbar";
-import Hero from "../сomponents/Hero";
-import GitBranchAnimation from "../сomponents/GitBranchAnimation";
-import ProductDemo from "../сomponents/ProductDemo";
-import FeaturesSection from "../сomponents/FeaturesSection";
-import HowItWorksSection from "../сomponents/HowItWorksSection";
-import TestimonialsSection from "../сomponents/TestimonialsSection";
+import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
+import GitBranchAnimation from "../components/GitBranchAnimation";
+import ProductDemo from "../components/ProductDemo";
+import FeaturesSection from "../components/FeaturesSection";
+import HowItWorksSection from "../components/HowItWorksSection";
+import TestimonialsSection from "../components/TestimonialsSection";
 
-import FAQSection from "../сomponents/FAQSection";
-import CTA from "../сomponents/CTA";
-import Footer from "../сomponents/Footer";
+import FAQSection from "../components/FAQSection";
+import CTA from "../components/CTA";
+import Footer from "../components/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
