@@ -181,7 +181,9 @@ export default function Header() {
           >
             <img
               src={u.avatar_url}
+              alt={u.username}
               className="w-9 h-9 rounded-full object-cover"
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
             />
 
             <p className="text-sm font-medium hidden sm:block">

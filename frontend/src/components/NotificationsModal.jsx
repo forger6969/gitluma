@@ -38,10 +38,10 @@ const TYPE = {
 const timeAgo = (d) => {
   if (!d) return ""
   const s = Math.floor((Date.now() - new Date(d)) / 1000)
-  if (s < 60) return `${s}s oldin`
-  if (s < 3600) return `${Math.floor(s / 60)}m oldin`
-  if (s < 86400) return `${Math.floor(s / 3600)}h oldin`
-  return `${Math.floor(s / 86400)}k oldin`
+  if (s < 60) return `${s}s ago`
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`
+  return `${Math.floor(s / 86400)}d ago`
 }
 
 /* ITEM */
@@ -122,14 +122,22 @@ function NotifItem({ n, isUnread, d }) {
             </div>
           ))}
 
-          {n.redirect_url && (
-            <a href={n.redirect_url} style={{
-              display: "inline-flex", marginTop: 8, gap: 4,
-              fontSize: 11, color: cfg.iconColor, textDecoration: "none"
-            }}>
-              Ko'rish →
-            </a>
-          )}
+          {n.redirect_url && (() => {
+            try {
+              const url = new URL(n.redirect_url, window.location.origin);
+              const safe = url.origin === window.location.origin ? url.href : null;
+              return safe ? (
+                <a href={safe} style={{
+                  display: "inline-flex", marginTop: 8, gap: 4,
+                  fontSize: 11, color: theme.color, textDecoration: "none"
+                }}>
+                  View →
+                </a>
+              ) : null;
+            } catch {
+              return null;
+            }
+          })()}
         </div>
       )}
     </div>
@@ -216,8 +224,8 @@ export default function NotificationsModal({ notifications = [], loading, onClos
           <>
             {unread.length > 0 && (
               <>
-                <p style={{ fontSize: 9, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: ".08em", padding: "14px 16px 6px", margin: 0 }}>
-                  Yangi
+                <p style={{ fontSize: 9, fontWeight: 700, color: d ? "#5C6480" : "#9AA3BA", textTransform: "uppercase", letterSpacing: ".08em", padding: "14px 16px 6px", margin: 0 }}>
+                  New
                 </p>
                 {unread.map((n, i) => (
                   <NotifItem key={n._id || i} n={n} isUnread d={d} />
@@ -226,8 +234,8 @@ export default function NotificationsModal({ notifications = [], loading, onClos
             )}
             {read.length > 0 && (
               <>
-                <p style={{ fontSize: 9, fontWeight: 700, color: "#374151", textTransform: "uppercase", letterSpacing: ".08em", padding: "14px 16px 6px", margin: 0 }}>
-                  Oldingi
+                <p style={{ fontSize: 9, fontWeight: 700, color: d ? "#5C6480" : "#9AA3BA", textTransform: "uppercase", letterSpacing: ".08em", padding: "14px 16px 6px", margin: 0 }}>
+                  Earlier
                 </p>
                 {read.map((n, i) => (
                   <NotifItem key={n._id || i} n={n} d={d} />

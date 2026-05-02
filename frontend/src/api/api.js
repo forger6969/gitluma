@@ -43,8 +43,12 @@ api.interceptors.response.use(
             }
 
         } catch (error) {
-            localStorage.clear()
-            window.location = "/"
+            const theme = localStorage.getItem("gl-theme");
+            const lang = localStorage.getItem("lang");
+            localStorage.clear();
+            if (theme) localStorage.setItem("gl-theme", theme);
+            if (lang) localStorage.setItem("lang", lang);
+            window.location = "/";
             return Promise.reject(error)
         }
 

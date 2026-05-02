@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import git from "../assets/SVG.png"
 import icon from "../assets/Icon.png"
@@ -6,6 +7,11 @@ import notification from "../assets/Container (1).png"
 
 const WorkSpace = () => {
     const isDark = useSelector((s) => s.theme.mode) === "dark";
+    const [notifSettings, setNotifSettings] = useState({
+        "Task Status Changes": true,
+        "New Commits": true,
+        "PR Reviews": true,
+    });
 
     const theme = isDark
         ? {
@@ -89,26 +95,29 @@ const WorkSpace = () => {
                     </div>
                 </div>
 
-                <div id="wrapper" className='flex justify-between items-center mt-6 gap-6 flex-wrap'>
-                    {[0, 1].map((i) => (
-                        <div key={i} className='p-8 flex flex-col gap-[32px] flex-1 min-w-[300px] rounded-[8px]' style={{ backgroundColor: theme.secondCardBg }}>
-                            <div className='flex gap-[12px] items-center'>
-                                <img width={20} src={notification} alt="icon" />
-                                <p className='font-bold text-[18px]' style={{ color: theme.heading }}>Notifications</p>
-                            </div>
-                            <div className='flex flex-col gap-[24px]'>
-                                {["Task Status Changes", "New Commits", "PR Reviews"].map((label, j) => (
-                                    <div key={j} className='flex justify-between items-center'>
-                                        <div>
-                                            <p className='font-bold text-[14px]' style={{ color: theme.heading }}>{label}</p>
-                                            <p className='font-normal text-[12px]' style={{ color: theme.text }}>Notify when a task moves between lanes.</p>
-                                        </div>
-                                        <input type="checkbox" defaultChecked className="toggle" />
-                                    </div>
-                                ))}
-                            </div>
+                <div id="wrapper" className='mt-6'>
+                    <div className='p-8 flex flex-col gap-[32px] rounded-[8px]' style={{ backgroundColor: theme.secondCardBg }}>
+                        <div className='flex gap-[12px] items-center'>
+                            <img width={20} src={notification} alt="Notifications" />
+                            <p className='font-bold text-[18px]' style={{ color: theme.heading }}>Notifications</p>
                         </div>
-                    ))}
+                        <div className='flex flex-col gap-[24px]'>
+                            {["Task Status Changes", "New Commits", "PR Reviews"].map((label) => (
+                                <div key={label} className='flex justify-between items-center'>
+                                    <div>
+                                        <p className='font-bold text-[14px]' style={{ color: theme.heading }}>{label}</p>
+                                        <p className='font-normal text-[12px]' style={{ color: theme.text }}>Notify when a task moves between lanes.</p>
+                                    </div>
+                                    <input
+                                        type="checkbox"
+                                        checked={notifSettings[label]}
+                                        onChange={(e) => setNotifSettings(prev => ({ ...prev, [label]: e.target.checked }))}
+                                        className="toggle"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
 
                 <div className='p-[32px] flex flex-col gap-[32px] mt-[40px] rounded-lg' style={{ backgroundColor: theme.cardBg }}>

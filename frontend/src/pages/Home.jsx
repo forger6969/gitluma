@@ -102,7 +102,6 @@ const Home = () => {
     </div>
   )
 
-  if (!user) return null
   const u = user.user
 
   const card = `rounded-xl p-5 border shadow-sm transition-colors duration-200 ${d ? 'bg-[#161B27] border-[#2B3141]' : 'bg-white border-[#E6E9F2]'}`
@@ -139,7 +138,7 @@ const Home = () => {
     ${d ? 'bg-[#161B27]/80 border-[#2B3141]' : 'bg-white/80 border-[#E6E9F2]'}`}
         >
           <div className="flex items-center gap-5">
-            <img src={u.avatar_url} alt="" className="w-20 h-20 rounded-full ring-4 ring-[#E8654A]/20" />
+            <img src={u.avatar_url} alt={u?.username || "avatar"} className="w-20 h-20 rounded-full ring-4 ring-[#E8654A]/20" onError={(e) => { e.currentTarget.style.display = "none"; }} />
 
             <div className="flex-1">
               <p className={`text-lg font-bold ${h}`}>{u?.username || u?.login}</p>
@@ -187,7 +186,7 @@ const Home = () => {
             ${d ? 'bg-[#0D3D2A] text-[#5DCAA5]' : 'bg-[#E8F7EE] text-[#1C5C3A]'}`}>
                     Active
                   </span>
-                  <motion.a href={repo.html_url} target="_blank" whileHover={{ x: 3 }}
+                  <motion.a href={repo.html_url} target="_blank" rel="noopener noreferrer" whileHover={{ x: 3 }}
                     className={`text-sm font-semibold ${d ? 'text-[#F0997B]' : 'text-[#E8654A]'}`}>
                     Open →
                   </motion.a>
@@ -237,19 +236,24 @@ const Home = () => {
             initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             className={card}
           >
-            <p className={`text-xs font-semibold mb-4 uppercase tracking-wider ${m}`}>Recent Activity</p>
-            {[
-              { msg: 'Initial commit', time: '2h ago', color: '#E8654A' },
-              { msg: 'Fixed bug', time: '5h ago', color: '#22C55E' },
-              { msg: 'Improved performance', time: '1d ago', color: '#F5A623' },
-              { msg: 'Updated deps', time: '2d ago', color: d ? '#5C6480' : '#2B3141' },
-            ].map((item, i) => (
-              <div key={i} className={`flex items-center gap-3 py-2 ${divider}`}>
-                <div className="w-2 h-2 rounded-full shrink-0" style={{ background: item.color }} />
-                <p className={`text-sm flex-1 ${b}`}>{item.msg}</p>
-                <span className={`text-[11px] ${m}`}>{item.time}</span>
+            <p className={`text-xs font-semibold mb-4 uppercase tracking-wider ${m}`}>Recent Projects</p>
+            {projects && projects.length > 0 ? (
+              projects.slice(0, 4).map((project) => (
+                <Link
+                  key={project._id}
+                  to={`/dashboard/project/${project._id}`}
+                  className={`flex items-center gap-3 py-2 ${divider}`}
+                >
+                  <div className="w-2 h-2 rounded-full shrink-0" style={{ background: '#E8654A' }} />
+                  <p className={`text-sm flex-1 truncate ${b}`}>{project.repo_name}</p>
+                  <span className={`text-[11px] shrink-0 ${m}`}>{project.default_branch || 'main'}</span>
+                </Link>
+              ))
+            ) : (
+              <div className={`py-6 text-center ${m}`}>
+                <p className="text-sm">No projects yet</p>
               </div>
-            ))}
+            )}
           </motion.div>
 
         </div>

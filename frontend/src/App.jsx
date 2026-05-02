@@ -20,7 +20,7 @@ const App = () => {
     if (token && location.pathname !== "/too-many-requests") {
       dispatch(fetchMe());
     }
-  }, [dispatch, location.pathname]);
+  }, [dispatch]);
 
   return (
     <div className="bg-oq">

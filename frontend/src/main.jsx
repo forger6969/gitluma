@@ -25,7 +25,7 @@ import './locales/i18n.js'
 import { ThemeProvider } from './context/ThemeContext.jsx'
 import ProjectMoreInf from './pages/ProjectMoreInf.jsx'
 import ActFeed from './pages/ActFeed.jsx'
-
+import TasksPage from './pages/TasksPage.jsx'
 
 import Info from './pages/Info.jsx'
 const router = createBrowserRouter([
@@ -92,8 +92,9 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <Home /> },
           { path: "projects", element: <Projekt /> },
+          { path: "tasks", element: <TasksPage /> },
           { path: "profile", element: <Profile /> },
-          {path:"project/:id", element:<ProjectMoreInf/>},
+          { path: "project/:id", element: <ProjectMoreInf /> },
         ]
       }
     ],

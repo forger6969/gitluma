@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
 import { GoProjectSymlink } from "react-icons/go";
 import { CgProfile } from "react-icons/cg";
+import { BsKanban } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import logo from "../assets/logo.png";
 import logowhite from "../assets/logo.white.svg";
@@ -17,6 +18,7 @@ export default function Sidebar() {
   const NAV = [
     { path: "/dashboard",          label: t("dashboard"), icon: <FaHome /> },
     { path: "/dashboard/projects", label: t("projects"),  icon: <GoProjectSymlink /> },
+    { path: "/dashboard/tasks",    label: t("tasks"),     icon: <BsKanban /> },
     { path: "/dashboard/profile",  label: t("profile"),   icon: <CgProfile /> },
   ];
 

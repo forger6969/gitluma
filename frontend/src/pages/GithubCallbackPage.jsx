@@ -21,13 +21,11 @@ const GithubCallbackPage = () => {
 
     window.history.replaceState({}, document.title, "/github/callback");
 
+    setStatus("success");
     setTimeout(() => {
-      setStatus("success");
-      setTimeout(() => {
-        navigate(is_new_user === "true" ? "/onboarding" : "/dashboard");
-      }, 1200);
-    }, 1000);
-  }, []);
+      navigate(is_new_user === "true" ? "/onboarding" : "/dashboard");
+    }, 1200);
+  }, [navigate, searchParams]);
 
   return (
     <div className="h-screen flex items-center justify-center bg-[#0d1117] text-white">

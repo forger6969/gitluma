@@ -61,7 +61,7 @@ const CreateNewproject = () => {
       const res = await api.post("/api/project/create", payload);
       const projectId = res?.data?.id || res?.data?._id;
       if (!projectId) {
-        setFormError("Project ID не вернулся с сервера");
+        setFormError(t("projectCreateError") || "Project was created but could not navigate to it.");
         return;
       }
       setFormSuccess(t("projectCreated") || "Created!");

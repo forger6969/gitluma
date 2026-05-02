@@ -52,9 +52,19 @@ const Projekt = () => {
     return (
       <div
         className="flex min-h-[91vh] items-center justify-center"
-        style={{ backgroundColor: theme.pageBg, color: theme.text }}
+        style={{ backgroundColor: theme.pageBg }}
       >
-        Loading projects...
+        <div className="flex flex-col items-center gap-3">
+          <svg
+            className="w-8 h-8 animate-spin"
+            viewBox="0 0 24 24" fill="none"
+            style={{ color: "#E8654A" }}
+          >
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.5" strokeOpacity="0.25" />
+            <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+          </svg>
+          <p className="text-sm" style={{ color: theme.muted }}>Loading projects...</p>
+        </div>
       </div>
     );
   }
@@ -159,7 +169,7 @@ const Projekt = () => {
                     className="rounded-full px-3 py-1 text-xs font-semibold"
                     style={{ backgroundColor: theme.pillBg, color: theme.text }}
                   >
-                    {project.default_branch || "no-branch"}
+                    {project.default_branch || "main"}
                   </span>
                 </div>
 
