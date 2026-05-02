@@ -59,7 +59,25 @@ const getProfile = async (req, res, next) => {
     }
 }
 
+const getRecentCommits = async (req, res, next) => {
+    try {
+        const { id } = req.user
+        const limit = Math.min(parseInt(req.query.limit) || 5, 20)
+
+        const commits = await Commit.find({ commit_author: id })
+            .sort({ commit_date: -1 })
+            .limit(limit)
+            .populate("project", "repo_name")
+            .select("commit_message commit_date repo_fullname project")
+
+        res.json({ success: true, commits })
+    } catch (err) {
+        next(err)
+    }
+}
+
 module.exports = {
     getMe,
-    getProfile
+    getProfile,
+    getRecentCommits
 }

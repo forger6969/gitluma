@@ -13,6 +13,18 @@ export const userFetch = createAsyncThunk(
     }
 )
 
+export const fetchRecentCommits = createAsyncThunk(
+    "user/fetchRecentCommits",
+    async (_, thunkAPI) => {
+        try {
+            const res = await api.get("/api/user/recent-commits?limit=5")
+            return res.data.commits
+        } catch (err) {
+            return thunkAPI.rejectWithValue(err.response?.data || err.message)
+        }
+    }
+)
+
 export const fetchProfile = createAsyncThunk(
     "user/fetchProfile",
     async (_, thunkAPI) => {
@@ -33,6 +45,8 @@ const initialState = {
     profile: null,
     profileLoading: false,
     profileError: null,
+    recentCommits: [],
+    recentCommitsLoading: false,
 }
 
 const userSlice = createSlice({
@@ -52,6 +66,17 @@ const userSlice = createSlice({
                 state.user = action.payload
                 state.loading = false
                 state.loaded = true
+            })
+
+            .addCase(fetchRecentCommits.pending, (state) => {
+                state.recentCommitsLoading = true
+            })
+            .addCase(fetchRecentCommits.fulfilled, (state, action) => {
+                state.recentCommits = action.payload
+                state.recentCommitsLoading = false
+            })
+            .addCase(fetchRecentCommits.rejected, (state) => {
+                state.recentCommitsLoading = false
             })
 
             .addCase(fetchProfile.pending, (state) => {

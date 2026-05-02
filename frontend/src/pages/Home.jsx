@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useCreateProject } from '../context/CreateProjectContext'
+import { fetchRecentCommits } from '../store/slices/userSlice'
+import { GitCommit } from 'lucide-react'
 
 
 
@@ -84,13 +86,26 @@ const SkeletonScreen = ({ d }) => (
   </div>
 )
 
+const timeAgo = (date) => {
+  if (!date) return ''
+  const s = Math.floor((Date.now() - new Date(date)) / 1000)
+  if (s < 60)    return `${s}s ago`
+  if (s < 3600)  return `${Math.floor(s / 60)}m ago`
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`
+  return `${Math.floor(s / 86400)}d ago`
+}
+
 const Home = () => {
   const dispatch = useDispatch()
-  const { user, loaded, loading, error } = useSelector(s => s.user)
+  const { user, loaded, loading, error, recentCommits, recentCommitsLoading } = useSelector(s => s.user)
   const repos = useSelector(s => s.repos)
   const projects = useSelector(s => s.projects.projects)
   const d = useSelector(s => s.theme.mode) === 'dark'
   const { open } = useCreateProject()
+
+  useEffect(() => {
+    dispatch(fetchRecentCommits())
+  }, [dispatch])
 
   if (loading || !user) return <SkeletonScreen d={d} />
 
@@ -236,22 +251,29 @@ const Home = () => {
             initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
             className={card}
           >
-            <p className={`text-xs font-semibold mb-4 uppercase tracking-wider ${m}`}>Recent Projects</p>
-            {projects && projects.length > 0 ? (
-              projects.slice(0, 4).map((project) => (
-                <Link
-                  key={project._id}
-                  to={`/dashboard/project/${project._id}`}
-                  className={`flex items-center gap-3 py-2 ${divider}`}
-                >
-                  <div className="w-2 h-2 rounded-full shrink-0" style={{ background: '#E8654A' }} />
-                  <p className={`text-sm flex-1 truncate ${b}`}>{project.repo_name}</p>
-                  <span className={`text-[11px] shrink-0 ${m}`}>{project.default_branch || 'main'}</span>
-                </Link>
+            <div className={`flex items-center justify-between mb-4`}>
+              <p className={`text-xs font-semibold uppercase tracking-wider ${m}`}>Recent Commits</p>
+              <GitCommit className={`w-3.5 h-3.5 ${m}`} />
+            </div>
+
+            {recentCommitsLoading ? (
+              <div className="space-y-2">
+                {[0,1,2].map(i => (
+                  <div key={i} className={`h-10 rounded-lg animate-pulse ${d ? 'bg-[#2B3141]' : 'bg-[#EEF1F7]'}`} />
+                ))}
+              </div>
+            ) : recentCommits && recentCommits.length > 0 ? (
+              recentCommits.map((commit, i) => (
+                <div key={commit._id || i} className={`flex items-center gap-3 py-2 ${divider}`}>
+                  <div className="w-2 h-2 rounded-full shrink-0 bg-[#E8654A]" />
+                  <p className={`text-sm flex-1 truncate ${b}`}>{commit.commit_message}</p>
+                  <span className={`text-[11px] shrink-0 ${m}`}>{timeAgo(commit.commit_date)}</span>
+                </div>
               ))
             ) : (
               <div className={`py-6 text-center ${m}`}>
-                <p className="text-sm">No projects yet</p>
+                <p className="text-sm">No commits yet</p>
+                <p className="text-[11px] mt-1 opacity-60">Push commits linked to a project to see them here</p>
               </div>
             )}
           </motion.div>
